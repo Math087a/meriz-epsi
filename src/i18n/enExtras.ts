@@ -365,5 +365,15 @@ export const englishExtras: Readonly<Record<string, string>> = {
   "Les espaces et leurs contenus sont conservés. Les archives restent accessibles depuis leur onglet.": "Workspaces and their contents are kept. Archived collections remain accessible from the Archived tab.",
   "Retrouvez vos groupes et organisez vos espaces de collaboration.": "Find your groups and organise your shared workspaces.",
   "Navigation des groupes": "Group navigation",
-  "Aucun groupe pour l’instant. Utilisez les onglets Créer ou Rejoindre pour commencer.": "No groups yet. Use the Create or Join tab to get started."
+  "Aucun groupe pour l’instant. Utilisez les onglets Créer ou Rejoindre pour commencer.": "No groups yet. Use the Create or Join tab to get started.",
+  "Utilisez votre adresse scolaire ou universitaire. Un email vous permettra d’activer votre espace professeur dès l’inscription.": "Use your school or university email address. An email will let you activate your teacher workspace after signing up.",
+  "Email de l’établissement": "School or university email",
+  "Cette catégorie adapte votre parcours. Le mode professeur s’active après confirmation d’une adresse d’établissement. Votre niveau d’interface reste à votre choix.": "This category adapts your experience. Teacher mode is activated after confirming a school or university email address. You can still choose your interface level.",
+  "Ouvrez le lien reçu par email pour activer votre espace professeur.": "Open the link in your email to activate your teacher workspace.",
+  "Confirmez votre adresse d’établissement : {0}.": "Confirm your school or university email address: {0}.",
+  "Cliquez sur ce lien pour activer automatiquement votre espace professeur. Aucune invitation ni validation manuelle n’est nécessaire.": "Click the link to activate your teacher workspace automatically. No invitation or manual approval is required.",
+  "Renvoyer le lien d’activation": "Resend activation link",
+  "J’ai confirmé mon adresse": "I have confirmed my email",
+  "L’activation automatique du mode professeur demande une adresse scolaire ou universitaire confirmée. L’adresse de ce compte n’est pas reconnue comme une adresse d’établissement.": "Automatic teacher activation requires a confirmed school or university email address. This account’s email address is not recognised as an institutional address.",
+  "Vous pouvez continuer à utiliser l’éditeur. Si votre adresse d’établissement n’est pas reconnue, signalez son domaine pour que nous puissions l’ajouter.": "You can continue using the editor. If your institutional address is not recognised, report its domain so we can add it."
 }

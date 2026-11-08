@@ -1,5 +1,5 @@
-import { t } from "../i18n/runtime"
-import { useLanguage } from "../lib/useLanguage"
+import { t } from '../i18n/runtime'
+import { useLanguage } from '../lib/useLanguage'
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import type { ApiUser } from '../lib/authApi'
@@ -26,15 +26,22 @@ const SERVER_FIELD: Record<Field, string> = {
 }
 
 /**
- * Inscription neutre : prénom, nom, email, mot de passe, et rien d'autre.
+ * Inscription avec catégorie d’usage et confirmation de l’adresse email.
  * Le rôle et le statut scolaire sont décidés par le serveur.
  */
 export function SignUpForm({ onSuccess, onSwitchToSignIn }: SignUpFormProps) {
   useLanguage()
   const { signUp } = useSession()
   const [usageCategory, setUsageCategory] = useState<UsageCategory>('student')
-  const [values, setValues] = useState<Record<Field, string>>({ firstName: '', name: '', email: '', password: '' })
-  const [fieldErrors, setFieldErrors] = useState<Partial<Record<Field, string>>>({})
+  const [values, setValues] = useState<Record<Field, string>>({
+    firstName: '',
+    name: '',
+    email: '',
+    password: '',
+  })
+  const [fieldErrors, setFieldErrors] = useState<
+    Partial<Record<Field, string>>
+  >({})
   const [pending, setPending] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
   const [attempt, setAttempt] = useState(0)
@@ -49,7 +56,12 @@ export function SignUpForm({ onSuccess, onSwitchToSignIn }: SignUpFormProps) {
     if (attempt === 0 || !firstInvalid) {
       return
     }
-    const target = { firstName: firstNameRef, name: nameRef, email: emailRef, password: passwordRef }[firstInvalid]
+    const target = {
+      firstName: firstNameRef,
+      name: nameRef,
+      email: emailRef,
+      password: passwordRef,
+    }[firstInvalid]
     target.current?.focus()
   }, [attempt, firstInvalid, firstNameRef, nameRef, emailRef, passwordRef])
 
@@ -91,17 +103,37 @@ export function SignUpForm({ onSuccess, onSwitchToSignIn }: SignUpFormProps) {
   }
 
   return (
-    <form onSubmit={(event) => void handleSubmit(event)} className="flex flex-col gap-4">
+    <form
+      onSubmit={(event) => void handleSubmit(event)}
+      className="flex flex-col gap-4"
+    >
       <FormAlert message={formError} attempt={attempt} />
-      <label className="flex min-w-0 flex-col gap-2 text-sm font-medium">{t('Vous utilisez Meriz en tant que')}
-        <Select value={usageCategory} onValueChange={value => setUsageCategory(value as UsageCategory)} disabled={pending}>
-          <optgroup label={t('École')}><option value="student">{t('Élève ou étudiant')}</option><option value="teacher">{t('Professeur')}</option></optgroup>
-          <optgroup label={t('Autre')}><option value="professional">{t('Professionnel')}</option><option value="individual">{t('Particulier')}</option></optgroup>
+      <label className="flex min-w-0 flex-col gap-2 text-sm font-medium">
+        {t('Vous utilisez Meriz en tant que')}
+        <Select
+          value={usageCategory}
+          onValueChange={(value) => setUsageCategory(value as UsageCategory)}
+          disabled={pending}
+        >
+          <optgroup label={t('École')}>
+            <option value="student">{t('Élève ou étudiant')}</option>
+            <option value="teacher">{t('Professeur')}</option>
+          </optgroup>
+          <optgroup label={t('Autre')}>
+            <option value="professional">{t('Professionnel')}</option>
+            <option value="individual">{t('Particulier')}</option>
+          </optgroup>
         </Select>
       </label>
-      {usageCategory === 'teacher' && <p className="text-sm text-ink-soft">{t('Votre catégorie ne donne pas automatiquement le rôle professeur. La vérification de votre statut sera proposée après l’inscription.')}</p>}
+      {usageCategory === 'teacher' && (
+        <p className="text-sm text-ink-soft">
+          {t(
+            'Utilisez votre adresse scolaire ou universitaire. Un email vous permettra d’activer votre espace professeur dès l’inscription.',
+          )}
+        </p>
+      )}
       <FormField
-        label={t("Prénom")}
+        label={t('Prénom')}
         type="text"
         value={values.firstName}
         onChange={setValue('firstName')}
@@ -111,7 +143,7 @@ export function SignUpForm({ onSuccess, onSwitchToSignIn }: SignUpFormProps) {
         inputRef={firstNameRef}
       />
       <FormField
-        label={t("Nom de famille")}
+        label={t('Nom de famille')}
         type="text"
         value={values.name}
         onChange={setValue('name')}
@@ -121,7 +153,9 @@ export function SignUpForm({ onSuccess, onSwitchToSignIn }: SignUpFormProps) {
         inputRef={nameRef}
       />
       <FormField
-        label={t("Email")}
+        label={t(
+          usageCategory === 'teacher' ? 'Email de l’établissement' : 'Email',
+        )}
         type="email"
         value={values.email}
         onChange={setValue('email')}
@@ -131,27 +165,35 @@ export function SignUpForm({ onSuccess, onSwitchToSignIn }: SignUpFormProps) {
         inputRef={emailRef}
       />
       <FormField
-        label={t("Mot de passe")}
+        label={t('Mot de passe')}
         type="password"
         value={values.password}
         onChange={setValue('password')}
         autoComplete="new-password"
-        hint={t("8 caractères minimum.")}
+        hint={t('8 caractères minimum.')}
         minLength={8}
         maxLength={72}
         error={fieldErrors.password}
         inputRef={passwordRef}
       />
-      <Button type="submit" variant="primary" block loading={pending} loadingLabel={t("Création du compte…")}>
-        {t("Créer mon compte")}</Button>
+      <Button
+        type="submit"
+        variant="primary"
+        block
+        loading={pending}
+        loadingLabel={t('Création du compte…')}
+      >
+        {t('Créer mon compte')}
+      </Button>
       <p className="text-center text-sm text-ink-soft">
-        {t("Déjà un compte ?")}{' '}
+        {t('Déjà un compte ?')}{' '}
         <button
           type="button"
           onClick={onSwitchToSignIn}
           className="font-medium text-accent-ink underline underline-offset-2 hover:text-ink"
         >
-          {t("Se connecter")}</button>
+          {t('Se connecter')}
+        </button>
       </p>
     </form>
   )

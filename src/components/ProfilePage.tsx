@@ -250,7 +250,7 @@ export function ProfilePage({ user, client, onShowClasses, onAccountDeleted }: P
       </form>
 
       <UsageCategoryControl />
-      <EmailVerificationSection user={user} client={client} />
+      {!(user.usageCategory === 'teacher' && user.role !== 'teacher' && user.isAcademic) && <EmailVerificationSection user={user} client={client} />}
 
       <TeacherModeSection user={user} client={client} onShowClasses={onShowClasses} />
       {user.role !== 'teacher' && user.usageCategory === 'student' && <p className="mt-6 text-sm text-ink-soft">{t('Vous pouvez utiliser votre adresse personnelle et rejoindre une classe avec son code. Le rattachement par connexion à votre établissement sera facultatif lorsqu’il sera disponible.')}</p>}
