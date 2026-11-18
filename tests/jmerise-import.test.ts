@@ -41,8 +41,11 @@ describe('JMerise .mcd et conversion .json Meriz', () => {
       expect(result.ok, `Le fichier ${jsonFile} doit être accepté par parseModelFile`).toBe(true)
       if (result.ok) {
         expect(result.state.mcd.entities.length).toBeGreaterThan(0)
-        const { nodes } = mcdToFlow(result.state.mcd, result.state.layout)
+        const { nodes, edges } = mcdToFlow(result.state.mcd, result.state.layout)
         expect(nodes.length).toBeGreaterThan(0)
+        if (result.state.mcd.associations.some((a) => a.legs.length > 0)) {
+          expect(edges.length).toBeGreaterThan(0)
+        }
       }
     }
   })

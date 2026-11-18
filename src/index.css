@@ -312,6 +312,21 @@
   --xy-background-pattern-color: var(--c-line);
 }
 
+/* Arêtes et traits du schéma : garantir la visibilité des arêtes SVG en export image et sur le canevas */
+.react-flow__edges {
+  position: absolute;
+}
+.react-flow__edges svg {
+  overflow: visible !important;
+  position: absolute !important;
+  pointer-events: none !important;
+}
+.react-flow__edge-path {
+  stroke: var(--c-line-strong, #827ba0);
+  stroke-width: 1.5px;
+  fill: none;
+}
+
 /*
  * Le focus clavier sur un nœud ou une patte. La feuille de React Flow
  * pose « outline: none » sur « .react-flow__node.selectable:focus-visible »,

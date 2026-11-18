@@ -342,6 +342,20 @@ export function McdCanvas({
   const anchoredEdges = useMemo(() => {
     const boxes = new Map(nodes.map((node) => [node.id, anchorBox(node)]))
     const next = edges.map((edge) => {
+      if (edge.id.startsWith('inh-p-')) {
+        const target = boxes.get(edge.target)
+        if (!target) return { ...edge, sourceHandle: 'top' }
+        const source = boxes.get(edge.source)
+        const targetHandle = source && target ? (target.y < source.y ? 'bottom' : 'top') : 'bottom'
+        return { ...edge, sourceHandle: 'top', targetHandle }
+      }
+      if (edge.id.startsWith('inh-c-')) {
+        const target = boxes.get(edge.target)
+        if (!target) return { ...edge, sourceHandle: 'bottom' }
+        const source = boxes.get(edge.source)
+        const targetHandle = source && target ? (target.y > source.y ? 'top' : 'bottom') : 'top'
+        return { ...edge, sourceHandle: 'bottom', targetHandle }
+      }
       const source = boxes.get(edge.source)
       const target = boxes.get(edge.target)
       if (!source || !target) {

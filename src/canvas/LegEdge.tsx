@@ -76,6 +76,11 @@ export function LegEdge({ id, sourceX, sourceY, targetX, targetY, sourcePosition
     setDragPosition(null)
   }
 
+  const isDark = typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'dark'
+  const canvasColor = isDark ? '#1b172d' : '#fcfaf5'
+  const lineColor = isDark ? '#827ba0' : '#8a8070'
+  const markColor = isDark ? '#818cf8' : '#4f46e5'
+
   return (
     <>
       {remoteSelections.map((other, index) => (
@@ -85,14 +90,21 @@ export function LegEdge({ id, sourceX, sourceY, targetX, targetY, sourcePosition
           <path d={path} fill="none" stroke={other.user.avatarFg} strokeWidth={1} pointerEvents="none" />
         </g>
       ))}
-      <path d={path} fill="none" stroke="var(--c-canvas)" strokeWidth={6} strokeLinejoin="round" pointerEvents="none" />
+      <path
+        d={path}
+        fill="none"
+        stroke={`var(--c-canvas, ${canvasColor})`}
+        strokeWidth={6}
+        strokeLinejoin="round"
+        pointerEvents="none"
+      />
       <BaseEdge
         id={id}
         path={path}
         style={
           selected
-            ? { stroke: 'var(--c-mark)', strokeWidth: 2.25 }
-            : { stroke: 'var(--c-line-strong)', strokeWidth: 1.5 }
+            ? { stroke: `var(--c-mark, ${markColor})`, strokeWidth: 2.25 }
+            : { stroke: `var(--c-line-strong, ${lineColor})`, strokeWidth: 1.5 }
         }
       />
       {data && data.cardinality && (
