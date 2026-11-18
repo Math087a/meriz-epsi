@@ -34,7 +34,7 @@ export function InheritanceNode({ data, selected, isConnectable }: NodeProps<Inh
     >
       {/* Top Handle vers l'entité mère */}
       <Handle
-        type="target"
+        type="source"
         id="top"
         position={Position.Top}
         className="meriz-handle !bg-accent-ink"

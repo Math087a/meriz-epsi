@@ -454,16 +454,34 @@ export function McdCanvas({
    * est couverte par un test.
    */
   const isValidConnection = useCallback<IsValidConnection<LegFlowEdge>>(
-    (connection) => canCreateLeg(state.mcd, connection.source, connection.target),
+    (connection) => {
+      if (canCreateLeg(state.mcd, connection.source, connection.target)) return true
+      const isInheritanceLink =
+        state.mcd.inheritances?.some((i) => i.id === connection.source) &&
+        state.mcd.entities.some((e) => e.id === connection.target)
+      return !!isInheritanceLink
+    },
     [state.mcd],
   )
 
   const onConnect = useCallback(
     (connection: Connection) => {
-      if (!canCreateLeg(state.mcd, connection.source, connection.target)) {
+      if (canCreateLeg(state.mcd, connection.source, connection.target)) {
+        dispatch({ type: 'ADD_LEG', associationId: connection.source, entityId: connection.target })
         return
       }
-      dispatch({ type: 'ADD_LEG', associationId: connection.source, entityId: connection.target })
+
+      const inh = state.mcd.inheritances?.find((i) => i.id === connection.source)
+      if (inh && state.mcd.entities.some((e) => e.id === connection.target)) {
+        if (connection.sourceHandle === 'top') {
+          dispatch({ type: 'UPDATE_INHERITANCE', id: inh.id, patch: { parentId: connection.target } })
+        } else {
+          const children = inh.childIds.includes(connection.target)
+            ? inh.childIds
+            : [...inh.childIds, connection.target]
+          dispatch({ type: 'UPDATE_INHERITANCE', id: inh.id, patch: { childIds: children } })
+        }
+      }
     },
     [dispatch, state.mcd],
   )
@@ -489,7 +507,11 @@ export function McdCanvas({
         dispatch(
           node.type === 'entity'
             ? { type: 'DELETE_ENTITY', id: node.id }
-            : { type: 'DELETE_ASSOCIATION', id: node.id },
+            : node.type === 'association'
+            ? { type: 'DELETE_ASSOCIATION', id: node.id }
+            : node.type === 'inheritance'
+            ? { type: 'DELETE_INHERITANCE', id: node.id }
+            : { type: 'DELETE_POSTIT', id: node.id },
         )
       }
       // React Flow n'émet pas de désélection pour un nœud supprimé :
@@ -538,7 +560,25 @@ export function McdCanvas({
   const onEdgesDelete = useCallback(
     (deleted: LegFlowEdge[]) => {
       for (const edge of deleted) {
-        dispatch({ type: 'DELETE_LEG', id: edge.id })
+        if (edge.id.startsWith('inh-p-')) {
+          const parts = edge.id.split('-')
+          const inhId = parts[2]
+          dispatch({ type: 'UPDATE_INHERITANCE', id: inhId, patch: { parentId: '' } })
+        } else if (edge.id.startsWith('inh-c-')) {
+          const parts = edge.id.split('-')
+          const inhId = parts[2]
+          const childId = parts[3]
+          const inh = state.mcd.inheritances?.find((i) => i.id === inhId)
+          if (inh) {
+            dispatch({
+              type: 'UPDATE_INHERITANCE',
+              id: inhId,
+              patch: { childIds: inh.childIds.filter((cid) => cid !== childId) },
+            })
+          }
+        } else {
+          dispatch({ type: 'DELETE_LEG', id: edge.id })
+        }
       }
       onSelectionChange((previous) => {
         const edgeIds = new Set(previous.edgeIds)
@@ -548,7 +588,7 @@ export function McdCanvas({
         return { ...previous, edgeIds }
       })
     },
-    [dispatch, onSelectionChange],
+    [dispatch, onSelectionChange, state.mcd],
   )
 
   return (

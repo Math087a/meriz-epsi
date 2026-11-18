@@ -8,6 +8,8 @@ import type { CanvasSelection } from '../canvas/selection'
 import { EntityForm } from './EntityForm'
 import { AssociationForm } from './AssociationForm'
 import { LegForm } from './LegForm'
+import { InheritanceForm } from './InheritanceForm'
+import { PostItForm } from './PostItForm'
 
 interface InspectorProps {
   mcd: Mcd
@@ -47,10 +49,16 @@ export function Inspector({ mcd, selection, dispatch, readOnly = false }: Inspec
     if (nodeId !== undefined) {
       const entity = findEntity(mcd, nodeId)
       const association = findAssociation(mcd, nodeId)
+      const inheritance = mcd.inheritances?.find((i) => i.id === nodeId)
+      const postit = mcd.postits?.find((p) => p.id === nodeId)
       if (entity) {
         content = <EntityForm mcd={mcd} entity={entity} dispatch={dispatch} />
       } else if (association) {
         content = <AssociationForm mcd={mcd} association={association} dispatch={dispatch} />
+      } else if (inheritance) {
+        content = <InheritanceForm mcd={mcd} inheritance={inheritance} dispatch={dispatch} />
+      } else if (postit) {
+        content = <PostItForm postit={postit} dispatch={dispatch} />
       }
     } else if (edgeId !== undefined) {
       const found = findLeg(mcd, edgeId)

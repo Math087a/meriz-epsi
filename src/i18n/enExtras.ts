@@ -4,6 +4,7 @@ export const englishExtras: Readonly<Record<string, string>> = {
   "SQL Server (T-SQL)": "SQL Server (T-SQL)",
   "Ajouter un héritage": "Add inheritance",
   "Héritage": "Inheritance",
+  "Héritage & Spécialisation": "Inheritance & Specialisation",
   "Ajouter un post-it": "Add post-it",
   "Post-it": "Post-it",
   "Héritage {0}": "Inheritance {0}",
