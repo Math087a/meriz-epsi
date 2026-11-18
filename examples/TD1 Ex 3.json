@@ -1,0 +1,412 @@
+{
+  "format": "meriz-mcd",
+  "version": 2,
+  "name": "TD1 Ex 3",
+  "mcd": {
+    "properties": [
+      {
+        "id": "p-1",
+        "name": "Code_Client",
+        "type": "entier"
+      },
+      {
+        "id": "p-2",
+        "name": "Nom_Client",
+        "type": "texte",
+        "size": 50
+      },
+      {
+        "id": "p-3",
+        "name": "Prenom_Client",
+        "type": "texte",
+        "size": 50
+      },
+      {
+        "id": "p-4",
+        "name": "Adresse1_Client",
+        "type": "texte",
+        "size": 50
+      },
+      {
+        "id": "p-5",
+        "name": "Adresse2_Client",
+        "type": "texte",
+        "size": 50
+      },
+      {
+        "id": "p-6",
+        "name": "CP_Client",
+        "type": "texte",
+        "size": 5
+      },
+      {
+        "id": "p-7",
+        "name": "Num_Com",
+        "type": "entier"
+      },
+      {
+        "id": "p-8",
+        "name": "Date_Com",
+        "type": "date"
+      },
+      {
+        "id": "p-9",
+        "name": "Poids_Com",
+        "type": "decimal"
+      },
+      {
+        "id": "p-10",
+        "name": "Volume_Com",
+        "type": "decimal"
+      },
+      {
+        "id": "p-11",
+        "name": "Code_Transp",
+        "type": "entier"
+      },
+      {
+        "id": "p-12",
+        "name": "Nom_Transp",
+        "type": "texte",
+        "size": 50
+      },
+      {
+        "id": "p-13",
+        "name": "Adress1_Transp",
+        "type": "texte",
+        "size": 50
+      },
+      {
+        "id": "p-14",
+        "name": "Adress2_Transp",
+        "type": "texte",
+        "size": 50
+      },
+      {
+        "id": "p-15",
+        "name": "CP_Transp",
+        "type": "texte",
+        "size": 5
+      },
+      {
+        "id": "p-16",
+        "name": "TarifLivraiso_Transp",
+        "type": "decimal"
+      },
+      {
+        "id": "p-17",
+        "name": "Nom_Ville",
+        "type": "texte",
+        "size": 50
+      },
+      {
+        "id": "p-18",
+        "name": "Distance",
+        "type": "entier"
+      }
+    ],
+    "entities": [
+      {
+        "id": "e-1",
+        "name": "Client",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-1",
+            "isIdentifier": true
+          },
+          {
+            "order": 1,
+            "propertyId": "p-2",
+            "isIdentifier": false
+          },
+          {
+            "order": 2,
+            "propertyId": "p-3",
+            "isIdentifier": false
+          },
+          {
+            "order": 3,
+            "propertyId": "p-4",
+            "isIdentifier": false
+          },
+          {
+            "order": 4,
+            "propertyId": "p-5",
+            "isIdentifier": false
+          },
+          {
+            "order": 5,
+            "propertyId": "p-6",
+            "isIdentifier": false
+          }
+        ]
+      },
+      {
+        "id": "e-2",
+        "name": "Commande",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-7",
+            "isIdentifier": true
+          },
+          {
+            "order": 1,
+            "propertyId": "p-8",
+            "isIdentifier": false
+          },
+          {
+            "order": 2,
+            "propertyId": "p-9",
+            "isIdentifier": false
+          },
+          {
+            "order": 3,
+            "propertyId": "p-10",
+            "isIdentifier": false
+          }
+        ]
+      },
+      {
+        "id": "e-3",
+        "name": "Transporteur",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-11",
+            "isIdentifier": true
+          },
+          {
+            "order": 1,
+            "propertyId": "p-12",
+            "isIdentifier": false
+          },
+          {
+            "order": 2,
+            "propertyId": "p-13",
+            "isIdentifier": false
+          },
+          {
+            "order": 3,
+            "propertyId": "p-14",
+            "isIdentifier": false
+          },
+          {
+            "order": 4,
+            "propertyId": "p-15",
+            "isIdentifier": false
+          },
+          {
+            "order": 5,
+            "propertyId": "p-16",
+            "isIdentifier": false
+          }
+        ]
+      },
+      {
+        "id": "e-4",
+        "name": "Ville",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-17",
+            "isIdentifier": true
+          }
+        ]
+      }
+    ],
+    "associations": [
+      {
+        "id": "a-1",
+        "name": "Est eloingnée",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-18",
+            "isIdentifier": false
+          }
+        ],
+        "legs": [
+          {
+            "id": "leg-1",
+            "entityId": "e-4",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          },
+          {
+            "id": "leg-2",
+            "entityId": "e-4",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          }
+        ]
+      },
+      {
+        "id": "a-2",
+        "name": "Passe",
+        "attributes": [],
+        "legs": [
+          {
+            "id": "leg-3",
+            "entityId": "e-1",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          },
+          {
+            "id": "leg-4",
+            "entityId": "e-2",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          }
+        ]
+      },
+      {
+        "id": "a-3",
+        "name": "affecte",
+        "attributes": [],
+        "legs": [
+          {
+            "id": "leg-5",
+            "entityId": "e-2",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          },
+          {
+            "id": "leg-6",
+            "entityId": "e-3",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          }
+        ]
+      },
+      {
+        "id": "a-4",
+        "name": "reside",
+        "attributes": [],
+        "legs": [
+          {
+            "id": "leg-7",
+            "entityId": "e-4",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          },
+          {
+            "id": "leg-8",
+            "entityId": "e-3",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          }
+        ]
+      },
+      {
+        "id": "a-5",
+        "name": "dessert",
+        "attributes": [],
+        "legs": [
+          {
+            "id": "leg-9",
+            "entityId": "e-3",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          },
+          {
+            "id": "leg-10",
+            "entityId": "e-4",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          }
+        ]
+      },
+      {
+        "id": "a-6",
+        "name": "se situe",
+        "attributes": [],
+        "legs": [
+          {
+            "id": "leg-11",
+            "entityId": "e-1",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          },
+          {
+            "id": "leg-12",
+            "entityId": "e-4",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "layout": {
+    "e-1": {
+      "x": 18,
+      "y": 18
+    },
+    "e-2": {
+      "x": 265,
+      "y": 85
+    },
+    "e-3": {
+      "x": 438,
+      "y": 356
+    },
+    "e-4": {
+      "x": 47,
+      "y": 287
+    },
+    "a-1": {
+      "x": 61,
+      "y": 401
+    },
+    "a-2": {
+      "x": 298,
+      "y": 11
+    },
+    "a-3": {
+      "x": 362,
+      "y": 240
+    },
+    "a-4": {
+      "x": 257,
+      "y": 226
+    },
+    "a-5": {
+      "x": 299,
+      "y": 334
+    },
+    "a-6": {
+      "x": 163,
+      "y": 207
+    }
+  },
+  "mpd": {
+    "dialect": "mysql",
+    "overrides": {}
+  }
+}

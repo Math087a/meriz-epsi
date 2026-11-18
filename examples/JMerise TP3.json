@@ -1,0 +1,813 @@
+{
+  "format": "meriz-mcd",
+  "version": 2,
+  "name": "JMerise TP3",
+  "mcd": {
+    "properties": [
+      {
+        "id": "p-1",
+        "name": "Id_etab",
+        "type": "entier"
+      },
+      {
+        "id": "p-2",
+        "name": "Nom_etab",
+        "type": "texte",
+        "size": 50
+      },
+      {
+        "id": "p-3",
+        "name": "Adresse_etablissement",
+        "type": "texte",
+        "size": 255
+      },
+      {
+        "id": "p-4",
+        "name": "CP_etablissement",
+        "type": "texte",
+        "size": 5
+      },
+      {
+        "id": "p-5",
+        "name": "Ville_etablissement",
+        "type": "texte",
+        "size": 100
+      },
+      {
+        "id": "p-6",
+        "name": "Lieu_permanence",
+        "type": "texte",
+        "size": 100
+      },
+      {
+        "id": "p-7",
+        "name": "matricule_salarie",
+        "type": "entier"
+      },
+      {
+        "id": "p-8",
+        "name": "nom_salarie",
+        "type": "texte",
+        "size": 50
+      },
+      {
+        "id": "p-9",
+        "name": "prenom_salarie",
+        "type": "texte",
+        "size": 50
+      },
+      {
+        "id": "p-10",
+        "name": "date-embauche_salarie",
+        "type": "date"
+      },
+      {
+        "id": "p-11",
+        "name": "Adresse_salarie",
+        "type": "texte",
+        "size": 255
+      },
+      {
+        "id": "p-12",
+        "name": "CP_salarie",
+        "type": "texte",
+        "size": 5
+      },
+      {
+        "id": "p-13",
+        "name": "Ville_salarie",
+        "type": "texte",
+        "size": 100
+      },
+      {
+        "id": "p-14",
+        "name": "Tel_salarie",
+        "type": "texte",
+        "size": 10
+      },
+      {
+        "id": "p-15",
+        "name": "Mail_salarie",
+        "type": "texte",
+        "size": 255
+      },
+      {
+        "id": "p-16",
+        "name": "Id_enfant",
+        "type": "entier"
+      },
+      {
+        "id": "p-17",
+        "name": "Nom_enfant",
+        "type": "texte",
+        "size": 50
+      },
+      {
+        "id": "p-18",
+        "name": "Prenom_enfant",
+        "type": "texte",
+        "size": 50
+      },
+      {
+        "id": "p-19",
+        "name": "DateNaiss_enfant",
+        "type": "date"
+      },
+      {
+        "id": "p-20",
+        "name": "Sexe_enfant",
+        "type": "texte",
+        "size": 1
+      },
+      {
+        "id": "p-21",
+        "name": "Id_fournisseur",
+        "type": "entier"
+      },
+      {
+        "id": "p-22",
+        "name": "Nom_fournisseur",
+        "type": "texte",
+        "size": 50
+      },
+      {
+        "id": "p-23",
+        "name": "Adresse_fournisseur",
+        "type": "texte",
+        "size": 255
+      },
+      {
+        "id": "p-24",
+        "name": "CP_fournisseur",
+        "type": "texte",
+        "size": 5
+      },
+      {
+        "id": "p-25",
+        "name": "Ville_fournisseur",
+        "type": "texte",
+        "size": 100
+      },
+      {
+        "id": "p-26",
+        "name": "Tel_fournisseur",
+        "type": "texte",
+        "size": 10
+      },
+      {
+        "id": "p-27",
+        "name": "Mail_fournisseur",
+        "type": "texte",
+        "size": 255
+      },
+      {
+        "id": "p-28",
+        "name": "Id_TrancheImp",
+        "type": "texte",
+        "size": 10
+      },
+      {
+        "id": "p-29",
+        "name": "Taux_abattement",
+        "type": "decimal"
+      },
+      {
+        "id": "p-30",
+        "name": "Annee_catalogue",
+        "type": "entier"
+      },
+      {
+        "id": "p-31",
+        "name": "Id_centre",
+        "type": "entier"
+      },
+      {
+        "id": "p-32",
+        "name": "Nom_centre",
+        "type": "texte",
+        "size": 50
+      },
+      {
+        "id": "p-33",
+        "name": "Adresse_centre",
+        "type": "texte",
+        "size": 255
+      },
+      {
+        "id": "p-34",
+        "name": "CP_centre",
+        "type": "texte",
+        "size": 5
+      },
+      {
+        "id": "p-35",
+        "name": "Ville_centre",
+        "type": "texte",
+        "size": 100
+      },
+      {
+        "id": "p-36",
+        "name": "TypeLieu_centre",
+        "type": "texte",
+        "size": 25
+      },
+      {
+        "id": "p-37",
+        "name": "Capacite_centre",
+        "type": "entier"
+      },
+      {
+        "id": "p-38",
+        "name": "TrancheAge_centre",
+        "type": "texte",
+        "size": 25
+      },
+      {
+        "id": "p-39",
+        "name": "TarifBase_centre",
+        "type": "decimal"
+      },
+      {
+        "id": "p-40",
+        "name": "Num_facture",
+        "type": "entier"
+      },
+      {
+        "id": "p-41",
+        "name": "Date_facture",
+        "type": "date"
+      },
+      {
+        "id": "p-42",
+        "name": "Statut_facture",
+        "type": "texte",
+        "size": 25
+      },
+      {
+        "id": "p-43",
+        "name": "DateReservation_cad",
+        "type": "date"
+      },
+      {
+        "id": "p-44",
+        "name": "Statut_distribution",
+        "type": "texte",
+        "size": 25
+      },
+      {
+        "id": "p-45",
+        "name": "DateRetrait_cadeau",
+        "type": "date"
+      },
+      {
+        "id": "p-46",
+        "name": "DateDemande_vac",
+        "type": "date"
+      },
+      {
+        "id": "p-47",
+        "name": "Annee_vacances",
+        "type": "entier"
+      },
+      {
+        "id": "p-48",
+        "name": "Voeu_mois",
+        "type": "texte",
+        "size": 25
+      },
+      {
+        "id": "p-49",
+        "name": "Voeu_TypeLieu",
+        "type": "texte",
+        "size": 25
+      },
+      {
+        "id": "p-50",
+        "name": "Mois_affecte",
+        "type": "texte",
+        "size": 25
+      },
+      {
+        "id": "p-51",
+        "name": "Statut_sejour",
+        "type": "texte",
+        "size": 25
+      },
+      {
+        "id": "p-52",
+        "name": "Id_cadeau",
+        "type": "entier"
+      },
+      {
+        "id": "p-53",
+        "name": "Designation_cadeau",
+        "type": "texte",
+        "size": 100
+      },
+      {
+        "id": "p-54",
+        "name": "Description_cadeau",
+        "type": "texte",
+        "size": 255
+      },
+      {
+        "id": "p-55",
+        "name": "Prix_cadeau",
+        "type": "decimal"
+      }
+    ],
+    "entities": [
+      {
+        "id": "e-1",
+        "name": "etablissement",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-1",
+            "isIdentifier": true
+          },
+          {
+            "order": 1,
+            "propertyId": "p-2",
+            "isIdentifier": false
+          },
+          {
+            "order": 2,
+            "propertyId": "p-3",
+            "isIdentifier": false
+          },
+          {
+            "order": 3,
+            "propertyId": "p-4",
+            "isIdentifier": false
+          },
+          {
+            "order": 4,
+            "propertyId": "p-5",
+            "isIdentifier": false
+          },
+          {
+            "order": 5,
+            "propertyId": "p-6",
+            "isIdentifier": false
+          }
+        ]
+      },
+      {
+        "id": "e-2",
+        "name": "salarie",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-7",
+            "isIdentifier": true
+          },
+          {
+            "order": 1,
+            "propertyId": "p-8",
+            "isIdentifier": false
+          },
+          {
+            "order": 2,
+            "propertyId": "p-9",
+            "isIdentifier": false
+          },
+          {
+            "order": 3,
+            "propertyId": "p-10",
+            "isIdentifier": false
+          },
+          {
+            "order": 4,
+            "propertyId": "p-11",
+            "isIdentifier": false
+          },
+          {
+            "order": 5,
+            "propertyId": "p-12",
+            "isIdentifier": false
+          },
+          {
+            "order": 6,
+            "propertyId": "p-13",
+            "isIdentifier": false
+          },
+          {
+            "order": 7,
+            "propertyId": "p-14",
+            "isIdentifier": false
+          },
+          {
+            "order": 8,
+            "propertyId": "p-15",
+            "isIdentifier": false
+          }
+        ]
+      },
+      {
+        "id": "e-3",
+        "name": "enfant",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-16",
+            "isIdentifier": true
+          },
+          {
+            "order": 1,
+            "propertyId": "p-17",
+            "isIdentifier": false
+          },
+          {
+            "order": 2,
+            "propertyId": "p-18",
+            "isIdentifier": false
+          },
+          {
+            "order": 3,
+            "propertyId": "p-19",
+            "isIdentifier": false
+          },
+          {
+            "order": 4,
+            "propertyId": "p-20",
+            "isIdentifier": false
+          }
+        ]
+      },
+      {
+        "id": "e-4",
+        "name": "fournisseur",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-21",
+            "isIdentifier": true
+          },
+          {
+            "order": 1,
+            "propertyId": "p-22",
+            "isIdentifier": false
+          },
+          {
+            "order": 2,
+            "propertyId": "p-23",
+            "isIdentifier": false
+          },
+          {
+            "order": 3,
+            "propertyId": "p-24",
+            "isIdentifier": false
+          },
+          {
+            "order": 4,
+            "propertyId": "p-25",
+            "isIdentifier": false
+          },
+          {
+            "order": 5,
+            "propertyId": "p-26",
+            "isIdentifier": false
+          },
+          {
+            "order": 6,
+            "propertyId": "p-27",
+            "isIdentifier": false
+          }
+        ]
+      },
+      {
+        "id": "e-5",
+        "name": "TrancheImp",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-28",
+            "isIdentifier": true
+          },
+          {
+            "order": 1,
+            "propertyId": "p-29",
+            "isIdentifier": false
+          }
+        ]
+      },
+      {
+        "id": "e-6",
+        "name": "centre",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-31",
+            "isIdentifier": true
+          },
+          {
+            "order": 1,
+            "propertyId": "p-32",
+            "isIdentifier": false
+          },
+          {
+            "order": 2,
+            "propertyId": "p-33",
+            "isIdentifier": false
+          },
+          {
+            "order": 3,
+            "propertyId": "p-34",
+            "isIdentifier": false
+          },
+          {
+            "order": 4,
+            "propertyId": "p-35",
+            "isIdentifier": false
+          },
+          {
+            "order": 5,
+            "propertyId": "p-36",
+            "isIdentifier": false
+          },
+          {
+            "order": 6,
+            "propertyId": "p-37",
+            "isIdentifier": false
+          },
+          {
+            "order": 7,
+            "propertyId": "p-38",
+            "isIdentifier": false
+          },
+          {
+            "order": 8,
+            "propertyId": "p-39",
+            "isIdentifier": false
+          }
+        ]
+      },
+      {
+        "id": "e-7",
+        "name": "facture",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-40",
+            "isIdentifier": true
+          },
+          {
+            "order": 1,
+            "propertyId": "p-41",
+            "isIdentifier": false
+          },
+          {
+            "order": 2,
+            "propertyId": "p-42",
+            "isIdentifier": false
+          }
+        ]
+      },
+      {
+        "id": "e-8",
+        "name": "cadeau",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-52",
+            "isIdentifier": true
+          },
+          {
+            "order": 1,
+            "propertyId": "p-53",
+            "isIdentifier": false
+          },
+          {
+            "order": 2,
+            "propertyId": "p-54",
+            "isIdentifier": false
+          },
+          {
+            "order": 3,
+            "propertyId": "p-55",
+            "isIdentifier": false
+          }
+        ]
+      }
+    ],
+    "associations": [
+      {
+        "id": "a-1",
+        "name": "commander",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-30",
+            "isIdentifier": false
+          }
+        ],
+        "legs": [
+          {
+            "id": "leg-1",
+            "entityId": "e-4",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          },
+          {
+            "id": "leg-2",
+            "entityId": "e-8",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          }
+        ]
+      },
+      {
+        "id": "a-2",
+        "name": "reserver",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-43",
+            "isIdentifier": false
+          },
+          {
+            "order": 1,
+            "propertyId": "p-44",
+            "isIdentifier": false
+          },
+          {
+            "order": 2,
+            "propertyId": "p-45",
+            "isIdentifier": false
+          }
+        ],
+        "legs": [
+          {
+            "id": "leg-3",
+            "entityId": "e-3",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          },
+          {
+            "id": "leg-4",
+            "entityId": "e-8",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          },
+          {
+            "id": "leg-9",
+            "entityId": "e-2",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          }
+        ]
+      },
+      {
+        "id": "a-3",
+        "name": "demander",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-46",
+            "isIdentifier": false
+          },
+          {
+            "order": 1,
+            "propertyId": "p-47",
+            "isIdentifier": false
+          },
+          {
+            "order": 2,
+            "propertyId": "p-48",
+            "isIdentifier": false
+          },
+          {
+            "order": 3,
+            "propertyId": "p-49",
+            "isIdentifier": false
+          }
+        ],
+        "legs": [
+          {
+            "id": "leg-7",
+            "entityId": "e-2",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          },
+          {
+            "id": "leg-8",
+            "entityId": "e-3",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          }
+        ]
+      },
+      {
+        "id": "a-4",
+        "name": "affecter",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-50",
+            "isIdentifier": false
+          },
+          {
+            "order": 1,
+            "propertyId": "p-51",
+            "isIdentifier": false
+          }
+        ],
+        "legs": [
+          {
+            "id": "leg-5",
+            "entityId": "e-3",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          },
+          {
+            "id": "leg-6",
+            "entityId": "e-6",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          },
+          {
+            "id": "leg-10",
+            "entityId": "e-7",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "layout": {
+    "e-1": {
+      "x": 128,
+      "y": 338
+    },
+    "e-2": {
+      "x": 150,
+      "y": 541
+    },
+    "e-3": {
+      "x": 661,
+      "y": 913
+    },
+    "e-4": {
+      "x": 890,
+      "y": 111
+    },
+    "e-5": {
+      "x": 232,
+      "y": 123
+    },
+    "a-1": {
+      "x": 616,
+      "y": 375
+    },
+    "e-6": {
+      "x": 912,
+      "y": 381
+    },
+    "e-7": {
+      "x": 1015,
+      "y": 915
+    },
+    "a-2": {
+      "x": 600,
+      "y": 729
+    },
+    "a-3": {
+      "x": 243,
+      "y": 866
+    },
+    "a-4": {
+      "x": 948,
+      "y": 753
+    },
+    "e-8": {
+      "x": 576,
+      "y": 510
+    }
+  },
+  "mpd": {
+    "dialect": "mysql",
+    "overrides": {}
+  }
+}

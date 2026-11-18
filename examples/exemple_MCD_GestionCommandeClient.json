@@ -1,0 +1,656 @@
+{
+  "format": "meriz-mcd",
+  "version": 2,
+  "name": "exemple_MCD_GestionCommandeClient",
+  "mcd": {
+    "properties": [
+      {
+        "id": "p-1",
+        "name": "num",
+        "type": "entier"
+      },
+      {
+        "id": "p-2",
+        "name": "nom",
+        "type": "texte",
+        "size": 150
+      },
+      {
+        "id": "p-3",
+        "name": "adresse",
+        "type": "texte",
+        "size": 250
+      },
+      {
+        "id": "p-4",
+        "name": "tel",
+        "type": "entier",
+        "size": 10
+      },
+      {
+        "id": "p-5",
+        "name": "sexe",
+        "type": "texte"
+      },
+      {
+        "id": "p-6",
+        "name": "num",
+        "type": "entier"
+      },
+      {
+        "id": "p-7",
+        "name": "dateComm",
+        "type": "date"
+      },
+      {
+        "id": "p-8",
+        "name": "dateLiv",
+        "type": "date"
+      },
+      {
+        "id": "p-9",
+        "name": "num",
+        "type": "entier"
+      },
+      {
+        "id": "p-10",
+        "name": "Qte",
+        "type": "decimal",
+        "size": 150
+      },
+      {
+        "id": "p-11",
+        "name": "sigle",
+        "type": "texte",
+        "size": 25
+      },
+      {
+        "id": "p-12",
+        "name": "nom",
+        "type": "texte",
+        "size": 150
+      },
+      {
+        "id": "p-13",
+        "name": "adresse",
+        "type": "texte",
+        "size": 250
+      },
+      {
+        "id": "p-14",
+        "name": "tel",
+        "type": "entier",
+        "size": 10
+      },
+      {
+        "id": "p-15",
+        "name": "code",
+        "type": "texte",
+        "size": 25
+      },
+      {
+        "id": "p-16",
+        "name": "Libelle",
+        "type": "texte",
+        "size": 150
+      },
+      {
+        "id": "p-17",
+        "name": "PU",
+        "type": "decimal",
+        "size": 12
+      },
+      {
+        "id": "p-18",
+        "name": "type",
+        "type": "texte",
+        "size": 25
+      },
+      {
+        "id": "p-19",
+        "name": "fonction",
+        "type": "texte",
+        "size": 75
+      },
+      {
+        "id": "p-20",
+        "name": "fabricant",
+        "type": "texte",
+        "size": 75
+      },
+      {
+        "id": "p-21",
+        "name": "categorie",
+        "type": "texte",
+        "size": 75
+      },
+      {
+        "id": "p-22",
+        "name": "conditionnement",
+        "type": "texte",
+        "size": 75
+      },
+      {
+        "id": "p-23",
+        "name": "code",
+        "type": "texte",
+        "size": 25
+      },
+      {
+        "id": "p-24",
+        "name": "Libelle",
+        "type": "texte",
+        "size": 150
+      },
+      {
+        "id": "p-25",
+        "name": "nature",
+        "type": "texte",
+        "size": 25
+      },
+      {
+        "id": "p-26",
+        "name": "compatibilite",
+        "type": "booleen"
+      },
+      {
+        "id": "p-27",
+        "name": "qte_dispo",
+        "type": "decimal",
+        "size": 12
+      },
+      {
+        "id": "p-28",
+        "name": "qte_reservée",
+        "type": "decimal",
+        "size": 12
+      }
+    ],
+    "entities": [
+      {
+        "id": "e-1",
+        "name": "Client",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-1",
+            "isIdentifier": true
+          },
+          {
+            "order": 1,
+            "propertyId": "p-2",
+            "isIdentifier": false
+          },
+          {
+            "order": 2,
+            "propertyId": "p-3",
+            "isIdentifier": false
+          },
+          {
+            "order": 3,
+            "propertyId": "p-4",
+            "isIdentifier": false
+          },
+          {
+            "order": 4,
+            "propertyId": "p-5",
+            "isIdentifier": false
+          }
+        ]
+      },
+      {
+        "id": "e-2",
+        "name": "Commande",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-6",
+            "isIdentifier": false
+          },
+          {
+            "order": 1,
+            "propertyId": "p-7",
+            "isIdentifier": false
+          },
+          {
+            "order": 2,
+            "propertyId": "p-8",
+            "isIdentifier": false
+          }
+        ]
+      },
+      {
+        "id": "e-3",
+        "name": "Ligne_Commande",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-9",
+            "isIdentifier": false
+          },
+          {
+            "order": 1,
+            "propertyId": "p-10",
+            "isIdentifier": false
+          }
+        ]
+      },
+      {
+        "id": "e-4",
+        "name": "Depot",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-11",
+            "isIdentifier": false
+          },
+          {
+            "order": 1,
+            "propertyId": "p-12",
+            "isIdentifier": false
+          },
+          {
+            "order": 2,
+            "propertyId": "p-13",
+            "isIdentifier": false
+          },
+          {
+            "order": 3,
+            "propertyId": "p-14",
+            "isIdentifier": false
+          }
+        ]
+      },
+      {
+        "id": "e-5",
+        "name": "Article",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-15",
+            "isIdentifier": false
+          },
+          {
+            "order": 1,
+            "propertyId": "p-16",
+            "isIdentifier": false
+          },
+          {
+            "order": 2,
+            "propertyId": "p-17",
+            "isIdentifier": false
+          },
+          {
+            "order": 3,
+            "propertyId": "p-18",
+            "isIdentifier": false
+          }
+        ]
+      },
+      {
+        "id": "e-6",
+        "name": "Piece_detatchee",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-19",
+            "isIdentifier": false
+          },
+          {
+            "order": 1,
+            "propertyId": "p-20",
+            "isIdentifier": false
+          }
+        ]
+      },
+      {
+        "id": "e-7",
+        "name": "Consommable",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-21",
+            "isIdentifier": false
+          },
+          {
+            "order": 1,
+            "propertyId": "p-22",
+            "isIdentifier": false
+          }
+        ]
+      },
+      {
+        "id": "e-8",
+        "name": "Materiel",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-23",
+            "isIdentifier": false
+          },
+          {
+            "order": 1,
+            "propertyId": "p-24",
+            "isIdentifier": false
+          },
+          {
+            "order": 2,
+            "propertyId": "p-25",
+            "isIdentifier": false
+          }
+        ]
+      }
+    ],
+    "associations": [
+      {
+        "id": "a-1",
+        "name": "Passer par",
+        "attributes": [],
+        "legs": [
+          {
+            "id": "leg-3",
+            "entityId": "e-2",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          },
+          {
+            "id": "leg-4",
+            "entityId": "e-1",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          }
+        ]
+      },
+      {
+        "id": "a-2",
+        "name": "Facturé à autre",
+        "attributes": [],
+        "legs": [
+          {
+            "id": "leg-1",
+            "entityId": "e-1",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          },
+          {
+            "id": "leg-2",
+            "entityId": "e-2",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          }
+        ]
+      },
+      {
+        "id": "a-3",
+        "name": "Composee de",
+        "attributes": [],
+        "legs": [
+          {
+            "id": "leg-5",
+            "entityId": "e-2",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          },
+          {
+            "id": "leg-6",
+            "entityId": "e-3",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          }
+        ]
+      },
+      {
+        "id": "a-4",
+        "name": "Auprès de",
+        "attributes": [],
+        "legs": [
+          {
+            "id": "leg-7",
+            "entityId": "e-4",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          },
+          {
+            "id": "leg-8",
+            "entityId": "e-2",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          }
+        ]
+      },
+      {
+        "id": "a-5",
+        "name": "Concerne",
+        "attributes": [],
+        "legs": [
+          {
+            "id": "leg-9",
+            "entityId": "e-3",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          },
+          {
+            "id": "leg-10",
+            "entityId": "e-5",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          }
+        ]
+      },
+      {
+        "id": "a-6",
+        "name": "Montable_sur",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-26",
+            "isIdentifier": false
+          }
+        ],
+        "legs": [
+          {
+            "id": "leg-11",
+            "entityId": "e-8",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          },
+          {
+            "id": "leg-12",
+            "entityId": "e-6",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          }
+        ]
+      },
+      {
+        "id": "a-7",
+        "name": "Stocké dans",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-27",
+            "isIdentifier": false
+          }
+        ],
+        "legs": [
+          {
+            "id": "leg-13",
+            "entityId": "e-4",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          },
+          {
+            "id": "leg-14",
+            "entityId": "e-5",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          }
+        ]
+      },
+      {
+        "id": "a-8",
+        "name": "reservation",
+        "attributes": [
+          {
+            "order": 0,
+            "propertyId": "p-28",
+            "isIdentifier": false
+          }
+        ],
+        "legs": [
+          {
+            "id": "leg-15",
+            "entityId": "e-1",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          },
+          {
+            "id": "leg-16",
+            "entityId": "e-4",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          },
+          {
+            "id": "leg-17",
+            "entityId": "e-5",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            }
+          }
+        ]
+      },
+      {
+        "id": "a-9",
+        "name": "Remplacable_par",
+        "attributes": [],
+        "legs": [
+          {
+            "id": "leg-18",
+            "entityId": "e-5",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            },
+            "role": "original"
+          },
+          {
+            "id": "leg-19",
+            "entityId": "e-5",
+            "cardinality": {
+              "min": 1,
+              "max": "n"
+            },
+            "role": "remplaçant"
+          }
+        ]
+      }
+    ]
+  },
+  "layout": {
+    "e-1": {
+      "x": 111,
+      "y": 4
+    },
+    "e-2": {
+      "x": 128,
+      "y": 336
+    },
+    "e-3": {
+      "x": 388,
+      "y": 546
+    },
+    "e-4": {
+      "x": 675,
+      "y": 178
+    },
+    "e-5": {
+      "x": 999,
+      "y": 381
+    },
+    "e-6": {
+      "x": 854,
+      "y": 618
+    },
+    "e-7": {
+      "x": 1100,
+      "y": 615
+    },
+    "e-8": {
+      "x": 612,
+      "y": 467
+    },
+    "a-1": {
+      "x": 15,
+      "y": 243
+    },
+    "a-2": {
+      "x": 297,
+      "y": 243
+    },
+    "a-3": {
+      "x": 146,
+      "y": 488
+    },
+    "a-4": {
+      "x": 417,
+      "y": 362
+    },
+    "a-5": {
+      "x": 416,
+      "y": 417
+    },
+    "a-6": {
+      "x": 596,
+      "y": 638
+    },
+    "a-7": {
+      "x": 657,
+      "y": 344
+    },
+    "a-8": {
+      "x": 964,
+      "y": 71
+    },
+    "a-9": {
+      "x": 1242,
+      "y": 414
+    }
+  },
+  "mpd": {
+    "dialect": "mysql",
+    "overrides": {}
+  }
+}
