@@ -1,5 +1,0 @@
-# Le site est ouvert : moteurs de recherche comme assistants.
-User-agent: *
-Allow: /
-
-Sitemap: https://meriz.fr/sitemap.xml

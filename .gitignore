@@ -7,11 +7,20 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
+node_modules/
+
+# Build artifacts & packages
 dist
 dist-ssr
+release/
 release
-*.local
+*.exe
+
+# Dossier IA (contexte et audit local)
+ia/
+ia
 
 # Editor directories and files
 .vscode/*
@@ -27,9 +36,6 @@ release
 # Réglages Claude Code locaux (permissions propres à la machine)
 .claude/settings.json
 .claude/settings.local.json
-
-# Build Rust de Tauri
-src-tauri/target
 
 # Variables locales
 .env

@@ -14,7 +14,7 @@ function createWindow() {
       contextIsolation: true,
       sandbox: true,
     },
-    icon: path.join(__dirname, '../src-tauri/icons/icon.png'),
+    icon: path.join(__dirname, '../design/logo/png/meriz-icon-512.png'),
   })
 
   // Chargement du bundle de production Vite

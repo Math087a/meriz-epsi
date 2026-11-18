@@ -11,8 +11,6 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "test": "vitest run",
-    "tauri": "tauri",
-    "test:release": "node --test scripts/release-version.checks.mjs",
     "electron:dev": "electron .",
     "electron:dist": "electron-builder --win portable"
   },
@@ -41,7 +39,7 @@
           ]
         }
       ],
-      "icon": "src-tauri/icons/icon.png"
+      "icon": "design/logo/png/meriz-icon-512.png"
     },
     "nsis": {
       "oneClick": false,
@@ -49,8 +47,8 @@
       "createDesktopShortcut": "always",
       "createStartMenuShortcut": true,
       "shortcutName": "Meriz EPSI Edition",
-      "installerIcon": "src-tauri/icons/icon.ico",
-      "uninstallerIcon": "src-tauri/icons/icon.ico",
+      "installerIcon": "design/logo/web/favicon.ico",
+      "uninstallerIcon": "design/logo/web/favicon.ico",
       "uninstallDisplayName": "Meriz EPSI Edition"
     }
   },
@@ -70,7 +68,6 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.2",
-    "@tauri-apps/cli": "^2.11.4",
     "@types/node": "^24.13.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",

@@ -1,117 +1,101 @@
 # Meriz - EPSI Edition
 
-Meriz EPSI Edition est un environnement professionnel de modélisation de bases de donnees selon la méthode Merise, conçu pour l'apprentissage, l'enseignement et la conception de systèmes d'information aux niveaux B1, B2 et B3 à l'EPSI.
+Environnement moderne de modélisation Merise (MCD, MLD, MPD, SQL Server T-SQL) conçu pour les étudiants et intervenants de l'EPSI (B1, B2, B3).
 
-Ce projet constitue une évolution avancée de l'application open-source Merise Meriz, intégrant le support complet des spécificités académiques et industrielles : rétro-ingénierie des projets JMerise, dialecte Microsoft SQL Server (T-SQL), héritage et spécialisation formelle, post-its interactifs avec rendu MLD dynamique, et packaging autonome sous Windows.
-
----
-
-## Fonctionnalités Clés & Extensions EPSI
-
-### 1. Importateur & Rétro-ingénierie JMerise (.mcd)
-- **Compatibilité native** : Ouverture et conversion directe des fichiers binaires `.mcd` issus de JMerise sans nécessiter l'exécution de Java ou d'outils tiers.
-- **Décodeur de flux Java Serialization** : Analyse bas niveau du protocole `0xACED 0x0005`, extraction des classes `IhmEntite2`, `IhmRelation2`, `IhmLien2`, des propriétés, des types de données, des cardinalités et des coordonnées graphiques.
-- **Remplacement instantané** : Migration transparente des anciens TP Merise (ex. buveur, cinéma, gestion commerciale) vers l'environnement moderne Meriz.
-
-### 2. Moteur Microsoft SQL Server (T-SQL) & Types Étendus
-- **Support T-SQL complet** : Génération de scripts DDL adaptés à SQL Server (crochets d'échappement `[colonne]`, auto-incrémentation `IDENTITY(1,1)`, contraintes nommées).
-- **Catalogue de types enrichi** : Ajout de `MONEY`, `SMALLMONEY`, `FLOAT`, `DOUBLE`, `REAL`, `CHAR`, `SMALLINT`, `TINYINT`, `BIT`, `DATETIME2`, `DATETIMEOFFSET`, `UNIQUEIDENTIFIER`.
-- **Dialectes multiples** : Bascule fluide et instantanée entre MySQL, PostgreSQL et SQL Server, avec vérification des types physiques et rétro-compatibilité Eloquent / Doctrine.
-
-### 3. Héritage & Spécialisation Merise
-- **Représentation formelle** : Intégration du triangle de spécialisation Merise orienté vers l'entité mère (sur-type) et relié aux entités filles (sous-types).
-- **Contraintes de modélisation** : Sélection rapide de la contrainte associée :
-  - **Aucune** : Héritage libre sans contrainte.
-  - **X (Disjonction / Exclusion)** : Un sous-type au maximum.
-  - **T (Totalité)** : Au moins un sous-type obligatoire.
-  - **XT (Partition)** : Exactement un sous-type (disjonction et totalité).
-- **Règles de passage MLD automatiques** : Propagation automatique de la clé primaire de l'entité mère vers les tables des entités filles, avec intégrité référentielle (FK pointant vers la PK mère).
-
-### 4. Post-it Interactif sur Canevas (Double Mode)
-- **Composant déplaçable** : Ajout libre de cartes mémo repositionnables directement sur le canevas de modélisation.
-- **Mode Note Libre** : Prise de notes, consignes d'exercices, hypothèses de gestion ou règles métier.
-- **Mode MLD Dynamique** : Calcul et affichage en temps réel de la notation relationnelle textuelle standard (ex. `Client (numeroClient, nom, #id_ville)`) directement sur le schéma, synchronisée à la moindre modification du MCD.
-
-### 5. Associations Réflexives & Ternaires
-- **Rôles distincts** : Prise en charge des associations réflexives avec nommage explicite des pattes (ex. tuteur / tutoré, supérieur / subordonné).
-- **Génération relationnelle propre** : Préfixage automatique des clés étrangères composées pour éviter les collisions de colonnes.
+Meriz EPSI Edition remplace avantageusement les outils historiques tels que JMerise ou AnalyseSI par une expérience fluide, réactive et conforme aux exigences pédagogiques et professionnelles actuelles.
 
 ---
 
-## Architecture Technique
+## Téléchargement rapide (Windows 64 bits)
 
-- **Interface utilisateur** : React 19, TypeScript 5.8+, Tailwind CSS v4.
-- **Moteur de graphe** : React Flow (@xyflow/react 12).
-- **Collaboration & Persistance** : CRDT Yjs avec détection de conflits et synchronisation temps réel.
-- **Exécution Desktop** : Electron encapsulant l'application compilée avec isolation de contexte et sandbox de sécurité.
-- **Qualité logicielle** : Suite de 82 fichiers de tests et 1040 tests unitaires automatisés sous Vitest.
+La version desktop autonome pour Windows est disponible directement sans installation complexe ni dépendance externe.
+
+[Télécharger Meriz EPSI Edition v1.7.3 (Archive ZIP - 120 Mo)](https://github.com/Math087a/meriz-epsi/releases/download/v1.7.3/Meriz-EPSI-Edition-Windows-x64.zip)
+
+### Guide de lancement en 3 etapes
+
+1. **Telecharger l'archive** : clique sur le lien ci-dessus pour recuperer `Meriz-EPSI-Edition-Windows-x64.zip`.
+2. **Extraire les fichiers** : fais un clic droit sur le fichier zip telecharge puis choisis « Extraire tout » vers l'emplacement de ton choix (par exemple dans `Documents` ou `Applications`).
+3. **Lancer l'application** :
+   - Ouvre le dossier extrait et double-clique directement sur `Meriz EPSI Edition.exe`.
+   - *Optionnel* : double-clique sur `Installer-Meriz.cmd` pour creer automatiquement un raccourci dans ton menu Demarrer Windows.
+
+> **Aucun environnement Java (JRE/JDK) n'est requis.** L'application s'execute nativement sous Windows via un runtime optimise.
 
 ---
 
-## Installation & Démarrage
+## Pourquoi Meriz EPSI Edition ?
 
-### Prérequis
-- Node.js (version 20 ou supérieure recommandée)
-- npm (version 10 ou supérieure)
+Concu specifiquement pour les travaux pratiques et projets de bases de donnees a l'EPSI, Meriz integre des fonctionnalites avancees qui repondent aux limites des outils traditionnels :
 
-### Installation des dépendances
+- **Import direct et retro-ingenierie JMerise (.mcd)** : ouvre et convertit instantanement les fichiers de TP au format binaire JMerise sans lancer Java.
+- **Support natif Microsoft SQL Server (T-SQL)** : generation de scripts DDL conformes avec syntaxe a crochets `[nom]`, `IDENTITY(1,1)`, contraintes d'integrite nommees et catalogue complet de types (`MONEY`, `TINYINT`, `BIT`, `DATETIME2`, `UNIQUEIDENTIFIER`). Egalement compatible MySQL et PostgreSQL.
+- **Heritage et specialisation formelle** : support complet des contraintes Merise d'heritage (Aucune, Disjonction `X`, Totalite `T`, Partition `XT`) et regles de passage automatique en tables relationnelles MLD.
+- **Canevas interactif haute performance** : deplacement fluide des entites et associations, calcul automatique des pattes et ancrages, detection visuelle des incoherences.
+- **Post-its interactifs a double mode** : insertion de mémos sur le canevas avec un mode texte libre ou un mode de calcul dynamique du MLD textuel synchronise en temps reel.
+- **Export d'images vectorielles et PNG nettes** : rendu fidele incluant les cardinalites, les liaisons d'associations et les contraintes.
+- **Modeles et exemples inclus** : bibliotheque d'exemples EPSI directement chargeables depuis le dossier `examples/`.
+
+---
+
+## Arborescence du projet
+
+```text
+meriz-epsi/
+|-- electron/              # Point d'entree et configuration du runtime desktop Electron
+|-- examples/              # Exemples et modeles de TP Merise au format JSON
+|-- public/                # Assets statiques et manifeste PWA
+|-- src/
+|   |-- canvas/            # Moteur de graphe React Flow (entites, associations, pattes, heritage)
+|   |-- components/        # Composants de l'interface (barre d'outils, inspecteurs, formulaires)
+|   |-- i18n/              # Gestion du bilinguisme (francais / anglais)
+|   |-- lib/               # Parseur binaire JMerise, convertisseurs, gestion des exports
+|   `-- model/             # Coeur metier Merise (MCD, passage MLD, MPD, generation SQL/T-SQL)
+|-- tests/                 # 82 suites de tests unitaires et d'integration (1071 tests Vitest)
+|-- package.json           # Dependances et scripts de developpement
+`-- README.md              # Documentation du projet
+```
+
+---
+
+## Guide pour les contributeurs
+
+Pour executer, modifier et tester l'application localement sur ton poste de developpement :
+
+### 1. Prerequis
+- Node.js (version 20 ou superieure)
+- npm (version 10 ou superieure)
+
+### 2. Installation des dependances
 ```bash
 npm install
 ```
 
-### Lancement en mode développement web
+### 3. Lancer en mode developpement web (Vite)
 ```bash
 npm run dev
 ```
-L'application est accessible localement à l'adresse indiquée (par défaut `http://localhost:5173/`).
+L'application est accessible dans ton navigateur sur `http://localhost:5173/`.
 
-### Exécution des tests automatisés
-```bash
-npm test
-```
-Lance la suite complète des 1040 tests unitaires (couverture I18n, validation MCD, passage MLD, génération SQL/T-SQL, importateur JMerise).
-
-### Compilation de production web
-```bash
-npm run build
-```
-Compile les sources TypeScript et génère les assets optimisés dans le dossier `dist/`.
-
-### Lancement en application de bureau (Electron)
+### 4. Lancer en mode developpement bureau (Electron)
 ```bash
 npm run electron:dev
 ```
 
-### Génération de l'exécutable Windows (.exe)
+### 5. Executer la suite de tests automatises
 ```bash
-npm run electron:dist
+npm test
 ```
-L'exécutable autonome est produit dans le répertoire `release/` ou `dist-electron/`.
+Execute l'ensemble des 1071 tests unitaires sous Vitest.
 
----
-
-## Structure du Projet
-
-```text
-meriz-epsi/
-├── electron/
-│   └── main.cjs                # Point d'entrée de l'application desktop Electron
-├── src/
-│   ├── canvas/                 # Composants React Flow (Entités, Associations, Héritage, Post-it, Pattes)
-│   ├── components/             # Interface utilisateur, barre d'outils, inspecteurs, sélecteurs
-│   ├── i18n/                   # Moteur d'internationalisation bilingue (fr / en)
-│   ├── lib/
-│   │   ├── jmeriseParser.ts    # Décodeur binaire des fichiers JMerise (.mcd)
-│   │   └── importFile.ts       # Gestionnaire universel d'importation de documents
-│   └── model/                  # Cœur métier Merise (MCD, MLD, MPD, SQL, T-SQL, Yjs, Réducteurs)
-├── tests/                      # Suites de tests de conformité, d'importation et de non-régression
-├── package.json
-└── README.md
+### 6. Compiler l'application pour la production web
+```bash
+npm run build
 ```
+Genere les fichiers optimises dans le dossier `dist/`.
 
 ---
 
 ## Licence
 
-Ce projet est distribué sous licence GNU Affero General Public License v3 (AGPL-3.0-only).
-Consultez le fichier `LICENSE` pour plus de détails.
+Projet distribue sous licence GNU Affero General Public License v3 (AGPL-3.0-only). Voir le fichier `LICENSE` pour plus de details.
