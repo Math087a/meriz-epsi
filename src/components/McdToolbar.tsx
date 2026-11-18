@@ -3,7 +3,7 @@ import { counted } from "../lib/plural"
 import { t } from "../i18n/runtime"
 import { useLanguage } from "../lib/useLanguage"
 import { Icon } from './ui/Icon'
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import type { Dispatch } from 'react'
 import { useReactFlow } from '@xyflow/react'
 import type { McdAction, McdEditorState } from '../model/mcdReducer'
@@ -11,7 +11,7 @@ import type { ValidationProblem } from '../model/validate'
 import { validationErrors, validationWarnings } from '../model/validate'
 import type { Position } from '../model/layout'
 import { Button } from './ui/Button'
-import { InheritanceDialog } from './InheritanceDialog'
+import { newId } from '../lib/id'
 
 interface McdToolbarProps {
   state?: McdEditorState
@@ -22,6 +22,7 @@ interface McdToolbarProps {
   onGenerate: () => void
   /** Consultation seule : plus d'ajout, mais vérifier et générer restent. */
   readOnly?: boolean
+  onSelectElement?: (elementId: string) => void
   /**
    * Crayon rouge du prof, en correction à deux. Absent : aucun bouton.
    * Le trait ne s'enregistre jamais, il n'explique que sur le moment.
@@ -43,11 +44,10 @@ const iconProps = {
 } as const
 
 /** Sous-barre de la vue MCD : ajout d'éléments, vérification, génération. */
-export function McdToolbar({ state, dispatch, problems, onGenerate, canGenerate = true, readOnly = false, pencil, panel }: McdToolbarProps) {
+export function McdToolbar({ state, dispatch, problems, onGenerate, canGenerate = true, readOnly = false, onSelectElement, pencil, panel }: McdToolbarProps) {
   useLanguage()
   const { screenToFlowPosition, fitView } = useReactFlow()
   const setStatus = useToast()
-  const [inheritanceDialogOpen, setInheritanceDialogOpen] = useState(false)
   // Décalage en cascade pour que des ajouts répétés ne s'empilent pas.
   const addCountRef = useRef(0)
 
@@ -99,14 +99,25 @@ export function McdToolbar({ state, dispatch, problems, onGenerate, canGenerate 
   }
 
   const handleHeritageClick = () => {
-    if (!state || state.mcd.entities.length < 2) {
-      setStatus({
-        kind: 'info',
-        text: t("Il faut au moins deux entités sur le schéma pour définir un héritage (une entité mère et au moins une entité fille)."),
-      })
-      return
-    }
-    setInheritanceDialogOpen(true)
+    const id = newId()
+    const pos = nextPosition()
+    const defaultParent = state?.mcd.entities[0]?.id ?? ''
+    const defaultChild = state?.mcd.entities[1]?.id
+    const defaultChildren = defaultChild ? [defaultChild] : []
+
+    dispatch({
+      type: 'ADD_INHERITANCE',
+      id,
+      position: pos,
+      parentId: defaultParent,
+      childIds: defaultChildren,
+      constraint: 'none',
+    })
+    onSelectElement?.(id)
+    setStatus({
+      kind: 'info',
+      text: t("Héritage ajouté au schéma. Vous pouvez le configurer dans le panneau à droite."),
+    })
   }
 
   return (
@@ -181,30 +192,6 @@ export function McdToolbar({ state, dispatch, problems, onGenerate, canGenerate 
         <Button size="sm" variant="ghost" aria-label={t("Ajuster à la fenêtre")} title={t("Ajuster à la fenêtre")} onClick={() => void fitView({ padding: .2, duration: 0 })}><Icon name="fit" /></Button>
         {panel && <Button id={panel.buttonId} size="sm" variant="ghost" className="md:hidden" aria-label={t("Inspecteur")} title={t("Inspecteur")} aria-expanded={panel.open} aria-controls={panel.controls} onClick={panel.onToggle}><Icon name="panel" /></Button>}
       </div>
-
-      {state && (
-        <InheritanceDialog
-          open={inheritanceDialogOpen}
-          mcd={state.mcd}
-          layout={state.layout}
-          onCancel={() => setInheritanceDialogOpen(false)}
-          onConfirm={(data) => {
-            dispatch({
-              type: 'ADD_INHERITANCE',
-              position: data.position,
-              parentId: data.parentId,
-              childIds: data.childIds,
-              constraint: data.constraint,
-            })
-            setInheritanceDialogOpen(false)
-            const parentName = state.mcd.entities.find((e) => e.id === data.parentId)?.name ?? ''
-            setStatus({
-              kind: 'info',
-              text: t("Héritage créé : clé primaire de {0} propagée aux sous-types.", [parentName]),
-            })
-          }}
-        />
-      )}
     </div>
   )
 }

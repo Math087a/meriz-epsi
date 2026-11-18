@@ -109,7 +109,7 @@ export function mcdToFlow(
     ),
     ...(mcd.inheritances ?? []).flatMap((inheritance) => {
       const inhEdges: LegFlowEdge[] = []
-      if (inheritance.parentId) {
+      if (inheritance.parentId && mcd.entities.some((e) => e.id === inheritance.parentId)) {
         inhEdges.push({
           id: `inh-p-${inheritance.id}-${inheritance.parentId}`,
           type: 'leg',
@@ -120,14 +120,16 @@ export function mcdToFlow(
         })
       }
       for (const childId of inheritance.childIds) {
-        inhEdges.push({
-          id: `inh-c-${inheritance.id}-${childId}`,
-          type: 'leg',
-          source: inheritance.id,
-          target: childId,
-          data: {},
-          ariaLabel: t("Lien héritage vers enfant"),
-        })
+        if (mcd.entities.some((e) => e.id === childId)) {
+          inhEdges.push({
+            id: `inh-c-${inheritance.id}-${childId}`,
+            type: 'leg',
+            source: inheritance.id,
+            target: childId,
+            data: {},
+            ariaLabel: t("Lien héritage vers enfant"),
+          })
+        }
       }
       return inhEdges
     }),

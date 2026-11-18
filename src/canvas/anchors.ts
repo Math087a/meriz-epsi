@@ -34,6 +34,7 @@ export interface MeasurableNode {
  */
 const ENTITY_FALLBACK = { width: 176, height: 88 }
 const ASSOCIATION_FALLBACK = { width: 152, height: 48 }
+const INHERITANCE_FALLBACK = { width: 68, height: 60 }
 
 /** Une mesure absente ou nulle est un bloc pas encore posé, pas un bloc plat. */
 function size(value: number | undefined, fallback: number): number {
@@ -41,7 +42,12 @@ function size(value: number | undefined, fallback: number): number {
 }
 
 export function anchorBox(node: MeasurableNode): AnchorBox {
-  const fallback = node.type === t("association") ? ASSOCIATION_FALLBACK : ENTITY_FALLBACK
+  const fallback =
+    node.type === 'inheritance'
+      ? INHERITANCE_FALLBACK
+      : node.type === t("association") || node.type === 'association'
+        ? ASSOCIATION_FALLBACK
+        : ENTITY_FALLBACK
   return {
     x: node.position.x,
     y: node.position.y,

@@ -1,10 +1,11 @@
-import { useId } from 'react'
+import { Select } from './ui/Select'
+import { t } from '../i18n/runtime'
+import { useLanguage } from '../lib/useLanguage'
+import { useId, useState } from 'react'
 import type { Dispatch } from 'react'
 import type { Inheritance, InheritanceConstraint, Mcd } from '../model/mcd'
 import type { McdAction } from '../model/mcdReducer'
 import { Button } from './ui/Button'
-import { t } from '../i18n/runtime'
-import { useLanguage } from '../lib/useLanguage'
 
 interface InheritanceFormProps {
   mcd: Mcd
@@ -21,14 +22,19 @@ const CONSTRAINTS: { value: InheritanceConstraint; label: string; desc: string }
 
 export function InheritanceForm({ mcd, inheritance, dispatch }: InheritanceFormProps) {
   useLanguage()
+  const nameId = useId()
   const parentSelectId = useId()
+  const childSelectId = useId()
   const constraintSelectId = useId()
+  const [selectedChildToAdd, setSelectedChildToAdd] = useState('')
 
   const parentEntity = mcd.entities.find((e) => e.id === inheritance.parentId)
-  const candidateChildren = mcd.entities.filter((e) => e.id !== inheritance.parentId)
+  // Entités candidates à relier comme sous-types (pas la mère, et pas déjà reliées)
+  const candidateChildren = mcd.entities.filter(
+    (e) => e.id !== inheritance.parentId && !inheritance.childIds.includes(e.id),
+  )
 
   const handleParentChange = (newParentId: string) => {
-    // Si la nouvelle mère était parmi les filles, on la retire des filles
     const updatedChildren = inheritance.childIds.filter((id) => id !== newParentId)
     dispatch({
       type: 'UPDATE_INHERITANCE',
@@ -37,12 +43,19 @@ export function InheritanceForm({ mcd, inheritance, dispatch }: InheritanceFormP
     })
   }
 
-  const handleToggleChild = (childId: string) => {
-    const isSelected = inheritance.childIds.includes(childId)
-    const nextChildren = isSelected
-      ? inheritance.childIds.filter((id) => id !== childId)
-      : [...inheritance.childIds, childId]
+  const handleAddChild = () => {
+    if (!selectedChildToAdd) return
+    const nextChildren = [...inheritance.childIds, selectedChildToAdd]
+    dispatch({
+      type: 'UPDATE_INHERITANCE',
+      id: inheritance.id,
+      patch: { childIds: nextChildren },
+    })
+    setSelectedChildToAdd('')
+  }
 
+  const handleRemoveChild = (childId: string) => {
+    const nextChildren = inheritance.childIds.filter((id) => id !== childId)
     dispatch({
       type: 'UPDATE_INHERITANCE',
       id: inheritance.id,
@@ -58,107 +71,160 @@ export function InheritanceForm({ mcd, inheritance, dispatch }: InheritanceFormP
     })
   }
 
+  const handleDelete = () => {
+    dispatch({ type: 'DELETE_INHERITANCE', id: inheritance.id })
+  }
+
   return (
-    <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-4 text-xs">
-      <div>
-        <h2 className="text-sm font-semibold text-ink">{t("Héritage & Spécialisation")}</h2>
-        <p className="mt-0.5 text-micro text-ink-soft">
-          Configurez l'entité mère et les sous-types reliés au triangle Merise.
-        </p>
+    <form onSubmit={(event) => event.preventDefault()} className="flex flex-col gap-3">
+      <div className="flex items-center justify-between">
+        <h2 className="text-sm font-semibold">{t("Héritage")}</h2>
       </div>
 
-      {/* Choix de l'entité mère (Sur-type) */}
+      {/* Nom / Libellé de l'héritage */}
       <div>
-        <label htmlFor={parentSelectId} className="block font-medium text-ink-soft">
-          Entité Mère (Sur-type)
+        <label htmlFor={nameId} className="block text-xs font-medium text-ink-soft">
+          {t("Nom")}
         </label>
-        <select
+        <input
+          id={nameId}
+          type="text"
+          value={inheritance.name ?? ''}
+          placeholder={parentEntity ? t("Héritage {0}", [parentEntity.name]) : t("Héritage")}
+          onChange={(event) =>
+            dispatch({
+              type: 'UPDATE_INHERITANCE',
+              id: inheritance.id,
+              patch: { name: event.target.value },
+            })
+          }
+          className="mt-0.5 w-full rounded-lg border border-line-strong px-2 py-1 text-sm bg-surface text-ink"
+        />
+      </div>
+
+      {/* Entité Mère (Sur-type) */}
+      <fieldset className="flex min-w-0 flex-col gap-1.5">
+        <legend className="text-xs font-medium text-ink-soft">{t("Entité Mère (Sur-type)")}</legend>
+        <Select
           id={parentSelectId}
           value={inheritance.parentId || ''}
-          onChange={(e) => handleParentChange(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-line-strong bg-surface px-2.5 py-1.5 text-xs text-ink"
+          onValueChange={handleParentChange}
+          className="min-w-0 flex-1 rounded-lg border border-line-strong bg-surface px-1.5 py-1 text-xs text-ink"
         >
-          <option value="">-- Sélectionner l'entité mère --</option>
+          <option value="">{t("Choisir l'entité mère")}</option>
           {mcd.entities.map((entity) => (
             <option key={entity.id} value={entity.id}>
               {entity.name}
             </option>
           ))}
-        </select>
+        </Select>
+      </fieldset>
+
+      {/* Relier à une entité fille (Sous-type) - Design identique à LegConnector */}
+      <fieldset className="flex min-w-0 flex-col gap-1.5">
+        <legend className="text-xs font-medium text-ink-soft">{t("Relier à une entité")}</legend>
+        {candidateChildren.length === 0 ? (
+          <p className="text-xs text-ink-soft">
+            {mcd.entities.length <= 1
+              ? t("Ajoutez d'abord d'autres entités sur le schéma.")
+              : t("Toutes les entités disponibles sont déjà reliées.")}
+          </p>
+        ) : (
+          <div className="flex min-w-0 items-center gap-2">
+            <Select
+              id={childSelectId}
+              value={selectedChildToAdd}
+              onValueChange={(value) => setSelectedChildToAdd(value)}
+              className="min-w-0 flex-1 rounded-lg border border-line-strong bg-surface px-1.5 py-1 text-xs text-ink"
+            >
+              <option value="">{t("Choisir une entité")}</option>
+              {candidateChildren.map((entity) => (
+                <option key={entity.id} value={entity.id}>
+                  {entity.name}
+                </option>
+              ))}
+            </Select>
+            <button
+              type="button"
+              onClick={handleAddChild}
+              disabled={selectedChildToAdd === ''}
+              className="shrink-0 rounded-lg border border-line-strong bg-surface px-2 py-1 text-xs hover:bg-shell disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {t("Relier")}
+            </button>
+          </div>
+        )}
+      </fieldset>
+
+      {/* Liste des sous-types reliés */}
+      <div className="flex flex-col gap-1.5">
+        <span className="text-xs font-medium text-ink-soft">
+          {t("Sous-types reliés")} ({inheritance.childIds.length})
+        </span>
+        {inheritance.childIds.length === 0 ? (
+          <p className="text-xs italic text-ink-soft">{t("Aucun sous-type relié.")}</p>
+        ) : (
+          <ul className="flex flex-col gap-1">
+            {inheritance.childIds.map((cid) => {
+              const child = mcd.entities.find((e) => e.id === cid)
+              return (
+                <li
+                  key={cid}
+                  className="flex items-center justify-between rounded-lg border border-line-strong bg-surface px-2.5 py-1.5 text-xs text-ink"
+                >
+                  <span className="font-medium">{child ? child.name : cid}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveChild(cid)}
+                    className="rounded p-1 text-danger hover:bg-danger-soft transition-colors"
+                    title={t("Détacher ce sous-type")}
+                    aria-label={t("Détacher le sous-type {0}", [child?.name ?? cid])}
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M18 6 6 18M6 6l12 12" />
+                    </svg>
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+        )}
       </div>
 
-      {/* Choix de la contrainte Merise */}
-      <div>
-        <label htmlFor={constraintSelectId} className="block font-medium text-ink-soft">
-          Contrainte Merise
-        </label>
-        <select
+      {/* Contrainte Merise */}
+      <fieldset className="flex min-w-0 flex-col gap-1.5">
+        <legend className="text-xs font-medium text-ink-soft">{t("Contrainte Merise")}</legend>
+        <Select
           id={constraintSelectId}
           value={inheritance.constraint}
-          onChange={(e) => handleConstraintChange(e.target.value as InheritanceConstraint)}
-          className="mt-1 w-full rounded-lg border border-line-strong bg-surface px-2.5 py-1.5 text-xs text-ink"
+          onValueChange={(value) => handleConstraintChange(value as InheritanceConstraint)}
+          className="min-w-0 flex-1 rounded-lg border border-line-strong bg-surface px-1.5 py-1 text-xs text-ink"
         >
           {CONSTRAINTS.map((c) => (
             <option key={c.value} value={c.value}>
               {c.label}
             </option>
           ))}
-        </select>
-        <p className="mt-1 text-nano text-ink-soft">
+        </Select>
+        <p className="text-nano text-ink-soft">
           {CONSTRAINTS.find((c) => c.value === inheritance.constraint)?.desc}
         </p>
-      </div>
-
-      {/* Sélection des entités filles (Sous-types) */}
-      <div>
-        <span className="block font-medium text-ink-soft">
-          Entités Filles (Sous-types)
-        </span>
-        {candidateChildren.length === 0 ? (
-          <p className="mt-1 italic text-nano text-ink-soft">
-            Aucune autre entité disponible à lier comme sous-type.
-          </p>
-        ) : (
-          <div className="mt-1.5 max-h-48 space-y-1 overflow-y-auto rounded-lg border border-line p-2">
-            {candidateChildren.map((entity) => {
-              const isChecked = inheritance.childIds.includes(entity.id)
-              return (
-                <label
-                  key={entity.id}
-                  className="flex cursor-pointer items-center gap-2 rounded p-1 hover:bg-accent-soft/40"
-                >
-                  <input
-                    type="checkbox"
-                    checked={isChecked}
-                    onChange={() => handleToggleChild(entity.id)}
-                    className="rounded border-line-strong text-accent-ink"
-                  />
-                  <span className={`text-xs ${isChecked ? 'font-semibold text-accent-ink' : 'text-ink'}`}>
-                    {entity.name}
-                  </span>
-                </label>
-              )
-            })}
-          </div>
-        )}
-      </div>
+      </fieldset>
 
       {/* Règle de passage MLD automatique */}
-      <div className="rounded-lg bg-accent-soft/30 p-2.5 text-nano text-ink-soft leading-relaxed border border-accent-soft">
-        <strong>Règle de passage MLD :</strong> La clé primaire de{' '}
-        {parentEntity ? <strong>{parentEntity.name}</strong> : 'la mère'} est automatiquement
-        propagée comme clé primaire et clé étrangère (#) dans toutes les tables filles.
+      <div className="rounded-lg bg-accent-soft/30 p-2.5 text-nano text-ink-soft leading-relaxed border border-accent-soft mt-1">
+        <strong>{t("Règle de passage MLD :")}</strong> {t("La clé primaire de")} {parentEntity ? <strong>{parentEntity.name}</strong> : t("l'entité mère")} {t("est automatiquement propagée comme clé primaire et clé étrangère (#) dans chaque sous-type.")}
       </div>
 
-      {/* Bouton de suppression */}
+      {/* Bouton de suppression de l'héritage */}
       <div className="pt-2 border-t border-line">
         <Button
           variant="danger"
           size="sm"
-          onClick={() => dispatch({ type: 'DELETE_INHERITANCE', id: inheritance.id })}
+          onClick={handleDelete}
           className="w-full"
         >
-          Supprimer cet héritage
+          {t("Supprimer l'héritage")}
         </Button>
       </div>
     </form>

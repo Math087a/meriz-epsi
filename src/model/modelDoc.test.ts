@@ -179,6 +179,56 @@ const SCENARIOS: Record<string, Step[]> = {
     (state) => ({ type: 'SET_LEG_ROLE', legId: firstLeg(state).id, role: 'acheteur' }),
     (state) => ({ type: 'SET_LEG_ROLE', legId: firstLeg(state).id, role: undefined }),
   ],
+  ADD_INHERITANCE: [
+    (state) => ({
+      type: 'ADD_INHERITANCE',
+      position: { x: 50, y: 50 },
+      parentId: state.mcd.entities[0]!.id,
+      childIds: state.mcd.entities[1] ? [state.mcd.entities[1].id] : [],
+      constraint: 'X',
+    }),
+  ],
+  UPDATE_INHERITANCE: [
+    (state) => ({
+      type: 'ADD_INHERITANCE',
+      position: { x: 50, y: 50 },
+      parentId: state.mcd.entities[0]!.id,
+      childIds: state.mcd.entities[1] ? [state.mcd.entities[1].id] : [],
+    }),
+    (state) => ({
+      type: 'UPDATE_INHERITANCE',
+      id: state.mcd.inheritances![0]!.id,
+      patch: { constraint: 'XT', name: 'Specialisation' },
+    }),
+  ],
+  DELETE_INHERITANCE: [
+    (state) => ({
+      type: 'ADD_INHERITANCE',
+      position: { x: 50, y: 50 },
+      parentId: state.mcd.entities[0]!.id,
+      childIds: state.mcd.entities[1] ? [state.mcd.entities[1].id] : [],
+    }),
+    (state) => ({
+      type: 'DELETE_INHERITANCE',
+      id: state.mcd.inheritances![0]!.id,
+    }),
+  ],
+  ADD_POSTIT: [() => ({ type: 'ADD_POSTIT', position: { x: 200, y: 200 }, mode: 'text' })],
+  UPDATE_POSTIT: [
+    () => ({ type: 'ADD_POSTIT', position: { x: 200, y: 200 }, mode: 'text' }),
+    (state) => ({
+      type: 'UPDATE_POSTIT',
+      id: state.mcd.postits![0]!.id,
+      patch: { content: 'Note importante', color: 'blue' },
+    }),
+  ],
+  DELETE_POSTIT: [
+    () => ({ type: 'ADD_POSTIT', position: { x: 200, y: 200 }, mode: 'text' }),
+    (state) => ({
+      type: 'DELETE_POSTIT',
+      id: state.mcd.postits![0]!.id,
+    }),
+  ],
 }
 
 const FIXTURES: Record<string, McdEditorState> = {

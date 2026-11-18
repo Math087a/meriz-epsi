@@ -1,7 +1,7 @@
 import { parseMpdSettings } from '../lib/persistence'
 import * as Y from 'yjs'
 import { Awareness } from 'y-protocols/awareness'
-import type { Association, AttributeType, Cardinality, Entity, Leg, Mcd, Property, PropertyRef } from './mcd'
+import type { Association, AttributeType, Cardinality, Entity, Inheritance, InheritanceConstraint, Leg, Mcd, PostIt, Property, PropertyRef } from './mcd'
 import type { McdLayout, Position } from './layout'
 import type { McdAction, McdEditorState } from './mcdReducer'
 import { mcdReducer } from './mcdReducer'
@@ -184,18 +184,64 @@ function readAssociation(node: YNode): Association {
   }
 }
 
-/** Les trois listes du modèle, chacune une racine du document. */
+function readStringArray(val: unknown): string[] {
+  if (Array.isArray(val)) return [...val]
+  if (val && typeof (val as Y.Array<string>).toArray === 'function') {
+    return (val as Y.Array<string>).toArray()
+  }
+  return []
+}
+
+function setStringArrayIfChanged(node: YNode, key: string, values: readonly string[]): void {
+  const current = readStringArray(node.get(key))
+  if (current.length !== values.length || current.some((v, idx) => v !== values[idx])) {
+    node.set(key, [...values])
+  }
+}
+
+function readInheritance(node: YNode): Inheritance {
+  const inh: Inheritance = {
+    id: node.get('id') as string,
+    parentId: (node.get('parentId') as string) ?? '',
+    childIds: readStringArray(node.get('childIds')),
+    constraint: (node.get('constraint') as InheritanceConstraint) ?? 'none',
+    ...(typeof node.get('name') === 'string' ? { name: node.get('name') as string } : {}),
+  }
+  return inh
+}
+
+function readPostIt(node: YNode): PostIt {
+  const postit: PostIt = {
+    id: node.get('id') as string,
+    ...(typeof node.get('title') === 'string' ? { title: node.get('title') as string } : {}),
+    content: (node.get('content') as string) ?? '',
+    mode: (node.get('mode') as 'text' | 'mld') ?? 'text',
+  }
+  const color = node.get('color')
+  if (color === 'yellow' || color === 'blue' || color === 'green' || color === 'pink') {
+    postit.color = color
+  }
+  return postit
+}
+
+/** Les listes du modèle, chacune une racine du document. */
 interface McdRoots {
   properties: Y.Array<YNode>
   entities: Y.Array<YNode>
   associations: Y.Array<YNode>
+  inheritances: Y.Array<YNode>
+  postits: Y.Array<YNode>
 }
 
 function readMcd(roots: McdRoots): Mcd {
+  const inheritances = firstOfEachId(roots.inheritances).map(readInheritance)
+  const postits = firstOfEachId(roots.postits).map(readPostIt)
   return {
     properties: firstOfEachId(roots.properties).map(readProperty),
     entities: firstOfEachId(roots.entities).map(readEntity),
     associations: firstOfEachId(roots.associations).map(readAssociation),
+    ...(inheritances.length > 0 ? { inheritances } : {}),
+    ...(postits.length > 0 ? { postits } : {}),
   }
 }
 
@@ -380,6 +426,46 @@ const ASSOCIATION_SHAPE: ListShape<Association> = {
   },
 }
 
+const INHERITANCE_SHAPE: ListShape<Inheritance> = {
+  id: (inh) => inh.id,
+  create: (inh) => {
+    const node: YNode = new Y.Map()
+    node.set('id', inh.id)
+    node.set('parentId', inh.parentId)
+    node.set('childIds', [...inh.childIds])
+    node.set('constraint', inh.constraint)
+    if (inh.name !== undefined) {
+      node.set('name', inh.name)
+    }
+    return node
+  },
+  update: (node, inh) => {
+    setIfChanged(node, 'parentId', inh.parentId)
+    setStringArrayIfChanged(node, 'childIds', inh.childIds)
+    setIfChanged(node, 'constraint', inh.constraint)
+    setOptional(node, 'name', inh.name)
+  },
+}
+
+const POSTIT_SHAPE: ListShape<PostIt> = {
+  id: (postit) => postit.id,
+  create: (postit) => {
+    const node: YNode = new Y.Map()
+    node.set('id', postit.id)
+    node.set('content', postit.content)
+    node.set('mode', postit.mode)
+    if (postit.title !== undefined) node.set('title', postit.title)
+    if (postit.color !== undefined) node.set('color', postit.color)
+    return node
+  },
+  update: (node, postit) => {
+    setIfChanged(node, 'content', postit.content)
+    setIfChanged(node, 'mode', postit.mode)
+    setOptional(node, 'title', postit.title)
+    setOptional(node, 'color', postit.color)
+  },
+}
+
 function reconcileLayout(map: Y.Map<Position>, layout: McdLayout): void {
   for (const id of [...map.keys()]) {
     if (!(id in layout)) {
@@ -416,6 +502,10 @@ function actionSignature(action: McdAction): string | null {
       return `${action.type}:${action.propertyId}`
     case 'SET_LEG_ROLE':
       return `${action.type}:${action.legId}`
+    case 'UPDATE_INHERITANCE':
+      return `${action.type}:${action.id}`
+    case 'UPDATE_POSTIT':
+      return `${action.type}:${action.id}`
     case 'MOVE_NODE':
       return action.gesture === undefined ? `${action.type}:${action.id}` : `GESTURE:${action.gesture}`
     case 'MOVE_NODES':
@@ -440,6 +530,8 @@ export function createModelDoc(initial: McdEditorState, options: ModelDocOptions
     properties: doc.getArray<YNode>('properties'),
     entities: doc.getArray<YNode>('entities'),
     associations: doc.getArray<YNode>('associations'),
+    inheritances: doc.getArray<YNode>('inheritances'),
+    postits: doc.getArray<YNode>('postits'),
   }
   const layoutMap = doc.getMap<Position>('layout')
   const physicalMap = doc.getMap<string | boolean>('physical')
@@ -478,6 +570,8 @@ export function createModelDoc(initial: McdEditorState, options: ModelDocOptions
     reconcileList(roots.properties, state.mcd.properties, PROPERTY_SHAPE)
     reconcileList(roots.entities, state.mcd.entities, ENTITY_SHAPE)
     reconcileList(roots.associations, state.mcd.associations, ASSOCIATION_SHAPE)
+    reconcileList(roots.inheritances, state.mcd.inheritances ?? [], INHERITANCE_SHAPE)
+    reconcileList(roots.postits, state.mcd.postits ?? [], POSTIT_SHAPE)
     reconcileLayout(layoutMap, state.layout)
     if (state.mpd) {
       const values = new Map<string, string | boolean>([['dialect', state.mpd.dialect]])
@@ -489,7 +583,7 @@ export function createModelDoc(initial: McdEditorState, options: ModelDocOptions
   }
 
   const undoManager = new Y.UndoManager(
-    [roots.properties, roots.entities, roots.associations, layoutMap, physicalMap, placements],
+    [roots.properties, roots.entities, roots.associations, roots.inheritances, roots.postits, layoutMap, physicalMap, placements],
     {
       trackedOrigins: new Set([LOCAL_ORIGIN]),
       captureTimeout: MERGE_WINDOW_MS,
@@ -510,7 +604,7 @@ export function createModelDoc(initial: McdEditorState, options: ModelDocOptions
 
   const listeners = new Set<() => void>()
 
-  for (const root of [roots.properties, roots.entities, roots.associations]) {
+  for (const root of [roots.properties, roots.entities, roots.associations, roots.inheritances, roots.postits]) {
     root.observeDeep(() => {
       mcdDirty = true
       changed = true

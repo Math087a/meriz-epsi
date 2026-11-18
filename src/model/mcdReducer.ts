@@ -70,10 +70,10 @@ export type McdAction =
   | { type: 'SET_ATTRIBUTE_IDENTIFIER'; entityId: string; propertyId: string; isIdentifier: boolean }
   | { type: 'SET_LEG_CARDINALITY'; legId: string; cardinality: Cardinality }
   | { type: 'SET_LEG_ROLE'; legId: string; role: string | undefined }
-  | { type: 'ADD_POSTIT'; position: Position; mode?: 'text' | 'mld' }
+  | { type: 'ADD_POSTIT'; id?: string; position: Position; mode?: 'text' | 'mld' }
   | { type: 'UPDATE_POSTIT'; id: string; patch: Partial<PostIt> }
   | { type: 'DELETE_POSTIT'; id: string }
-  | { type: 'ADD_INHERITANCE'; position: Position; parentId?: string; childIds?: string[]; constraint?: InheritanceConstraint }
+  | { type: 'ADD_INHERITANCE'; id?: string; name?: string; position: Position; parentId?: string; childIds?: string[]; constraint?: InheritanceConstraint }
   | { type: 'UPDATE_INHERITANCE'; id: string; patch: Partial<Inheritance> }
   | { type: 'DELETE_INHERITANCE'; id: string }
 
@@ -450,7 +450,7 @@ function reduceModel(state: McdEditorState, action: McdAction): McdEditorState {
     }
 
     case 'ADD_POSTIT': {
-      const id = newId()
+      const id = action.id ?? newId()
       const postit: PostIt = {
         id,
         title: action.mode === 'mld' ? 'MLD Dynamique' : 'Mémo',
@@ -484,23 +484,28 @@ function reduceModel(state: McdEditorState, action: McdAction): McdEditorState {
     case 'DELETE_POSTIT': {
       const layout = { ...state.layout }
       delete layout[action.id]
+      const postits = (state.mcd.postits ?? []).filter((p) => p.id !== action.id)
+      const nextMcd: Mcd = { ...state.mcd }
+      if (postits.length > 0) {
+        nextMcd.postits = postits
+      } else {
+        delete nextMcd.postits
+      }
       return {
         ...state,
-        mcd: {
-          ...state.mcd,
-          postits: (state.mcd.postits ?? []).filter((p) => p.id !== action.id),
-        },
+        mcd: nextMcd,
         layout,
       }
     }
 
     case 'ADD_INHERITANCE': {
-      const id = newId()
+      const id = action.id ?? newId()
       const inheritance: Inheritance = {
         id,
         parentId: action.parentId ?? (state.mcd.entities[0]?.id ?? ''),
         childIds: action.childIds ?? (state.mcd.entities.length > 1 ? [state.mcd.entities[1].id] : []),
         constraint: action.constraint ?? 'none',
+        ...(action.name ? { name: action.name } : {}),
       }
       return {
         ...state,
@@ -520,7 +525,18 @@ function reduceModel(state: McdEditorState, action: McdAction): McdEditorState {
         ...state,
         mcd: {
           ...state.mcd,
-          inheritances: (state.mcd.inheritances ?? []).map((i) => (i.id === action.id ? { ...i, ...action.patch } : i)),
+          inheritances: (state.mcd.inheritances ?? []).map((i) => {
+            if (i.id !== action.id) return i
+            const updated = { ...i, ...action.patch }
+            const res: Inheritance = {
+              id: updated.id,
+              parentId: updated.parentId,
+              childIds: updated.childIds,
+              constraint: updated.constraint,
+              ...(updated.name !== undefined ? { name: updated.name } : {}),
+            }
+            return res
+          }),
         },
       }
     }
@@ -528,12 +544,16 @@ function reduceModel(state: McdEditorState, action: McdAction): McdEditorState {
     case 'DELETE_INHERITANCE': {
       const layout = { ...state.layout }
       delete layout[action.id]
+      const inheritances = (state.mcd.inheritances ?? []).filter((i) => i.id !== action.id)
+      const nextMcd: Mcd = { ...state.mcd }
+      if (inheritances.length > 0) {
+        nextMcd.inheritances = inheritances
+      } else {
+        delete nextMcd.inheritances
+      }
       return {
         ...state,
-        mcd: {
-          ...state.mcd,
-          inheritances: (state.mcd.inheritances ?? []).filter((i) => i.id !== action.id),
-        },
+        mcd: nextMcd,
         layout,
       }
     }

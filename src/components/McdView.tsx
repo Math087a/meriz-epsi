@@ -236,6 +236,7 @@ export function McdView({
         problems={problems}
         onGenerate={onGenerate}
         readOnly={readOnly}
+        onSelectElement={onSelectElement}
         panel={{ open: panelOpen, onToggle: () => setPanelOpen(open => !open), controls: panelId, buttonId: panelButtonId }}
         pencil={
           onInkStroke

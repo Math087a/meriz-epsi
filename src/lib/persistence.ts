@@ -4,8 +4,10 @@ import type {
   PropertyRef,
   Cardinality,
   Entity,
+  Inheritance,
   Leg,
   Mcd,
+  PostIt,
   Property,
 } from '../model/mcd'
 import { ATTRIBUTE_TYPES } from '../model/mcd'
@@ -377,9 +379,48 @@ export function parseModelFile(text: string): ParseResult {
     associations.push(value)
   }
 
+  const inheritances: Inheritance[] = []
+  if (Array.isArray(rawMcd.inheritances)) {
+    for (const val of rawMcd.inheritances) {
+      if (isRecord(val) && typeof val.id === 'string' && typeof val.parentId === 'string' && Array.isArray(val.childIds)) {
+        inheritances.push({
+          id: val.id,
+          parentId: val.parentId,
+          childIds: val.childIds.filter((cid): cid is string => typeof cid === 'string'),
+          constraint: (val.constraint === 'X' || val.constraint === 'T' || val.constraint === 'XT' || val.constraint === 'none') ? val.constraint : 'none',
+          ...(typeof val.name === 'string' ? { name: val.name } : {}),
+        })
+      }
+    }
+  }
+
+  const postits: PostIt[] = []
+  if (Array.isArray(rawMcd.postits)) {
+    for (const val of rawMcd.postits) {
+      if (isRecord(val) && typeof val.id === 'string' && typeof val.content === 'string') {
+        postits.push({
+          id: val.id,
+          content: val.content,
+          mode: val.mode === 'mld' ? 'mld' : 'text',
+          ...(val.color === 'yellow' || val.color === 'blue' || val.color === 'green' || val.color === 'pink' ? { color: val.color } : {}),
+          ...(typeof val.title === 'string' ? { title: val.title } : {}),
+        })
+      }
+    }
+  }
+
   return {
     ok: true,
-    state: { mcd: { properties, entities, associations }, layout: raw.layout },
+    state: {
+      mcd: {
+        properties,
+        entities,
+        associations,
+        ...(inheritances.length > 0 ? { inheritances } : {}),
+        ...(postits.length > 0 ? { postits } : {}),
+      },
+      layout: raw.layout,
+    },
     mpdSettings: parseMpdSettings(raw.mpd),
     name: parseName(raw.name),
   }

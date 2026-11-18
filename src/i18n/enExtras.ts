@@ -388,5 +388,20 @@ export const englishExtras: Readonly<Record<string, string>> = {
   "Renvoyer le lien d’activation": "Resend activation link",
   "J’ai confirmé mon adresse": "I have confirmed my email",
   "L’activation automatique du mode professeur demande une adresse scolaire ou universitaire confirmée. L’adresse de ce compte n’est pas reconnue comme une adresse d’établissement.": "Automatic teacher activation requires a confirmed school or university email address. This account’s email address is not recognised as an institutional address.",
-  "Vous pouvez continuer à utiliser l’éditeur. Si votre adresse d’établissement n’est pas reconnue, signalez son domaine pour que nous puissions l’ajouter.": "You can continue using the editor. If your institutional address is not recognised, report its domain so we can add it."
+  "Vous pouvez continuer à utiliser l’éditeur. Si votre adresse d’établissement n’est pas reconnue, signalez son domaine pour que nous puissions l’ajouter.": "You can continue using the editor. If your institutional address is not recognised, report its domain so we can add it.",
+  "Entité Mère (Sur-type)": "Parent Entity (Super-type)",
+  "Choisir l'entité mère": "Choose parent entity",
+  "Ajoutez d'abord d'autres entités sur le schéma.": "Add other entities to the diagram first.",
+  "Toutes les entités disponibles sont déjà reliées.": "All available entities are already linked.",
+  "Sous-types reliés": "Linked sub-types",
+  "Aucun sous-type relié.": "No linked sub-types.",
+  "Détacher ce sous-type": "Detach this sub-type",
+  "Détacher le sous-type {0}": "Detach sub-type {0}",
+  "Contrainte Merise": "Merise constraint",
+  "Règle de passage MLD :": "Logical model rule:",
+  "La clé primaire de": "The primary key of",
+  "l'entité mère": "the parent entity",
+  "est automatiquement propagée comme clé primaire et clé étrangère (#) dans chaque sous-type.": "is automatically propagated as primary and foreign key (#) into each sub-type.",
+  "Supprimer l'héritage": "Delete inheritance",
+  "Héritage ajouté au schéma. Vous pouvez le configurer dans le panneau à droite.": "Inheritance added to the diagram. Configure it in the panel on the right."
 }
