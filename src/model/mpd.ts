@@ -13,11 +13,12 @@ import { sanitizeSqlName } from './sql'
  * seulement ici, que les types conceptuels deviennent des types SQL.
  */
 
-export type SqlDialect = 'mysql' | 'postgresql'
+export type SqlDialect = 'mysql' | 'postgresql' | 'sqlserver'
 
 export const SQL_DIALECTS: readonly { id: SqlDialect; label: string }[] = [
   { id: 'mysql', get label() { return t("MySQL") } },
   { id: 'postgresql', get label() { return t("PostgreSQL") } },
+  { id: 'sqlserver', get label() { return t("SQL Server (T-SQL)") } },
 ]
 
 /** Réglages mémorisés : dialecte + surcharges par colonne (id stable). */
@@ -35,16 +36,15 @@ export function proposedSqlType(type: AttributeType, size: number | undefined, d
     case 'texte':
       return `VARCHAR(${size ?? 255})`
     case 'entier':
-      return dialect === 'mysql' ? 'INT' : 'INTEGER'
+      return dialect === 'postgresql' ? 'INTEGER' : 'INT'
     case 'decimal':
-      return dialect === 'mysql' ? 'DECIMAL(10,2)' : 'NUMERIC(10,2)'
+      return dialect === 'postgresql' ? 'NUMERIC(10,2)' : 'DECIMAL(10,2)'
     case 'booleen':
-      // TINYINT(1) est l'alias BOOLEAN de MySQL.
-      return dialect === 'mysql' ? 'TINYINT(1)' : 'BOOLEAN'
+      return dialect === 'mysql' ? 'TINYINT(1)' : dialect === 'sqlserver' ? 'BIT' : 'BOOLEAN'
     case 'date':
       return 'DATE'
     case 'datetime':
-      return dialect === 'mysql' ? 'DATETIME' : 'TIMESTAMP'
+      return dialect === 'mysql' ? 'DATETIME' : dialect === 'sqlserver' ? 'DATETIME2' : 'TIMESTAMP'
     case 'heure':
       return 'TIME'
   }
@@ -180,7 +180,11 @@ export function mpdToSql(tables: MpdTable[], dialect: SqlDialect, options: SqlOp
         typePart = column.sqlType === 'BIGINT' ? 'BIGSERIAL' : column.sqlType === 'SMALLINT' ? 'SMALLSERIAL' : 'SERIAL'
       }
       const autoIncrementPart =
-        column.autoIncrement && dialect === 'mysql' ? ' AUTO_INCREMENT' : ''
+        column.autoIncrement && dialect === 'mysql'
+          ? ' AUTO_INCREMENT'
+          : column.autoIncrement && dialect === 'sqlserver'
+          ? ' IDENTITY(1,1)'
+          : ''
       const nullability = column.nullable ? '' : ' NOT NULL'
       lines.push(`  ${quoteSqlName(column.name, dialect)} ${typePart}${nullability}${autoIncrementPart}`)
     }

@@ -36,7 +36,13 @@ export function blueprintColumn(column: SchemaColumn): string {
     case 'JSONB': call = `jsonb(${name})`; break
     case 'VARBINARY': call = `binary(${name}, length: ${spec.length})`; break
     case 'BLOB': case 'BYTEA': call = `binary(${name})`; break
+    case 'MONEY': case 'SMALLMONEY': call = `decimal(${name}, 19, 4)`; break
+    case 'BIT': call = `boolean(${name})`; break
+    case 'DATETIME2': call = `dateTime(${name}, 7)`; break
+    case 'DATETIMEOFFSET': call = `timestampTz(${name})`; break
+    case 'UNIQUEIDENTIFIER': call = `uuid(${name})`; break
     case 'ENUM': call = spec.values?.some(value => value.includes("'")) ? `rawColumn(${name}, ${phpString(formatSqlType(spec))})` : `enum(${name}, ${phpStringList(spec.values ?? [])})`; break
+    default: call = `string(${name}, 255)`; break
   }
   return `$table->${call}${spec.unsigned ? '->unsigned()' : ''}`
 }
@@ -65,7 +71,12 @@ export function doctrineColumn(column: SchemaColumn, dialect: SqlDialect = 'mysq
     case 'VARBINARY': type = 'BINARY'; phpType = 'string'; parameters.push(`length: ${spec.length}`); break
     case 'BLOB': type = 'BLOB'; phpType = 'mixed'; parameters.push('length: 65535'); break
     case 'BYTEA': type = 'BLOB'; phpType = 'mixed'; break
+    case 'MONEY': case 'SMALLMONEY': type = 'DECIMAL'; phpType = 'string'; parameters.push('precision: 19', 'scale: 4'); break
+    case 'BIT': type = 'BOOLEAN'; phpType = 'bool'; break
+    case 'DATETIME2': case 'DATETIMEOFFSET': type = 'DATETIME_MUTABLE'; phpType = '\\DateTimeInterface'; break
+    case 'UNIQUEIDENTIFIER': type = 'GUID'; phpType = 'string'; break
     case 'ENUM': type = 'ENUM'; phpType = 'string'; break
+    default: type = 'STRING'; phpType = 'string'; parameters.push('length: 255'); break
   }
   const options: string[] = []
   if (spec.name === 'CHAR') options.push("'fixed' => true")

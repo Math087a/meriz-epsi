@@ -1,5 +1,14 @@
 /** Phrases contextualisées et accords. */
 export const englishExtras: Readonly<Record<string, string>> = {
+  "Impossible de lire ce fichier JMerise (.mcd) : {0}": "Unable to read this JMerise file (.mcd): {0}",
+  "SQL Server (T-SQL)": "SQL Server (T-SQL)",
+  "Ajouter un héritage": "Add inheritance",
+  "Héritage": "Inheritance",
+  "Ajouter un post-it": "Add post-it",
+  "Post-it": "Post-it",
+  "Héritage {0}": "Inheritance {0}",
+  "Lien héritage vers parent": "Inheritance link to parent",
+  "Lien héritage vers enfant": "Inheritance link to child",
   "Référent d’établissement": "Institutional representative",
   "Non précisé": "Not specified",
   "Cette catégorie adapte votre parcours. Elle ne donne aucun droit supplémentaire et ne change pas votre niveau d’interface.": "This category adapts your experience. It does not grant additional permissions or change your interface level.",

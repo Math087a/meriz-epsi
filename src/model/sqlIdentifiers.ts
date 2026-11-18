@@ -3,6 +3,9 @@ import type { SqlDialect } from './mpd'
 
 /** Les noms comme « Order » restent utilisables sans devenir des mots-clés SQL. */
 export function quoteSqlName(name: string, dialect: SqlDialect): string {
+  if (dialect === 'sqlserver') {
+    return `[${sanitizeSqlName(name)}]`
+  }
   const quote = dialect === 'mysql' ? '`' : '"'
   return quote + sanitizeSqlName(name) + quote
 }

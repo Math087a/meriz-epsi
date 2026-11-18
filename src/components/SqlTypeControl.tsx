@@ -46,9 +46,9 @@ export function SqlTypeControl({ property, compact = false, part = 'all' }: {
     {part !== 'parameters' && <div className={part === 'all' ? 'flex min-w-0 flex-wrap items-center gap-2' : 'flex min-w-0 flex-wrap items-center gap-1'}>
       <Select value={spec?.name ?? raw} disabled={readOnly} aria-label={t('Type de la propriété {0}', [property.name])} className={field + (part === 'all' ? ' flex-1' : ' w-full')}
         onValueChange={value => { const name = sqlTypeNames(settings.dialect).find(n => n === value); if (name) apply(defaultSqlSpec(name)) }}>
-        {(!spec || !sqlTypeNames(settings.dialect).includes(spec.name) || (beginner && !['VARCHAR', 'TEXT', 'INT', 'INTEGER', 'BIGINT', 'DECIMAL', 'NUMERIC', 'BOOLEAN', 'DATE', 'TIME', 'DATETIME', 'TIMESTAMP'].includes(spec.name))) && <option value={spec?.name ?? raw}>{raw}</option>}
+        {(!spec || !sqlTypeNames(settings.dialect).includes(spec.name as any) || (beginner && !['VARCHAR', 'CHAR', 'TEXT', 'INT', 'INTEGER', 'BIGINT', 'SMALLINT', 'TINYINT', 'DECIMAL', 'NUMERIC', 'FLOAT', 'DOUBLE', 'MONEY', 'BOOLEAN', 'BIT', 'DATE', 'TIME', 'DATETIME', 'DATETIME2', 'TIMESTAMP'].includes(spec.name))) && <option value={spec?.name ?? raw}>{raw}</option>}
         {(beginner ? [true] : [true, false]).map(common => <optgroup key={String(common)} label={common ? t('Types courants') : t('Types complémentaires')}>
-          {sqlTypeNames(settings.dialect).filter(name => ['VARCHAR', 'TEXT', 'INT', 'INTEGER', 'BIGINT', 'DECIMAL', 'NUMERIC', 'BOOLEAN', 'DATE', 'TIME', 'DATETIME', 'TIMESTAMP'].includes(name) === common).map(name => <option key={name} value={name}>{name}</option>)}
+          {sqlTypeNames(settings.dialect).filter(name => ['VARCHAR', 'CHAR', 'TEXT', 'INT', 'INTEGER', 'BIGINT', 'SMALLINT', 'TINYINT', 'DECIMAL', 'NUMERIC', 'FLOAT', 'DOUBLE', 'MONEY', 'BOOLEAN', 'BIT', 'DATE', 'TIME', 'DATETIME', 'DATETIME2', 'TIMESTAMP'].includes(name) === common).map(name => <option key={name} value={name}>{name}</option>)}
         </optgroup>)}
       </Select>
       {part === 'all' && !compact && raw !== spec?.name && <code className="min-w-0 basis-full break-all text-xs text-ink-soft">{raw}</code>}
@@ -61,6 +61,6 @@ export function SqlTypeControl({ property, compact = false, part = 'all' }: {
       {!parameters && part === 'parameters' && <span className="text-xs text-ink-soft" aria-label={t('Aucun paramètre')}>—</span>}
     </div>}
     {error && <p role="alert" className="text-xs text-danger">{error}</p>}
-    {part !== 'parameters' && (!spec || !sqlTypeNames(settings.dialect).includes(spec.name)) && <p className="text-xs text-warning">{t('Type à vérifier pour le moteur choisi.')}</p>}
+    {part !== 'parameters' && (!spec || !(sqlTypeNames(settings.dialect) as readonly string[]).includes(spec.name)) && <p className="text-xs text-warning">{t('Type à vérifier pour le moteur choisi.')}</p>}
   </div>
 }

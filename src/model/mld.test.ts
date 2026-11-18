@@ -111,3 +111,26 @@ describe('mcdToMld, identifiant composé', () => {
     expect(primaryKeyNames(embarquer)).toEqual(['numeroPassager', 'numeroVol', 'dateVol'])
   })
 })
+
+describe('mcdToMld, héritage / spécialisation', () => {
+  it('propage la clé primaire de l’entité mère vers les tables enfants', () => {
+    const mcdWithInheritance = {
+      ...clientCommande,
+      inheritances: [
+        {
+          id: 'inh-client-spe',
+          parentId: 'ent-client',
+          childIds: ['ent-commande'],
+          constraint: 'XT' as const,
+        },
+      ],
+    }
+
+    const tables = mcdToMld(mcdWithInheritance)
+    const commande = tableNamed(tables, 'Commande')
+    expect(primaryKeyNames(commande)).toContain('numeroClient')
+    const inheritedCol = commande.columns.find((c) => c.name === 'numeroClient' && c.isPrimaryKey)
+    expect(inheritedCol).toBeDefined()
+    expect(inheritedCol?.references?.tableName).toBe('Client')
+  })
+})

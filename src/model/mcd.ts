@@ -97,6 +97,24 @@ export interface Association {
   legs: Leg[]
 }
 
+export type InheritanceConstraint = 'none' | 'X' | 'T' | 'XT'
+
+export interface Inheritance {
+  id: string
+  name?: string
+  parentId: string
+  childIds: string[]
+  constraint: InheritanceConstraint
+}
+
+export interface PostIt {
+  id: string
+  title?: string
+  content: string
+  mode: 'text' | 'mld'
+  color?: 'yellow' | 'blue' | 'green' | 'pink'
+}
+
 /**
  * Racine du modèle : le dictionnaire central des propriétés (liste
  * maîtresse) puis les entités et associations qui les référencent.
@@ -105,4 +123,6 @@ export interface Mcd {
   properties: Property[]
   entities: Entity[]
   associations: Association[]
+  inheritances?: Inheritance[]
+  postits?: PostIt[]
 }

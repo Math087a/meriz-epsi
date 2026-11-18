@@ -15,7 +15,7 @@ interface ImportFileButtonProps {
  * modèle Meriz. L'input natif reste caché : seul le bouton est
  * focalisable, et le même fichier peut être rouvert.
  */
-export function ImportFileButton({ children, className, accept = '.json,application/json', onFile }: ImportFileButtonProps) {
+export function ImportFileButton({ children, className, accept = '.json,application/json,.mcd', onFile }: ImportFileButtonProps) {
   useLanguage()
   const inputRef = useRef<HTMLInputElement>(null)
 

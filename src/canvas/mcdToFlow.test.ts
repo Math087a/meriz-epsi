@@ -28,4 +28,32 @@ describe('mcdToFlow, du modèle à la vue', () => {
       expect(edge.ariaLabel).toMatch(/^Patte de .+ vers .+, cardinalité \d+,[\dn]+$/)
     }
   })
+
+  it('génère les nœuds et liens pour les post-its et les héritages', () => {
+    const mcdWithExtras = {
+      ...clientCommande,
+      inheritances: [
+        {
+          id: 'inh-1',
+          parentId: 'ent-client',
+          childIds: ['ent-commande'],
+          constraint: 'X' as const,
+        },
+      ],
+      postits: [
+        {
+          id: 'post-1',
+          title: 'Notes du projet',
+          content: 'Exemple de memo',
+          mode: 'text' as const,
+        },
+      ],
+    }
+
+    const { nodes, edges } = mcdToFlow(mcdWithExtras, layout)
+    expect(nodes.some((n) => n.type === 'inheritance')).toBe(true)
+    expect(nodes.some((n) => n.type === 'postit')).toBe(true)
+    expect(edges.some((e) => e.id.startsWith('inh-p-'))).toBe(true)
+    expect(edges.some((e) => e.id.startsWith('inh-c-'))).toBe(true)
+  })
 })

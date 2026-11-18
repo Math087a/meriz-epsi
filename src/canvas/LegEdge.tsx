@@ -95,7 +95,7 @@ export function LegEdge({ id, sourceX, sourceY, targetX, targetY, sourcePosition
             : { stroke: 'var(--c-line-strong)', strokeWidth: 1.5 }
         }
       />
-      {data && (
+      {data && data.cardinality && (
         <EdgeLabelRenderer>
           <div
             style={{

@@ -11,6 +11,9 @@ import type {
   Leg,
   Mcd,
   Property,
+  PostIt,
+  Inheritance,
+  InheritanceConstraint,
 } from './mcd'
 import type { McdLayout, Position } from './layout'
 import { findPlacement, findProperty } from './queries'
@@ -67,6 +70,12 @@ export type McdAction =
   | { type: 'SET_ATTRIBUTE_IDENTIFIER'; entityId: string; propertyId: string; isIdentifier: boolean }
   | { type: 'SET_LEG_CARDINALITY'; legId: string; cardinality: Cardinality }
   | { type: 'SET_LEG_ROLE'; legId: string; role: string | undefined }
+  | { type: 'ADD_POSTIT'; position: Position; mode?: 'text' | 'mld' }
+  | { type: 'UPDATE_POSTIT'; id: string; patch: Partial<PostIt> }
+  | { type: 'DELETE_POSTIT'; id: string }
+  | { type: 'ADD_INHERITANCE'; position: Position; parentId?: string; childIds?: string[]; constraint?: InheritanceConstraint }
+  | { type: 'UPDATE_INHERITANCE'; id: string; patch: Partial<Inheritance> }
+  | { type: 'DELETE_INHERITANCE'; id: string }
 
 /** Premier nom « base N » non encore utilisé. */
 function nextName(base: string, usedNames: string[]): string {
@@ -293,6 +302,16 @@ function reduceModel(state: McdEditorState, action: McdAction): McdEditorState {
               ? { ...a, legs: a.legs.filter((l) => l.entityId !== action.id) }
               : a,
           ),
+          ...(state.mcd.inheritances
+            ? {
+                inheritances: state.mcd.inheritances
+                  .filter((i) => i.parentId !== action.id)
+                  .map((i) => ({
+                    ...i,
+                    childIds: i.childIds.filter((cid) => cid !== action.id),
+                  })),
+              }
+            : {}),
         },
         layout,
       }
@@ -428,6 +447,95 @@ function reduceModel(state: McdEditorState, action: McdAction): McdEditorState {
 
     case 'SET_LEG_ROLE': {
       return withLeg(state, action.legId, (l) => ({ ...l, role: action.role }))
+    }
+
+    case 'ADD_POSTIT': {
+      const id = newId()
+      const postit: PostIt = {
+        id,
+        title: action.mode === 'mld' ? 'MLD Dynamique' : 'Mémo',
+        content: action.mode === 'mld' ? '' : 'Notes...',
+        mode: action.mode ?? 'text',
+        color: 'yellow',
+      }
+      return {
+        ...state,
+        mcd: {
+          ...state.mcd,
+          postits: [...(state.mcd.postits ?? []), postit],
+        },
+        layout: {
+          ...state.layout,
+          [id]: action.position,
+        },
+      }
+    }
+
+    case 'UPDATE_POSTIT': {
+      return {
+        ...state,
+        mcd: {
+          ...state.mcd,
+          postits: (state.mcd.postits ?? []).map((p) => (p.id === action.id ? { ...p, ...action.patch } : p)),
+        },
+      }
+    }
+
+    case 'DELETE_POSTIT': {
+      const layout = { ...state.layout }
+      delete layout[action.id]
+      return {
+        ...state,
+        mcd: {
+          ...state.mcd,
+          postits: (state.mcd.postits ?? []).filter((p) => p.id !== action.id),
+        },
+        layout,
+      }
+    }
+
+    case 'ADD_INHERITANCE': {
+      const id = newId()
+      const inheritance: Inheritance = {
+        id,
+        parentId: action.parentId ?? (state.mcd.entities[0]?.id ?? ''),
+        childIds: action.childIds ?? (state.mcd.entities.length > 1 ? [state.mcd.entities[1].id] : []),
+        constraint: action.constraint ?? 'none',
+      }
+      return {
+        ...state,
+        mcd: {
+          ...state.mcd,
+          inheritances: [...(state.mcd.inheritances ?? []), inheritance],
+        },
+        layout: {
+          ...state.layout,
+          [id]: action.position,
+        },
+      }
+    }
+
+    case 'UPDATE_INHERITANCE': {
+      return {
+        ...state,
+        mcd: {
+          ...state.mcd,
+          inheritances: (state.mcd.inheritances ?? []).map((i) => (i.id === action.id ? { ...i, ...action.patch } : i)),
+        },
+      }
+    }
+
+    case 'DELETE_INHERITANCE': {
+      const layout = { ...state.layout }
+      delete layout[action.id]
+      return {
+        ...state,
+        mcd: {
+          ...state.mcd,
+          inheritances: (state.mcd.inheritances ?? []).filter((i) => i.id !== action.id),
+        },
+        layout,
+      }
     }
   }
 }

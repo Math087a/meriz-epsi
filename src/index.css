@@ -538,7 +538,7 @@ html[data-motion='off'] [class*='motion-safe:'] { translate: none !important; }
   box-sizing: border-box;
   width: max(var(--radix-select-trigger-width), 10rem);
   max-width: calc(100vw - 1.5rem);
-  max-height: min(22rem, var(--radix-select-content-available-height));
+  max-height: min(32rem, var(--radix-select-content-available-height));
   overflow: hidden;
   border: 1px solid var(--c-line-strong);
   border-radius: .75rem;

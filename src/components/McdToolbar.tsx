@@ -106,6 +106,12 @@ export function McdToolbar({ dispatch, problems, onGenerate, canGenerate = true,
             <Button size="sm" aria-label={t("Ajouter une association")} title={t("Ajouter une association")} onClick={() => dispatch({ type: 'ADD_ASSOCIATION', position: nextPosition() })}>
               <Icon name="association" /><span className="hidden sm:inline">{t("Association")}</span>
             </Button>
+            <Button size="sm" aria-label={t("Ajouter un héritage")} title={t("Ajouter un héritage")} onClick={() => dispatch({ type: 'ADD_INHERITANCE', position: nextPosition() })}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12,4 20,20 4,20" /></svg><span className="hidden sm:inline">{t("Héritage")}</span>
+            </Button>
+            <Button size="sm" aria-label={t("Ajouter un post-it")} title={t("Ajouter un post-it")} onClick={() => dispatch({ type: 'ADD_POSTIT', position: nextPosition() })}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8Z" /><path d="M15 3v5h5" /></svg><span className="hidden sm:inline">{t("Post-it")}</span>
+            </Button>
           </div>
 
           <div aria-hidden="true" className="hidden h-6 w-px bg-line sm:block" />

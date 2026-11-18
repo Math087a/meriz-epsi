@@ -1,6 +1,6 @@
 import { t } from "../i18n/runtime"
 import type { Edge, Node } from '@xyflow/react'
-import type { Association, Cardinality, Entity, Mcd } from '../model/mcd'
+import type { Association, Cardinality, Entity, Mcd, Inheritance, PostIt } from '../model/mcd'
 import type { McdLayout } from '../model/layout'
 import { resolveAttributes } from '../model/queries'
 import type { ResolvedAttribute } from '../model/queries'
@@ -18,10 +18,19 @@ export type AssociationFlowNode = Node<
   { association: Association; attributes: ResolvedAttribute[] },
   'association'
 >
-export type McdFlowNode = EntityFlowNode | AssociationFlowNode
+export type InheritanceFlowNode = Node<
+  { inheritance: Inheritance; parentName?: string; childrenNames?: string[] },
+  'inheritance'
+>
+export type PostItFlowNode = Node<
+  { postit: PostIt; mcd: Mcd },
+  'postit'
+>
+export type McdFlowNode = EntityFlowNode | AssociationFlowNode | InheritanceFlowNode | PostItFlowNode
+
 export type LegFlowEdge = Edge<
   {
-    cardinality: Cardinality
+    cardinality?: Cardinality
     role?: string
     /** Position choisie de l'étiquette (layout), sinon défaut sur la ligne. */
     labelPosition?: { x: number; y: number }
@@ -34,10 +43,6 @@ const FALLBACK_POSITION = { x: 0, y: 0 }
 /**
  * Transformation pure : Mcd + McdLayout → nœuds et liens React Flow.
  * Une entité et une association sont des nœuds, une patte est un lien.
- *
- * Aucun côté d'accroche n'est posé ici : il dépend des tailles mesurées et
- * des positions vivantes, donc il se choisit dans le canevas, à chaque
- * image, par `anchors.ts`. Le modèle n'a pas à connaître la géométrie.
  */
 export function mcdToFlow(
   mcd: Mcd,
@@ -62,21 +67,71 @@ export function mcdToFlow(
         ariaLabel: t("Association {0}", [association.name]),
       }),
     ),
+    ...(mcd.inheritances ?? []).map(
+      (inheritance): InheritanceFlowNode => {
+        const parentName = mcd.entities.find((e) => e.id === inheritance.parentId)?.name
+        const childrenNames = inheritance.childIds
+          .map((id) => mcd.entities.find((e) => e.id === id)?.name)
+          .filter(Boolean) as string[]
+        return {
+          id: inheritance.id,
+          type: 'inheritance',
+          position: layout[inheritance.id] ?? FALLBACK_POSITION,
+          data: { inheritance, parentName, childrenNames },
+          ariaLabel: t("Héritage {0}", [parentName ?? '']),
+        }
+      },
+    ),
+    ...(mcd.postits ?? []).map(
+      (postit): PostItFlowNode => ({
+        id: postit.id,
+        type: 'postit',
+        position: layout[postit.id] ?? FALLBACK_POSITION,
+        data: { postit, mcd },
+        ariaLabel: postit.title || t("Post-it"),
+      }),
+    ),
   ]
 
-  const edges: LegFlowEdge[] = mcd.associations.flatMap((association) =>
-    association.legs.map((leg): LegFlowEdge => {
-      const entityName = mcd.entities.find((e) => e.id === leg.entityId)?.name ?? leg.entityId
-      return {
-        id: leg.id,
-        type: 'leg',
-        source: association.id,
-        target: leg.entityId,
-        data: { cardinality: leg.cardinality, role: leg.role, labelPosition: layout[leg.id] },
-        ariaLabel: t("Patte de {0} vers {1}, cardinalité {2},{3}", [association.name, entityName, leg.cardinality.min, leg.cardinality.max]),
+  const edges: LegFlowEdge[] = [
+    ...mcd.associations.flatMap((association) =>
+      association.legs.map((leg): LegFlowEdge => {
+        const entityName = mcd.entities.find((e) => e.id === leg.entityId)?.name ?? leg.entityId
+        return {
+          id: leg.id,
+          type: 'leg',
+          source: association.id,
+          target: leg.entityId,
+          data: { cardinality: leg.cardinality, role: leg.role, labelPosition: layout[leg.id] },
+          ariaLabel: t("Patte de {0} vers {1}, cardinalité {2},{3}", [association.name, entityName, leg.cardinality.min, leg.cardinality.max]),
+        }
+      }),
+    ),
+    ...(mcd.inheritances ?? []).flatMap((inheritance) => {
+      const inhEdges: LegFlowEdge[] = []
+      if (inheritance.parentId) {
+        inhEdges.push({
+          id: `inh-p-${inheritance.id}-${inheritance.parentId}`,
+          type: 'leg',
+          source: inheritance.id,
+          target: inheritance.parentId,
+          data: {},
+          ariaLabel: t("Lien héritage vers parent"),
+        })
       }
+      for (const childId of inheritance.childIds) {
+        inhEdges.push({
+          id: `inh-c-${inheritance.id}-${childId}`,
+          type: 'leg',
+          source: inheritance.id,
+          target: childId,
+          data: {},
+          ariaLabel: t("Lien héritage vers enfant"),
+        })
+      }
+      return inhEdges
     }),
-  )
+  ]
 
   return { nodes, edges }
 }

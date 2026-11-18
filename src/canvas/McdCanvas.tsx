@@ -28,6 +28,8 @@ import type { LegFlowEdge, McdFlowNode } from './mcdToFlow'
 import { EntityNode } from './EntityNode'
 import { ARIA_LABELS } from './ariaLabels'
 import { AssociationNode } from './AssociationNode'
+import { InheritanceNode } from './InheritanceNode'
+import { PostItNode } from './PostItNode'
 import { LegEdge } from './LegEdge'
 import type { McdAction, McdEditorState } from '../model/mcdReducer'
 import { canCreateLeg } from '../model/queries'
@@ -49,7 +51,12 @@ import type { CollabInk } from '../model/collabProvider'
 import type { InkPoint } from '../model/inkTrace'
 
 // Déclarés hors composant pour garder des références stables.
-const nodeTypes = { entity: EntityNode, association: AssociationNode }
+const nodeTypes = {
+  entity: EntityNode,
+  association: AssociationNode,
+  inheritance: InheritanceNode,
+  postit: PostItNode,
+}
 const edgeTypes = { leg: LegEdge }
 
 interface McdCanvasProps {

@@ -94,6 +94,48 @@ export function mcdToMld(mcd: Mcd): MldTable[] {
     )
   }
 
+  // Règle Héritage / Spécialisation Merise : propagation de la PK père vers les sous-types
+  if (mcd.inheritances) {
+    for (const inheritance of mcd.inheritances) {
+      const parentTable = tables.get(inheritance.parentId)
+      const parentPks = primaryKeys.get(inheritance.parentId) ?? []
+      if (!parentTable || parentPks.length === 0) continue
+
+      for (const childId of inheritance.childIds) {
+        const childTable = tables.get(childId)
+        if (!childTable) continue
+        const usedNames = new Set(childTable.columns.map((c) => c.name.toLowerCase()))
+
+        for (const pk of parentPks) {
+          const already = childTable.columns.find(
+            (c) => c.references?.tableId === parentTable.id && c.references?.columnName === pk.name,
+          )
+          if (!already) {
+            const inheritedCol: MldColumn = {
+              id: `${inheritance.id}:${pk.id}`,
+              name: uniqueName(pk.name, usedNames),
+              type: pk.type,
+              size: pk.size,
+              isPrimaryKey: true,
+              nullable: false,
+              references: {
+                tableId: parentTable.id,
+                tableName: parentTable.name,
+                columnName: pk.name,
+                group: inheritance.id,
+              },
+            }
+            childTable.columns.unshift(inheritedCol)
+          }
+        }
+        primaryKeys.set(
+          childId,
+          childTable.columns.filter((c) => c.isPrimaryKey),
+        )
+      }
+    }
+  }
+
   const junctionTables: MldTable[] = []
 
   for (const association of mcd.associations) {
