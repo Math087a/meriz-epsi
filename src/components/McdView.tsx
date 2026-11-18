@@ -229,7 +229,9 @@ export function McdView({
       aria-label={t("Vue MCD")}
       className={isActive ? 'flex min-h-0 flex-1 flex-col' : 'hidden'}
     >
-      <McdToolbar canGenerate={canGenerate}
+      <McdToolbar
+        state={state}
+        canGenerate={canGenerate}
         dispatch={dispatch}
         problems={problems}
         onGenerate={onGenerate}

@@ -3,16 +3,18 @@ import { counted } from "../lib/plural"
 import { t } from "../i18n/runtime"
 import { useLanguage } from "../lib/useLanguage"
 import { Icon } from './ui/Icon'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import type { Dispatch } from 'react'
 import { useReactFlow } from '@xyflow/react'
-import type { McdAction } from '../model/mcdReducer'
+import type { McdAction, McdEditorState } from '../model/mcdReducer'
 import type { ValidationProblem } from '../model/validate'
 import { validationErrors, validationWarnings } from '../model/validate'
 import type { Position } from '../model/layout'
 import { Button } from './ui/Button'
+import { InheritanceDialog } from './InheritanceDialog'
 
 interface McdToolbarProps {
+  state?: McdEditorState
   canGenerate?: boolean
   dispatch: Dispatch<McdAction>
   problems: ValidationProblem[]
@@ -41,10 +43,11 @@ const iconProps = {
 } as const
 
 /** Sous-barre de la vue MCD : ajout d'éléments, vérification, génération. */
-export function McdToolbar({ dispatch, problems, onGenerate, canGenerate = true, readOnly = false, pencil, panel }: McdToolbarProps) {
+export function McdToolbar({ state, dispatch, problems, onGenerate, canGenerate = true, readOnly = false, pencil, panel }: McdToolbarProps) {
   useLanguage()
   const { screenToFlowPosition, fitView } = useReactFlow()
   const setStatus = useToast()
+  const [inheritanceDialogOpen, setInheritanceDialogOpen] = useState(false)
   // Décalage en cascade pour que des ajouts répétés ne s'empilent pas.
   const addCountRef = useRef(0)
 
@@ -95,6 +98,17 @@ export function McdToolbar({ dispatch, problems, onGenerate, canGenerate = true,
     setStatus({ kind: 'info', text: t("MCD vérifié : MLD, MPD et SQL à jour.") })
   }
 
+  const handleHeritageClick = () => {
+    if (!state || state.mcd.entities.length < 2) {
+      setStatus({
+        kind: 'info',
+        text: t("Il faut au moins deux entités sur le schéma pour définir un héritage (une entité mère et au moins une entité fille)."),
+      })
+      return
+    }
+    setInheritanceDialogOpen(true)
+  }
+
   return (
     <div className="mcd-toolbar flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 border-b border-line bg-surface px-3 py-2">
       {!readOnly && (
@@ -106,7 +120,7 @@ export function McdToolbar({ dispatch, problems, onGenerate, canGenerate = true,
             <Button size="sm" aria-label={t("Ajouter une association")} title={t("Ajouter une association")} onClick={() => dispatch({ type: 'ADD_ASSOCIATION', position: nextPosition() })}>
               <Icon name="association" /><span className="hidden sm:inline">{t("Association")}</span>
             </Button>
-            <Button size="sm" aria-label={t("Ajouter un héritage")} title={t("Ajouter un héritage")} onClick={() => dispatch({ type: 'ADD_INHERITANCE', position: nextPosition() })}>
+            <Button size="sm" aria-label={t("Ajouter un héritage")} title={t("Ajouter un héritage")} onClick={handleHeritageClick}>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12,4 20,20 4,20" /></svg><span className="hidden sm:inline">{t("Héritage")}</span>
             </Button>
             <Button size="sm" aria-label={t("Ajouter un post-it")} title={t("Ajouter un post-it")} onClick={() => dispatch({ type: 'ADD_POSTIT', position: nextPosition() })}>
@@ -167,6 +181,30 @@ export function McdToolbar({ dispatch, problems, onGenerate, canGenerate = true,
         <Button size="sm" variant="ghost" aria-label={t("Ajuster à la fenêtre")} title={t("Ajuster à la fenêtre")} onClick={() => void fitView({ padding: .2, duration: 0 })}><Icon name="fit" /></Button>
         {panel && <Button id={panel.buttonId} size="sm" variant="ghost" className="md:hidden" aria-label={t("Inspecteur")} title={t("Inspecteur")} aria-expanded={panel.open} aria-controls={panel.controls} onClick={panel.onToggle}><Icon name="panel" /></Button>}
       </div>
+
+      {state && (
+        <InheritanceDialog
+          open={inheritanceDialogOpen}
+          mcd={state.mcd}
+          layout={state.layout}
+          onCancel={() => setInheritanceDialogOpen(false)}
+          onConfirm={(data) => {
+            dispatch({
+              type: 'ADD_INHERITANCE',
+              position: data.position,
+              parentId: data.parentId,
+              childIds: data.childIds,
+              constraint: data.constraint,
+            })
+            setInheritanceDialogOpen(false)
+            const parentName = state.mcd.entities.find((e) => e.id === data.parentId)?.name ?? ''
+            setStatus({
+              kind: 'info',
+              text: t("Héritage créé : clé primaire de {0} propagée aux sous-types.", [parentName]),
+            })
+          }}
+        />
+      )}
     </div>
   )
 }
