@@ -263,6 +263,9 @@ export function Editor({
       return
     }
     const onBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (navigator.userAgent.includes('Electron')) {
+        return
+      }
       event.preventDefault()
     }
     window.addEventListener('beforeunload', onBeforeUnload)

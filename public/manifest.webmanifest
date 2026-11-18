@@ -1,0 +1,25 @@
+{
+  "name": "Meriz - EPSI Edition",
+  "short_name": "Meriz EPSI",
+  "description": "Modélisation de bases de données par la méthode Merise (MCD, MLD, MPD, SQL, Héritage).",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#171428",
+  "theme_color": "#171428",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

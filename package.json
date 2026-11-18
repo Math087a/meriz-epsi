@@ -27,8 +27,27 @@
       "electron/**/*"
     ],
     "win": {
-      "target": "portable",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
       "icon": "src-tauri/icons/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "Meriz EPSI Edition",
+      "installerIcon": "src-tauri/icons/icon.ico",
+      "uninstallerIcon": "src-tauri/icons/icon.ico",
+      "uninstallDisplayName": "Meriz EPSI Edition"
     }
   },
   "dependencies": {

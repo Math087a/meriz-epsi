@@ -20,6 +20,11 @@ function createWindow() {
   // Chargement du bundle de production Vite
   win.loadFile(path.join(__dirname, '../dist/index.html'))
 
+  // Ne jamais bloquer la fermeture de la fenêtre (la croix "X") par beforeunload
+  win.webContents.on('will-prevent-unload', (event) => {
+    event.preventDefault()
+  })
+
   // Ouvrir les liens externes dans le navigateur par défaut
   win.webContents.setWindowOpenHandler(({ url }) => {
     shell.openExternal(url)
