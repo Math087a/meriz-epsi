@@ -2,7 +2,7 @@
   "name": "meriz",
   "private": true,
   "license": "AGPL-3.0-only",
-  "version": "1.7.2",
+  "version": "1.7.3",
   "type": "module",
   "main": "electron/main.cjs",
   "scripts": {
@@ -30,11 +30,15 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "portable",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "icon": "src-tauri/icons/icon.png"
