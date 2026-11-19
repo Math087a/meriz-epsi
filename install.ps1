@@ -1,4 +1,4 @@
-﻿# Script d'installation du raccourci Merise - EPSI Edition
+# Script d'installation du raccourci Merise - EPSI Edition
 $ws = New-Object -ComObject WScript.Shell
 $appDir = Join-Path $env:LOCALAPPDATA 'Merise-EPSI'
 if (-not (Test-Path $appDir)) { New-Item -ItemType Directory -Path $appDir -Force | Out-Null }
@@ -37,7 +37,6 @@ $scPrograms.Description = 'Merise EPSI Edition'
 $scPrograms.Save()
 
 Write-Host "Installation terminee avec succes !" -ForegroundColor Green
-Write-Host "Le raccourci a ete ajoute a ton Bureau et a ton Menu Demarrer." -ForegroundColor Cyan
-Write-Host "Pour l'avoir en permanence :" -ForegroundColor Yellow
-Write-Host "Clic droit sur l'icone dans la barre des taches -> « Epingler a la barre des taches »" -ForegroundColor Yellow
+Write-Host "Raccourci ajoute sur le Bureau et dans le Menu Demarrer." -ForegroundColor Cyan
+Write-Host "Astuce : Clic droit sur l icone dans la barre des taches -> Epingler a la barre des taches." -ForegroundColor Yellow
 Start-Process -FilePath $browser -ArgumentList "--app=$url"

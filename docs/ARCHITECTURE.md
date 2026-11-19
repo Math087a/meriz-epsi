@@ -39,7 +39,6 @@ merise-epsi/
 |-- tests/                 # Suites de validation, tests d'integration et non-regression
 |-- index.html             # Point d'entree HTML unique de l'application SPA
 |-- install.ps1            # Script d'installation du raccourci applicatif Windows (PowerShell)
-|-- Installer-Merise-EPSI.cmd # Script d'installation automatique Windows (1 clic)
 |-- package.json           # Declarations des dependances npm et scripts de developpement
 `-- README.md              # Guide d'accueil, installation et prise en main rapide
 ```

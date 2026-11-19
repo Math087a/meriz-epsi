@@ -19,19 +19,23 @@ L'application est disponible immédiatement sans aucun téléchargement lourd :
 3. L'application s'ouvre immédiatement dans sa propre fenêtre autonome (sans barre d'adresse ni onglets) et s'ajoute à votre Bureau et à votre Menu Démarrer.
 4. Fais un **clic droit sur l'icône dans la barre des tâches en bas** -> **« Épingler à la barre des tâches »**.
 
-### Option 2 : Script d'installation automatique Windows
+### Option 2 : Installation en 1 commande dans le terminal (cmd ou PowerShell)
 
-Pour installer automatiquement le raccourci avec l'icône officielle Vert Sapin sur votre Bureau et dans votre Menu Démarrer :
+Pour créer directement le raccourci sur votre Bureau et dans votre Menu Démarrer avec le logo officiel Vert Sapin :
 
-- **Via le script prêt à l'emploi** :
-  1. Télécharge le script [`Installer-Merise-EPSI.cmd`](https://raw.githubusercontent.com/Math087a/meriz-epsi/main/Installer-Merise-EPSI.cmd) (ou depuis la [Release v1.7.3](https://github.com/Math087a/meriz-epsi/releases/tag/v1.7.3)).
-  2. Double-clique dessus : il configure instantanément l'application et la démarre.
-  3. Fais un **clic droit sur l'icône dans la barre des tâches en bas** -> **« Épingler à la barre des tâches »**.
+1. Ouvrez l'**Invite de commandes (cmd)** ou **PowerShell** (Touche Windows puis tapez `cmd` ou `powershell`).
+2. Copiez et collez cette commande unique, puis appuyez sur Entrée :
 
-- **Ou en 1 ligne dans PowerShell** :
-  ```powershell
-  irm https://raw.githubusercontent.com/Math087a/meriz-epsi/main/install.ps1 | iex
-  ```
+```cmd
+powershell -Command "irm https://raw.githubusercontent.com/Math087a/meriz-epsi/main/install.ps1 | iex"
+```
+
+*(Si vous êtes déjà dans une fenêtre PowerShell, vous pouvez taper directement : `irm https://raw.githubusercontent.com/Math087a/meriz-epsi/main/install.ps1 | iex`)*
+
+3. L'application démarre instantanément en fenêtre autonome.
+4. Fais un **clic droit sur l'icône dans la barre des tâches en bas** -> **« Épingler à la barre des tâches »**.
+
+> Cette méthode exécutée directement dans le terminal ne télécharge aucun fichier exécutable non signé, et ne déclenche donc aucun blocage de Windows SmartScreen ou du Contrôle intelligent des applications.
 
 ---
 
@@ -66,8 +70,7 @@ merise-epsi/
 |   |-- lib/               # Services d'infrastructure (parseur JMerise, stockage, exports)
 |   `-- model/             # Coeur metier Merise (MCD, passage MLD, MPD, generation T-SQL)
 |-- tests/                 # 82 suites de tests unitaires automatises sous Vitest
-|-- install.ps1            # Script d'installation applicatif PowerShell
-|-- Installer-Merise-EPSI.cmd # Script d'installation automatique Windows
+|-- install.ps1            # Script d'installation du raccourci applicatif
 |-- package.json           # Dependances npm et scripts
 `-- README.md              # Ce document
 ```
