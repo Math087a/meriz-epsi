@@ -13,7 +13,7 @@ Ce document decrit l'organisation architecturale et la structure des dossiers de
    - Chaque fichier et dossier a une fonction unique, explicite et previsible.
    - La racine du depot reste depouillee des fichiers temporaires ou des artefacts generes.
 3. **Portabilite & modularite** :
-   - Le coeur applicatif s'execute a l'identique dans le navigateur web (PWA) et dans le client bureau natif leger (Tauri).
+   - Le coeur applicatif s'execute a l'identique dans le navigateur web (PWA) et en mode application de bureau autonome epinglable a la barre des taches.
 
 ---
 
@@ -21,8 +21,8 @@ Ce document decrit l'organisation architecturale et la structure des dossiers de
 
 ```text
 merise-epsi/
-|-- .github/               # Pipelines d'integration continue et automatisation
-|   `-- workflows/         # Deploiement GitHub Pages (web) et compilation Tauri (Windows)
+|-- .github/               # Pipelines d'integration continue (deploiement GitHub Pages)
+|   `-- workflows/         # Workflow de compilation et de publication web
 |-- docs/                  # Documentation technique et guides d'architecture
 |-- examples/              # Modeles Merise et cas d'etudes pedagogiques (JSON)
 |-- public/                # Ressources statiques servies directement (manifest, favicons)
@@ -36,16 +36,12 @@ merise-epsi/
 |   |-- i18n/              # Moteur d'internationalisation et catalogues de langues
 |   |-- lib/               # Services d'infrastructure (parseur JMerise, stockage, exports)
 |   `-- model/             # Coeur metier Merise (MCD, passage MLD, MPD, generation T-SQL)
-|-- src-tauri/             # Enveloppe desktop native legere Windows / WebView2 (Rust)
-|   |-- capabilities/      # Declarations de securite et permissions de l'application
-|   |-- icons/             # Icones natives d'installation
-|   |-- src/               # Point d'entree natif et boucle d'evenements WebView2
-|   |-- Cargo.toml         # Dependances Rust du runtime natif
-|   `-- tauri.conf.json    # Configuration du paquet d'installation desktop
 |-- tests/                 # Suites de validation, tests d'integration et non-regression
 |-- index.html             # Point d'entree HTML unique de l'application SPA
+|-- install.ps1            # Script d'installation du raccourci applicatif Windows (PowerShell)
+|-- Installer-Merise-EPSI.cmd # Script d'installation automatique Windows (1 clic)
 |-- package.json           # Declarations des dependances npm et scripts de developpement
-`-- README.md              # Guide d'accueil, telechargement et prise en main rapide
+`-- README.md              # Guide d'accueil, installation et prise en main rapide
 ```
 
 ---

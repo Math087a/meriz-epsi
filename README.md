@@ -6,25 +6,32 @@ Merise EPSI Edition remplace avantageusement les outils historiques tels que JMe
 
 ---
 
-## Deux façons de l'utiliser
+## Comment l'installer sur votre PC (Barre des tâches & Bureau)
 
-### 1. Version Web & PWA (Installation instantanée en 1 clic)
+### Option 1 : Installation directe en 1 clic via le navigateur (Recommandée)
 
-L'application est accessible directement en ligne avec un support hors-ligne complet (PWA) :
+L'application est disponible immédiatement sans aucun téléchargement lourd :
 
-**Accéder à l'application en ligne : https://math087a.github.io/meriz-epsi/**
+**Accéder à l'application : https://math087a.github.io/meriz-epsi/**
 
-- **Installation comme une vraie application** : ouvre le lien dans Microsoft Edge, Google Chrome ou Brave, puis clique sur l'icône **« Installer »** dans la barre d'adresse.
-- **Avantages majeurs** : 0 Mo d'archive lourde à télécharger, démarrage instantané en 0,2 seconde, zéro avertissement SmartScreen de Windows, et fonctionnement 100 % garanti sur les postes de l'EPSI sans droits administrateur.
+1. Ouvre l'adresse dans **Microsoft Edge**, **Google Chrome** ou **Brave**.
+2. Clique sur l'icône **« Installer l'application »** située tout à droite dans la barre d'adresse (ou menu 3 points -> *Applications* -> *Installer Merise EPSI Edition*).
+3. L'application s'ouvre immédiatement dans sa propre fenêtre autonome (sans barre d'adresse ni onglets) et s'ajoute à votre Bureau et à votre Menu Démarrer.
+4. Fais un **clic droit sur l'icône dans la barre des tâches en bas** -> **« Épingler à la barre des tâches »**.
 
-### 2. Application de bureau Windows (Tauri Setup.exe - 2.3 Mo)
+### Option 2 : Script d'installation automatique Windows
 
-Pour ceux qui souhaitent un installateur `.exe` classique sans la lourdeur d'Electron (2.3 Mo au lieu de 150 Mo) :
+Pour installer automatiquement le raccourci avec l'icône officielle Vert Sapin sur votre Bureau et dans votre Menu Démarrer :
 
-- Rendez-vous sur la page des [Releases officielles sur GitHub](https://github.com/Math087a/meriz-epsi/releases/tag/v1.7.3).
-- Téléchargez l'installateur Windows officiel [`Merise.EPSI.Edition_1.7.3_x64-setup.exe`](https://github.com/Math087a/meriz-epsi/releases/download/v1.7.3/Merise.EPSI.Edition_1.7.3_x64-setup.exe).
-- Double-cliquez pour installer automatiquement l'application dans votre menu Démarrer et sur votre Bureau.
-- *Note SmartScreen* : comme tout binaire open-source sans certificat d'entreprise payant, cliquez sur « Informations complémentaires » puis « Exécuter quand même » au premier lancement.
+- **Via le script prêt à l'emploi** :
+  1. Télécharge le script [`Installer-Merise-EPSI.cmd`](https://raw.githubusercontent.com/Math087a/meriz-epsi/main/Installer-Merise-EPSI.cmd) (ou depuis la [Release v1.7.3](https://github.com/Math087a/meriz-epsi/releases/tag/v1.7.3)).
+  2. Double-clique dessus : il configure instantanément l'application et la démarre.
+  3. Fais un **clic droit sur l'icône dans la barre des tâches en bas** -> **« Épingler à la barre des tâches »**.
+
+- **Ou en 1 ligne dans PowerShell** :
+  ```powershell
+  irm https://raw.githubusercontent.com/Math087a/meriz-epsi/main/install.ps1 | iex
+  ```
 
 ---
 
@@ -58,8 +65,9 @@ merise-epsi/
 |   |-- i18n/              # Gestion du bilinguisme (francais / anglais)
 |   |-- lib/               # Services d'infrastructure (parseur JMerise, stockage, exports)
 |   `-- model/             # Coeur metier Merise (MCD, passage MLD, MPD, generation T-SQL)
-|-- src-tauri/             # Runtime desktop leger Windows / WebView2 (Rust)
 |-- tests/                 # 82 suites de tests unitaires automatises sous Vitest
+|-- install.ps1            # Script d'installation applicatif PowerShell
+|-- Installer-Merise-EPSI.cmd # Script d'installation automatique Windows
 |-- package.json           # Dependances npm et scripts
 `-- README.md              # Ce document
 ```
