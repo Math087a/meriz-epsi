@@ -39,16 +39,16 @@ powershell -Command "irm https://raw.githubusercontent.com/Math087a/meriz-epsi/m
 
 ---
 
-## Fonctionnalités clés
+## Fonctionnalités
 
-- **Identité visuelle Vert Sapin** : palette sombre végétale (#161b18 / #111513) calquée sur le thème Obsidian EPSI, complétée par un mode clair pour les projections en classe.
-- **Bouton bascule clair / sombre direct** : switch compact Soleil/Lune dans la barre d'outils pour alterner d'un clic entre les deux modes.
-- **Logo MCD iconique** : représentation symbolique authentique de deux entités reliées à une association centrale par des pattes de cardinalités.
-- **Import direct et rétro-ingénierie JMerise (.mcd)** : ouvre et convertit instantanément les fichiers de TP au format binaire JMerise sans exécuter Java.
-- **Support natif Microsoft SQL Server (T-SQL)** : génération de scripts DDL conformes avec syntaxe à crochets `[nom]`, `IDENTITY(1,1)`, contraintes nommées et catalogue étendu (`MONEY`, `TINYINT`, `BIT`, `DATETIME2`, `UNIQUEIDENTIFIER`). Compatible également MySQL et PostgreSQL.
-- **Héritage et spécialisation formelle** : support complet des contraintes Merise d'héritage (Aucune, Disjonction `X`, Totalité `T`, Partition `XT`) et règles de passage automatique en tables relationnelles MLD.
-- **Post-its interactifs à double mode** : insertion de mémos sur le canevas avec un mode texte libre ou un mode de calcul dynamique du MLD textuel synchronisé en temps réel.
-- **Bibliothèque d'exemples inclus** : modèles de TP prêts à l'emploi accessibles directement dans le dossier `examples/`.
+- **Modélisation conceptuelle (MCD)** : création visuelle et fluide d'entités, d'associations, d'attributs, de clés primaires et de cardinalités (0,1 / 1,1 / 0,n / 1,n).
+- **Passage automatique au modèle relationnel (MLD)** : dérivation dynamique et instantanée des tables relationnelles selon les règles formelles de normalisation Merise (gestion des clés étrangères, tables d'association n:n).
+- **Génération SQL multi-SGBD** : production de scripts DDL prêts à l'exécution pour **Microsoft SQL Server (T-SQL)**, **MySQL** et **PostgreSQL** (contraintes `PRIMARY KEY`, `FOREIGN KEY`, types de données natifs).
+- **Héritage et spécialisation formelle** : support complet des contraintes Merise d'héritage (Aucune, Disjonction `X`, Totalité `T`, Partition `XT`) et dérivation automatique vers le modèle relationnel.
+- **Rétro-ingénierie et import JMerise (.mcd)** : ouverture et conversion directe des fichiers de TP existants au format binaire JMerise sans nécessiter d'environnement Java.
+- **Dictionnaire des données centralisé** : vue d'ensemble et recherche sur toutes les propriétés du modèle pour éliminer les doublons et harmoniser les types.
+- **Collaboration en temps réel** : travail à plusieurs en direct sur un même schéma pour faciliter les projets et ateliers de groupe.
+- **Export haute fidélité pour les rendus** : exportation du schéma en PNG haute résolution et génération du script SQL pour une intégration directe dans les rapports de TP.
 
 ---
 
