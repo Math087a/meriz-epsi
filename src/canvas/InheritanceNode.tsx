@@ -52,6 +52,7 @@ export function InheritanceNode({ data, selected, isConnectable }: NodeProps<Inh
           <polygon
             points="34,6 64,54 4,54"
             className="fill-surface stroke-line-strong transition-colors hover:stroke-accent-ink hover:fill-accent-soft/30"
+            style={{ fill: 'var(--c-surface, #ffffff)', stroke: 'var(--c-line-strong, #6d8475)' }}
             strokeWidth="2"
             strokeLinejoin="round"
           />

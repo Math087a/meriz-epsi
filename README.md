@@ -17,13 +17,14 @@ L'application est accessible directement en ligne avec un support hors-ligne com
 - **Installation comme une vraie application** : ouvre le lien dans Microsoft Edge, Google Chrome ou Brave, puis clique sur l'icône **« Installer »** dans la barre d'adresse.
 - **Avantages majeurs** : 0 Mo d'archive lourde à télécharger, démarrage instantané en 0,2 seconde, zéro avertissement SmartScreen de Windows, et fonctionnement 100 % garanti sur les postes de l'EPSI sans droits administrateur.
 
-### 2. Application de bureau Windows (Tauri Setup.exe - ~5 Mo)
+### 2. Application de bureau Windows (Tauri Setup.exe - 2.3 Mo)
 
-Pour ceux qui souhaitent un installateur `.exe` classique sans la lourdeur d'Electron (5 Mo au lieu de 150 Mo) :
+Pour ceux qui souhaitent un installateur `.exe` classique sans la lourdeur d'Electron (2.3 Mo au lieu de 150 Mo) :
 
 - Rendez-vous sur la page des [Releases officielles sur GitHub](https://github.com/Math087a/meriz-epsi/releases/tag/v1.7.3).
-- Téléchargez l'installateur Windows officiel `Merise-EPSI-Edition-1.7.3-Setup.exe`.
+- Téléchargez l'installateur Windows officiel [`Merise.EPSI.Edition_1.7.3_x64-setup.exe`](https://github.com/Math087a/meriz-epsi/releases/download/v1.7.3/Merise.EPSI.Edition_1.7.3_x64-setup.exe).
 - Double-cliquez pour installer automatiquement l'application dans votre menu Démarrer et sur votre Bureau.
+- *Note SmartScreen* : comme tout binaire open-source sans certificat d'entreprise payant, cliquez sur « Informations complémentaires » puis « Exécuter quand même » au premier lancement.
 
 ---
 

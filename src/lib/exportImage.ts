@@ -26,21 +26,36 @@ export async function exportToPng(nodes: Node[], viewportElement: HTMLElement): 
 
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark'
   const computed = getComputedStyle(document.documentElement)
-  const canvasBg = computed.getPropertyValue('--c-canvas').trim() || (isDark ? '#1b172d' : '#fcfaf5')
-  const lineStrong = computed.getPropertyValue('--c-line-strong').trim() || (isDark ? '#827ba0' : '#8a8070')
-  const line = computed.getPropertyValue('--c-line').trim() || (isDark ? '#352e54' : '#e6dfd5')
-  const mark = computed.getPropertyValue('--c-mark').trim() || (isDark ? '#818cf8' : '#4f46e5')
+  const canvasBg = computed.getPropertyValue('--c-canvas').trim() || (isDark ? '#131715' : '#fafbfa')
+  const surface = computed.getPropertyValue('--c-surface').trim() || (isDark ? '#1d2520' : '#ffffff')
+  const surfaceSoft = computed.getPropertyValue('--c-surface-soft').trim() || (isDark ? '#242e28' : '#ebf0ec')
+  const lineStrong = computed.getPropertyValue('--c-line-strong').trim() || (isDark ? '#6d8c7b' : '#6d8475')
+  const line = computed.getPropertyValue('--c-line').trim() || (isDark ? '#26332b' : '#d8e2da')
+  const mark = computed.getPropertyValue('--c-mark').trim() || (isDark ? '#52b788' : '#1b5328')
+  const ink = computed.getPropertyValue('--c-ink').trim() || (isDark ? '#eaf2ec' : '#1a241e')
+  const inkSoft = computed.getPropertyValue('--c-ink-soft').trim() || (isDark ? '#a8bcaf' : '#4e6155')
+  const accentInk = computed.getPropertyValue('--c-accent-ink').trim() || (isDark ? '#74c69d' : '#1b5328')
 
   // Injecter un élément style temporaire directement dans viewportElement pour que
-  // le clonage html-to-image emporte avec lui les variables CSS et les règles SVG d'arêtes.
+  // le clonage html-to-image emporte avec lui les variables CSS et les règles SVG d'arêtes et de nœuds.
   const styleEl = document.createElement('style')
   styleEl.setAttribute('data-meriz-export', 'true')
   styleEl.textContent = `
     .react-flow__viewport {
       --c-canvas: ${canvasBg};
+      --c-surface: ${surface};
+      --c-surface-soft: ${surfaceSoft};
       --c-line-strong: ${lineStrong};
       --c-line: ${line};
       --c-mark: ${mark};
+      --c-ink: ${ink};
+      --c-ink-soft: ${inkSoft};
+      --c-accent-ink: ${accentInk};
+      --color-surface: ${surface};
+      --color-surface-soft: ${surfaceSoft};
+      --color-line-strong: ${lineStrong};
+      --color-ink: ${ink};
+      --color-ink-soft: ${inkSoft};
     }
     .react-flow__edges {
       position: absolute !important;
@@ -58,6 +73,10 @@ export async function exportToPng(nodes: Node[], viewportElement: HTMLElement): 
       stroke: ${lineStrong} !important;
       stroke-width: 1.5px !important;
       fill: none !important;
+    }
+    .react-flow__node polygon {
+      fill: ${surface} !important;
+      stroke: ${lineStrong} !important;
     }
   `
   viewportElement.appendChild(styleEl)
