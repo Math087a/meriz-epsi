@@ -5,6 +5,7 @@ import type { DocumentRepository } from '../lib/documentRepository'
 import { AccountStatus } from './AccountStatus'
 import { DocumentList } from './DocumentList'
 import { PreferencesControl } from './ui/PreferencesControl'
+import { ThemeSwitch } from './ui/ThemeSwitch'
 import { Button } from './ui/Button'
 import { Card } from './ui/Card'
 import { Lockup } from './ui/Lockup'
@@ -89,8 +90,9 @@ export function DocumentsHome({
       <SkipLink />
 
       <header className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-line bg-surface px-4 py-2.5 sm:px-6">
-        <Lockup size={30} label={t("Meriz")} />
+        <Lockup size={30} label={t("Merise EPSI Edition")} />
         <div className="ml-auto flex flex-wrap items-center gap-3">
+          <ThemeSwitch />
           <AccountStatus onShowSignIn={onShowSignIn} onShowSignUp={onShowSignUp} />
           <PreferencesControl />
         </div>
@@ -102,7 +104,7 @@ export function DocumentsHome({
           className="rounded-panel bg-accent-soft px-6 py-7 sm:px-8"
         >
           <h1 id="bienvenue-titre" className="text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
-            {t("Bienvenue dans Meriz")}</h1>
+            {t("Bienvenue dans Merise EPSI Edition")}</h1>
           <p className="mt-2 max-w-2xl text-base leading-7 text-ink">
             {t("La modélisation Merise dans le navigateur : dessinez votre MCD, l'outil vérifie sa cohérence puis en tire le modèle logique, le schéma physique et le SQL.")}{' '}
             {cloud

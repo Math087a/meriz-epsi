@@ -11,31 +11,43 @@ export function AboutView() {
         <header className="flex items-center gap-3">
           <LogoMark size={44} />
           <div>
-            <h2 className="text-2xl font-semibold tracking-tight">{t("À propos de Meriz")}</h2>
+            <h2 className="text-2xl font-semibold tracking-tight">{t("À propos de Merise EPSI Edition")}</h2>
             <p className="mt-0.5 text-sm text-ink-soft">
-              {t("Le logiciel, son auteur et sa licence.")}</p>
+              {t("Environnement moderne de modélisation Merise pour l'EPSI.")}</p>
           </div>
         </header>
 
         <div className="rounded-card border border-line bg-surface p-5 shadow-soft">
           <h3 className="text-base font-semibold tracking-tight">{t("Le logiciel")}</h3>
           <p className="mt-2 text-sm leading-6 text-ink-soft">
-            {t("Meriz est un outil libre de modélisation de bases de données par la méthode Merise, entièrement dans le navigateur. C'est une alternative moderne à AnalyseSI : dictionnaire central des propriétés, dessin du MCD, vérification, puis génération du MLD, du MPD et du script SQL (MySQL et PostgreSQL). Le nom vient de la merise, la petite cerise sauvage qui a donné son nom à la méthode.")}</p>
+            {t("Merise EPSI Edition est un outil moderne et libre de modélisation de bases de données selon la méthode Merise. Conçu spécialement pour les travaux pratiques et projets des étudiants de l'EPSI, il intègre l'import direct des fichiers JMerise (.mcd), la génération T-SQL pour Microsoft SQL Server, la gestion complète de l'héritage et de la spécialisation (X, T, XT), ainsi qu'un export PNG haute fidélité.")}</p>
           <p className="mt-2 text-sm leading-6 text-ink-soft">
-            {t("Construit avec React, TypeScript et React Flow. Votre travail reste chez vous : tout s'exécute localement, la sauvegarde automatique vit dans votre navigateur et les fichiers .meriz.json vous appartiennent.")}</p>
+            {t("Construit avec React 19, TypeScript et React Flow. Tout s'exécute localement sur votre poste : vos schémas et dictionnaires restent 100 % privés.")}</p>
         </div>
 
         <div className="rounded-card border border-line bg-surface p-5 shadow-soft">
-          <h3 className="text-base font-semibold tracking-tight">{t("Auteur")}</h3>
+          <h3 className="text-base font-semibold tracking-tight">{t("Auteurs et crédits")}</h3>
           <p className="mt-2 text-sm leading-6 text-ink-soft">
-            {t("Développé par Yassine Daif. Le code source est ouvert et les contributions sont bienvenues :")}{' '}
+            {t("Adaptation et extensions EPSI par Math087a.")}{' '}
+            <a
+              href="https://github.com/Math087a/meriz-epsi"
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium text-accent-ink underline underline-offset-2 hover:text-ink"
+            >
+              github.com/Math087a/meriz-epsi
+            </a>
+          </p>
+          <p className="mt-2 text-sm leading-6 text-ink-soft">
+            {t("Basé sur le logiciel original Meriz créé par Yassine Daif :")}{' '}
             <a
               href="https://github.com/Yassine-Daif/meriz"
               target="_blank"
               rel="noreferrer"
               className="font-medium text-accent-ink underline underline-offset-2 hover:text-ink"
             >
-              {t("github.com/Yassine-Daif/meriz")}</a>
+              github.com/Yassine-Daif/meriz
+            </a>
             .
           </p>
         </div>
@@ -43,9 +55,9 @@ export function AboutView() {
         <div className="rounded-card border border-line bg-surface p-5 shadow-soft">
           <h3 className="text-base font-semibold tracking-tight">{t("Licence")}</h3>
           <p className="mt-2 text-sm leading-6 text-ink-soft">
-            {t("Meriz est un logiciel libre, publié sous licence GNU AGPL 3.0. Vous pouvez l'utiliser, l'étudier, le modifier et le partager, y compris dans un cadre commercial.")}</p>
+            {t("Merise EPSI Edition est un logiciel libre publié sous licence GNU AGPL 3.0. Vous êtes libres de l'utiliser, l'étudier, le modifier et le partager.")}</p>
           <p className="mt-2 text-sm leading-6 text-ink-soft">
-            {t("Une condition vient avec, et elle compte : si vous distribuez une version modifiée, ou si vous la rendez accessible par le réseau, elle doit rester ouverte sous la même licence et créditer l'auteur.")}</p>
+            {t("Conformément à la licence AGPL-3.0, toute version dérivée distribuée ou déployée en réseau doit conserver la même licence libre et créditer les auteurs.")}</p>
           <p className="mt-2 text-sm leading-6 text-ink-soft">
             {t("Le texte complet est dans le fichier LICENSE du dépôt, et sur")}{' '}
             <a

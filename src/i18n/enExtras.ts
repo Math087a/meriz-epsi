@@ -403,5 +403,20 @@ export const englishExtras: Readonly<Record<string, string>> = {
   "l'entité mère": "the parent entity",
   "est automatiquement propagée comme clé primaire et clé étrangère (#) dans chaque sous-type.": "is automatically propagated as primary and foreign key (#) into each sub-type.",
   "Supprimer l'héritage": "Delete inheritance",
-  "Héritage ajouté au schéma. Vous pouvez le configurer dans le panneau à droite.": "Inheritance added to the diagram. Configure it in the panel on the right."
+  "Héritage ajouté au schéma. Vous pouvez le configurer dans le panneau à droite.": "Inheritance added to the diagram. Configure it in the panel on the right.",
+  "À propos de Merise EPSI Edition": "About Merise EPSI Edition",
+  "Environnement moderne de modélisation Merise pour l'EPSI.": "Modern Merise modeling environment for EPSI.",
+  "Merise EPSI Edition est un outil moderne et libre de modélisation de bases de données selon la méthode Merise. Conçu spécialement pour les travaux pratiques et projets des étudiants de l'EPSI, il intègre l'import direct des fichiers JMerise (.mcd), la génération T-SQL pour Microsoft SQL Server, la gestion complète de l'héritage et de la spécialisation (X, T, XT), ainsi qu'un export PNG haute fidélité.": "Merise EPSI Edition is a modern, open-source database modeling tool using the Merise method. Designed specifically for EPSI students' practical coursework and projects, it includes direct import of JMerise files (.mcd), T-SQL generation for Microsoft SQL Server, full support for inheritance and specialisation (X, T, XT), and high-fidelity PNG export.",
+  "Construit avec React 19, TypeScript et React Flow. Tout s'exécute localement sur votre poste : vos schémas et dictionnaires restent 100 % privés.": "Built with React 19, TypeScript and React Flow. Everything runs locally on your computer: your diagrams and dictionaries remain 100% private.",
+  "Auteurs et crédits": "Authors and credits",
+  "Adaptation et extensions EPSI par Math087a.": "Adaptation and EPSI extensions by Math087a.",
+  "Basé sur le logiciel original Meriz créé par Yassine Daif :": "Based on the original Meriz software created by Yassine Daif:",
+  "Merise EPSI Edition est un logiciel libre publié sous licence GNU AGPL 3.0. Vous êtes libres de l'utiliser, l'étudier, le modifier et le partager.": "Merise EPSI Edition is free software published under the GNU AGPL 3.0 license. You are free to use, study, modify and share it.",
+  "Conformément à la licence AGPL-3.0, toute version dérivée distribuée ou déployée en réseau doit conserver la même licence libre et créditer les auteurs.": "In accordance with the AGPL-3.0 license, any derived version distributed or deployed over a network must retain the same free license and credit the authors.",
+  "Merise EPSI Edition": "Merise EPSI Edition",
+  "Bienvenue dans Merise EPSI Edition": "Welcome to Merise EPSI Edition",
+  "Basculer vers le mode clair": "Switch to light mode",
+  "Basculer vers le mode sombre Vert Sapin": "Switch to Vert Sapin dark mode",
+  "Mode sombre actif (cliquer pour mode clair)": "Dark mode active (click for light mode)",
+  "Mode clair actif (cliquer pour mode sombre Vert Sapin)": "Light mode active (click for Vert Sapin dark mode)"
 }

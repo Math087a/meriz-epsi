@@ -21,6 +21,8 @@ const paths = {
   close: <path d="m6 6 12 12M18 6 6 18"/>,
   download: <><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"/></>,
   folder: <path d="M3 6h6l2 3h10v12H3z"/>,
+  sun: <><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></>,
+  moon: <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>,
 } satisfies Record<string, ReactNode>
 export type IconName = keyof typeof paths
 export function Icon({ name, size = 18, className = '' }: { name: IconName; size?: number; className?: string }) {

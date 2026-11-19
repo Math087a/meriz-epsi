@@ -3,20 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Meriz EPSI Edition</title>
+    <title>Merise - EPSI Edition</title>
     <link rel="icon" href="./favicon.ico" sizes="any" />
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <meta
       name="description"
-      content="Meriz : modélisation de bases de données par la méthode Merise, dans le navigateur. Dictionnaire, MCD, vérification, puis génération du MLD, du MPD et du SQL."
+      content="Merise EPSI Edition : modélisation de bases de données par la méthode Merise. Dictionnaire, MCD, héritage formel, puis génération du MLD, du MPD et du SQL (T-SQL, MySQL, PostgreSQL)."
     />
-    <meta name="theme-color" content="#f7f3ec" />
-    <meta property="og:title" content="Meriz" />
+    <meta name="theme-color" content="#161b18" />
+    <meta property="og:title" content="Merise - EPSI Edition" />
     <meta
       property="og:description"
-      content="Dessinez votre MCD Merise, l'outil vérifie et génère le MLD, le MPD et le script SQL. Libre et gratuit."
+      content="Modélisation Merise moderne pour l'EPSI : MCD, héritage, MLD dynamique et génération T-SQL."
     />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="fr_FR" />
@@ -26,14 +26,15 @@
       ;(function () {
         var preference = 'system'
         try {
-          var stored = localStorage.getItem('meriz-theme')
+          var stored = localStorage.getItem('merise-theme') || localStorage.getItem('meriz-theme')
           if (stored === 'light' || stored === 'dark') preference = stored
         } catch (e) {}
         var dark =
           preference === 'dark' ||
           (preference === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)
         document.documentElement.dataset.theme = dark ? 'dark' : 'light'
-        if (dark) document.querySelector('meta[name="theme-color"]').setAttribute('content', '#171428')
+        if (dark) document.querySelector('meta[name="theme-color"]').setAttribute('content', '#161b18')
+        else document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f4f6f4')
       })()
     </script>
   </head>

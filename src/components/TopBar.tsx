@@ -14,6 +14,7 @@ import { BackButton } from './ui/BackButton'
 import { Badge } from './ui/Badge'
 import { Lockup } from './ui/Lockup'
 import { PreferencesControl } from './ui/PreferencesControl'
+import { ThemeSwitch } from './ui/ThemeSwitch'
 
 
 interface TopBarProps {
@@ -98,7 +99,7 @@ export function TopBar({
     <header data-local={!cloud} className="editor-header border-b border-line bg-surface text-ink">
       <div className="editor-document-row">
       <h1 className="hidden shrink-0 items-center sm:flex">
-        <Lockup size={26} label={t("Meriz")} />
+        <Lockup size={26} label={t("Merise EPSI Edition")} />
       </h1>
       <div className="editor-document-identity">
         <BackButton
@@ -169,7 +170,7 @@ export function TopBar({
       </div>
       <div className="editor-personal-row">
         {participants && participants.length > 0 && <div className="editor-participants"><ParticipantList participants={participants} others={others} /></div>}
-        <div className="editor-personal-actions"><AccountStatus compact /><PreferencesControl /></div>
+        <div className="editor-personal-actions"><ThemeSwitch /><AccountStatus compact /><PreferencesControl /></div>
       </div>
     </header>
   )

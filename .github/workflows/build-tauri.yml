@@ -1,0 +1,56 @@
+name: Compilation Tauri Windows
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'src-tauri/**'
+      - '.github/workflows/build-tauri.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Cloner le depot
+        uses: actions/checkout@v4
+
+      - name: Configurer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Configurer la chaine d'outils Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Installer les dependances
+        run: npm ci
+
+      - name: Compiler le frontend web
+        run: npm run build
+
+      - name: Compiler l'installateur Windows Tauri
+        run: npx tauri build
+
+      - name: Sauvegarder les installateurs en artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: installateurs-windows-merise-epsi
+          path: |
+            src-tauri/target/release/bundle/nsis/*.exe
+            src-tauri/target/release/bundle/msi/*.msi
+
+      - name: Mettre a jour la release v1.7.3 si existante
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          for file in src-tauri/target/release/bundle/nsis/*.exe src-tauri/target/release/bundle/msi/*.msi; do
+            if [ -f "$file" ]; then
+              gh release upload v1.7.3 "$file" --clobber || true
+            fi
+          done

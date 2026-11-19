@@ -4,6 +4,7 @@ import type { ReactNode } from 'react'
 import type { ApiUser } from '../lib/authApi'
 import { AccountStatus } from './AccountStatus'
 import { PreferencesControl } from './ui/PreferencesControl'
+import { ThemeSwitch } from './ui/ThemeSwitch'
 import { Button } from './ui/Button'
 import { Lockup } from './ui/Lockup'
 import { BackToTop } from './ui/BackToTop'
@@ -83,11 +84,12 @@ export function ConnectedShell({ user, page, onNavigate, notice, onClearNotice, 
       <SkipLink />
 
       <header className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-line bg-surface px-4 py-2.5 sm:px-6">
-        <Lockup size={30} label={t("Meriz")} />
+        <Lockup size={30} label={t("Merise EPSI Edition")} />
         <span className="hidden text-sm font-medium text-ink-soft sm:inline">
           {user.role === 'teacher' ? t("Espace prof") : user.usageCategory != null && user.usageCategory !== 'student' ? t('Espace personnel') : t("Espace élève")}
         </span>
         <div className="ml-auto flex flex-wrap items-center gap-3">
+          <ThemeSwitch />
           <PreferencesControl />
           <AccountStatus compact />
         </div>

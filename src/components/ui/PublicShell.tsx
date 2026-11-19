@@ -3,6 +3,7 @@ import { useLanguage } from "../../lib/useLanguage"
 import { useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
 import { PreferencesControl } from './PreferencesControl'
+import { ThemeSwitch } from './ThemeSwitch'
 import { BackButton } from './BackButton'
 import { Card } from './Card'
 import { Lockup } from './Lockup'
@@ -45,9 +46,10 @@ export function PublicShell({
       <SkipLink />
 
       <header className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-line bg-surface px-4 py-2.5 sm:px-6">
-        <Lockup size={30} label={t("Meriz")} />
+        <Lockup size={30} label={t("Merise EPSI Edition")} />
         {onBack && <BackButton label={backLabel} onClick={onBack} />}
         <div className="ml-auto flex flex-wrap items-center gap-3">
+          <ThemeSwitch />
           <PreferencesControl />
         </div>
       </header>
