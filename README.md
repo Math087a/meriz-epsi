@@ -4,6 +4,10 @@ Environnement moderne de modélisation Merise (MCD, MLD, MPD, SQL Server T-SQL) 
 
 Merise EPSI Edition remplace avantageusement les outils historiques tels que JMerise ou AnalyseSI par une expérience fluide, un thème Vert Sapin soigné et des fonctionnalités directement adaptées aux cursus informatiques.
 
+> [!IMPORTANT]
+> **Zéro installation, zéro prérequis (aucun Java, aucun Node.js requis sur votre poste)**.
+> Pour les étudiants et intervenants, Merise EPSI Edition s'exécute directement dans votre navigateur web habituel ou en application autonome sur votre Bureau, sans nécessiter de droits administrateur.
+
 ---
 
 ## Comment l'installer sur votre PC (Barre des tâches & Bureau)
@@ -27,10 +31,10 @@ Pour créer directement le raccourci sur votre Bureau et dans votre Menu Démarr
 2. Copiez et collez cette commande unique, puis appuyez sur Entrée :
 
 ```cmd
-powershell -Command "irm https://raw.githubusercontent.com/Math087a/meriz-epsi/main/install.ps1 | iex"
+powershell -Command "irm https://raw.githubusercontent.com/Math087a/meriz-epsi/main/scripts/install.ps1 | iex"
 ```
 
-*(Si vous êtes déjà dans une fenêtre PowerShell, vous pouvez taper directement : `irm https://raw.githubusercontent.com/Math087a/meriz-epsi/main/install.ps1 | iex`)*
+*(Si vous êtes déjà dans une fenêtre PowerShell, vous pouvez taper directement : `irm https://raw.githubusercontent.com/Math087a/meriz-epsi/main/scripts/install.ps1 | iex`)*
 
 3. L'application démarre instantanément en fenêtre autonome.
 4. Fais un **clic droit sur l'icône dans la barre des tâches en bas** -> **« Épingler à la barre des tâches »**.
@@ -63,6 +67,7 @@ merise-epsi/
 |-- docs/                  # Documentation technique et principes d'architecture
 |-- examples/              # Modeles Merise et cas d'etudes pedagogiques (JSON)
 |-- public/                # Ressources statiques et manifeste PWA
+|-- scripts/               # Scripts d'installation et d'automatisation
 |-- src/
 |   |-- canvas/            # Moteur de graphe React Flow (entites, associations, pattes, heritage)
 |   |-- components/        # Couche de presentation (TopBar, switch de theme, inspecteurs)
@@ -70,33 +75,16 @@ merise-epsi/
 |   |-- lib/               # Services d'infrastructure (parseur JMerise, stockage, exports)
 |   `-- model/             # Coeur metier Merise (MCD, passage MLD, MPD, generation T-SQL)
 |-- tests/                 # 82 suites de tests unitaires automatises sous Vitest
-|-- install.ps1            # Script d'installation du raccourci applicatif
+|-- CONTRIBUTING.md        # Guide technique pour les contributeurs et developpeurs
 |-- package.json           # Dependances npm et scripts
 `-- README.md              # Ce document
 ```
 
 ---
 
-## Guide pour les contributeurs
+## Développement & contribution
 
-### Prérequis
-- Node.js (version 20 ou supérieure)
-- npm (version 10 ou supérieure)
-
-### Commandes utiles
-```bash
-# Installer les dépendances
-npm install
-
-# Lancer en mode développement web
-npm run dev
-
-# Exécuter les tests automatisés (1071 tests unitaires)
-npm test
-
-# Compiler pour la production web
-npm run build
-```
+Ce projet est open-source sous licence libre **GNU AGPL-3.0**. Si vous souhaitez modifier le code source, exécuter la suite de tests ou compiler l'application en local, consultez le [Guide pour les contributeurs (CONTRIBUTING.md)](CONTRIBUTING.md).
 
 ---
 

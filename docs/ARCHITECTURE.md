@@ -37,8 +37,8 @@ merise-epsi/
 |   |-- lib/               # Services d'infrastructure (parseur JMerise, stockage, exports)
 |   `-- model/             # Coeur metier Merise (MCD, passage MLD, MPD, generation T-SQL)
 |-- tests/                 # Suites de validation, tests d'integration et non-regression
+|-- CONTRIBUTING.md        # Guide de contribution pour les developpeurs
 |-- index.html             # Point d'entree HTML unique de l'application SPA
-|-- install.ps1            # Script d'installation du raccourci applicatif Windows (PowerShell)
 |-- package.json           # Declarations des dependances npm et scripts de developpement
 `-- README.md              # Guide d'accueil, installation et prise en main rapide
 ```
