@@ -1,6 +1,6 @@
 import { EXAM_MODE } from './examMode'
 import { getNodesBounds, getViewportForBounds } from '@xyflow/react'
-import type { Node } from '@xyflow/react'
+import type { Edge, Node } from '@xyflow/react'
 import { toPng } from 'html-to-image'
 
 // Plafond de dimensions pour ne pas produire un canvas démesuré.
@@ -18,8 +18,27 @@ function canvasBackground(): string {
   return value === '' ? '#ffffff' : value
 }
 
-export async function exportToPng(nodes: Node[], viewportElement: HTMLElement): Promise<string> {
-  const bounds = getNodesBounds(nodes)
+export async function exportToPng(nodes: Node[], viewportElement: HTMLElement, edges: Edge[] = []): Promise<string> {
+  const nodeBounds = getNodesBounds(nodes)
+  let minX = nodeBounds.x
+  let minY = nodeBounds.y
+  let maxX = nodeBounds.x + nodeBounds.width
+  let maxY = nodeBounds.y + nodeBounds.height
+  for (const edge of edges) {
+    const labelPos = (edge.data as { labelPosition?: { x: number; y: number } } | undefined)?.labelPosition
+    if (labelPos) {
+      minX = Math.min(minX, labelPos.x - 72)
+      minY = Math.min(minY, labelPos.y - 48)
+      maxX = Math.max(maxX, labelPos.x + 72)
+      maxY = Math.max(maxY, labelPos.y + 48)
+    }
+  }
+  const bounds = {
+    x: minX,
+    y: minY,
+    width: Math.max(1, maxX - minX),
+    height: Math.max(1, maxY - minY),
+  }
   const scale = Math.min(1, MAX_DIMENSION / bounds.width, MAX_DIMENSION / bounds.height)
   const width = Math.max(1, Math.round(bounds.width * scale))
   const height = Math.max(1, Math.round(bounds.height * scale))

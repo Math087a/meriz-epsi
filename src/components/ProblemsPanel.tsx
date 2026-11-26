@@ -44,8 +44,15 @@ function ProblemGroup({ title, icon, problems, mcd, onSelectElement, toneClass }
           const selectable = elementId !== undefined && isSelectable(mcd, elementId)
           const body = (
             <>
-              <span aria-hidden="true">{icon} </span>
-              {problem.message}
+              <div>
+                <span aria-hidden="true">{icon} </span>
+                {problem.message}
+              </div>
+              {problem.hint && (
+                <p className="mt-1 text-micro leading-snug opacity-85">
+                  {problem.hint}
+                </p>
+              )}
             </>
           )
           return (

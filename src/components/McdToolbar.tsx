@@ -21,6 +21,8 @@ interface McdToolbarProps {
   problems: ValidationProblem[]
   /** Ouvre les résultats (MLD, MPD, SQL), toujours dérivés du MCD courant. */
   onGenerate: () => void
+  /** Ouvre le panneau de vérification à droite et y fait défiler le rapport. */
+  onVerify?: () => void
   /** Consultation seule : plus d'ajout, mais vérifier et générer restent. */
   readOnly?: boolean
   onSelectElement?: (elementId: string) => void
@@ -45,7 +47,7 @@ const iconProps = {
 } as const
 
 /** Sous-barre de la vue MCD : ajout d'éléments, vérification, génération. */
-export function McdToolbar({ state, dispatch, problems, onGenerate, canGenerate = true, readOnly = false, onSelectElement, pencil, panel }: McdToolbarProps) {
+export function McdToolbar({ state, dispatch, problems, onGenerate, onVerify, canGenerate = true, readOnly = false, onSelectElement, pencil, panel }: McdToolbarProps) {
   useLanguage()
   const { screenToFlowPosition, fitView } = useReactFlow()
   const setStatus = useToast()
@@ -69,6 +71,7 @@ export function McdToolbar({ state, dispatch, problems, onGenerate, canGenerate 
 
   // L'engrenage d'AnalyseSI : le MCD est-il prêt à être transformé ?
   const handleVerify = () => {
+    onVerify?.()
     if (errors.length > 0) {
       setStatus({
         kind: 'error',
@@ -195,7 +198,7 @@ export function McdToolbar({ state, dispatch, problems, onGenerate, canGenerate 
 
       <div role="group" aria-label={t("Vues")} className="flex shrink-0 gap-1">
         <Button size="sm" variant="ghost" aria-label={t("Ajuster à la fenêtre")} title={t("Ajuster à la fenêtre")} onClick={() => void fitView({ padding: .2, duration: 0 })}><Icon name="fit" /></Button>
-        {panel && <Button id={panel.buttonId} size="sm" variant="ghost" className="md:hidden" aria-label={t("Inspecteur")} title={t("Inspecteur")} aria-expanded={panel.open} aria-controls={panel.controls} onClick={panel.onToggle}><Icon name="panel" /></Button>}
+        {panel && <Button id={panel.buttonId} size="sm" variant="ghost" aria-label={t("Inspecteur")} title={panel.open ? t("Réduire le volet droit") : t("Afficher le volet droit")} aria-expanded={panel.open} aria-controls={panel.controls} onClick={panel.onToggle}><Icon name="panel" /></Button>}
       </div>
     </div>
   )

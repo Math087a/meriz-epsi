@@ -1,8 +1,18 @@
 import { t } from "../i18n/runtime"
 import { useLanguage } from "../lib/useLanguage"
-import type { ReactNode } from 'react'
+import { useState } from 'react'
+import type { KeyboardEvent, PointerEvent, ReactNode } from 'react'
 import type { ViewId, ViewInfo } from './views'
 import { FOOTER_VIEWS, VIEWS } from './views'
+
+const RAIL_MIN = 140
+const RAIL_MAX = 320
+const RAIL_DEFAULT = 208
+const RAIL_STEP = 16
+
+function clampRailWidth(width: number): number {
+  return Math.min(RAIL_MAX, Math.max(RAIL_MIN, width))
+}
 
 interface NavRailProps {
   allowedViews?: readonly ViewId[]
@@ -84,10 +94,11 @@ const icons: Record<ViewId, ReactNode> = {
 interface RailItemProps {
   view: ViewInfo
   active: boolean
+  collapsed: boolean
   onSelectView: (view: ViewId) => void
 }
 
-function RailItem({ view, active, onSelectView }: RailItemProps) {
+function RailItem({ view, active, collapsed, onSelectView }: RailItemProps) {
   useLanguage()
   return (
     <li>
@@ -96,12 +107,14 @@ function RailItem({ view, active, onSelectView }: RailItemProps) {
         aria-current={active ? 'page' : undefined}
         title={view.label}
         onClick={() => onSelectView(view.id)}
-        className={`flex w-full items-center justify-center gap-2.5 rounded-control px-2.5 py-2 text-sm md:justify-start ${
+        className={`flex w-full items-center gap-2.5 rounded-control px-2.5 py-2 text-sm ${
+          collapsed ? 'justify-center' : 'justify-center md:justify-start'
+        } ${
           active ? 'bg-accent font-medium text-on-accent' : 'text-ink-soft hover:bg-accent-soft hover:text-ink'
         }`}
       >
         <span aria-hidden="true">{icons[view.id]}</span>
-        <span className="sr-only md:not-sr-only">{view.label}</span>
+        <span className={collapsed ? 'sr-only' : 'sr-only md:not-sr-only'}>{view.label}</span>
       </button>
     </li>
   )
@@ -110,35 +123,97 @@ function RailItem({ view, active, onSelectView }: RailItemProps) {
 /**
  * Rail de navigation vertical, équivalent moderne du Navigateur
  * d'AnalyseSI. Vues de travail en haut, Apprendre et À propos en
- * pied. Icônes seules sur écran étroit, libellés à partir de md.
+ * pied. Réductible et redimensionnable.
  */
 export function NavRail({ activeView, onSelectView, allowedViews }: NavRailProps) {
   useLanguage()
+  const [collapsed, setCollapsed] = useState(false)
+  const [railWidth, setRailWidth] = useState(RAIL_DEFAULT)
+
+  const onSeparatorPointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    event.preventDefault()
+    const startX = event.clientX
+    const startWidth = railWidth
+    const separator = event.currentTarget
+    separator.setPointerCapture(event.pointerId)
+    const onMove = (moveEvent: globalThis.PointerEvent) => {
+      setRailWidth(clampRailWidth(startWidth + (moveEvent.clientX - startX)))
+    }
+    const onUp = () => {
+      separator.removeEventListener('pointermove', onMove)
+    }
+    separator.addEventListener('pointermove', onMove)
+    separator.addEventListener('pointerup', onUp, { once: true })
+  }
+
+  const onSeparatorKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'ArrowRight') {
+      event.preventDefault()
+      setRailWidth((w) => clampRailWidth(w + RAIL_STEP))
+    } else if (event.key === 'ArrowLeft') {
+      event.preventDefault()
+      setRailWidth((w) => clampRailWidth(w - RAIL_STEP))
+    }
+  }
+
   return (
-    <nav
-      aria-label={t("Vues")}
-      className="flex w-14 shrink-0 flex-col border-r border-line bg-shell md:w-52"
-    >
-      <ul className="flex flex-col gap-1 p-2">
-        {VIEWS.filter(view => !allowedViews || allowedViews.includes(view.id)).map((view) => (
-          <RailItem
-            key={view.id}
-            view={view}
-            active={view.id === activeView}
-            onSelectView={onSelectView}
-          />
-        ))}
-      </ul>
-      <ul className="mt-auto flex flex-col gap-1 border-t border-line p-2">
-        {FOOTER_VIEWS.filter((view) => !allowedViews || allowedViews.includes(view.id)).map((view) => (
-          <RailItem
-            key={view.id}
-            view={view}
-            active={view.id === activeView}
-            onSelectView={onSelectView}
-          />
-        ))}
-      </ul>
-    </nav>
+    <div className="flex shrink-0">
+      <nav
+        aria-label={t("Vues")}
+        style={collapsed ? undefined : { width: railWidth }}
+        className={`flex shrink-0 flex-col border-r border-line bg-shell ${collapsed ? 'w-14' : 'max-w-[40vw] md:w-52'}`}
+      >
+        <div className={`flex items-center border-b border-line px-2 py-1.5 ${collapsed ? 'justify-center' : 'justify-between'}`}>
+          {!collapsed && <span className="truncate px-1 text-xs font-semibold text-ink-soft">{t("Navigation")}</span>}
+          <button
+            type="button"
+            onClick={() => setCollapsed((c) => !c)}
+            aria-label={collapsed ? t("Agrandir le volet gauche") : t("Réduire le volet gauche")}
+            title={collapsed ? t("Agrandir le volet gauche") : t("Réduire le volet gauche")}
+            className="inline-flex h-7 w-7 items-center justify-center rounded-control text-ink-soft hover:bg-accent-soft hover:text-ink"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              {collapsed ? <path d="m9 18 6-6-6-6" /> : <path d="m15 18-6-6 6-6" />}
+            </svg>
+          </button>
+        </div>
+        <ul className="flex flex-col gap-1 p-2">
+          {VIEWS.filter(view => !allowedViews || allowedViews.includes(view.id)).map((view) => (
+            <RailItem
+              key={view.id}
+              view={view}
+              active={view.id === activeView}
+              collapsed={collapsed}
+              onSelectView={onSelectView}
+            />
+          ))}
+        </ul>
+        <ul className="mt-auto flex flex-col gap-1 border-t border-line p-2">
+          {FOOTER_VIEWS.filter((view) => !allowedViews || allowedViews.includes(view.id)).map((view) => (
+            <RailItem
+              key={view.id}
+              view={view}
+              active={view.id === activeView}
+              collapsed={collapsed}
+              onSelectView={onSelectView}
+            />
+          ))}
+        </ul>
+      </nav>
+      {!collapsed && (
+        <div
+          role="separator"
+          aria-orientation="vertical"
+          aria-label={t("Redimensionner le volet gauche")}
+          aria-valuemin={RAIL_MIN}
+          aria-valuemax={RAIL_MAX}
+          aria-valuenow={railWidth}
+          tabIndex={0}
+          onPointerDown={onSeparatorPointerDown}
+          onKeyDown={onSeparatorKeyDown}
+          className="hidden w-1.5 shrink-0 cursor-col-resize bg-line hover:bg-mark md:block"
+        />
+      )}
+    </div>
   )
 }

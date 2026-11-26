@@ -2,7 +2,7 @@ import { EXAM_MODE } from '../lib/examMode'
 import { Icon } from './ui/Icon'
 import { t } from "../i18n/runtime"
 import { useLanguage } from "../lib/useLanguage"
-import { useCallback, useEffect, useId, useMemo, useState } from 'react'
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
 import type { Dispatch, KeyboardEvent, PointerEvent, ReactNode, SetStateAction } from 'react'
 import type { McdAction, McdEditorState } from '../model/mcdReducer'
 import type { RemotePresence, CollabSelectionBox } from '../model/collabProvider'
@@ -198,6 +198,7 @@ export function McdView({
     })
   }, [inker])
 
+  const problemsRef = useRef<HTMLDivElement>(null)
   const onSeparatorPointerDown = (event: PointerEvent<HTMLDivElement>) => {
     event.preventDefault()
     const startX = event.clientX
@@ -236,6 +237,12 @@ export function McdView({
         dispatch={dispatch}
         problems={problems}
         onGenerate={onGenerate}
+        onVerify={() => {
+          setPanelOpen(true)
+          requestAnimationFrame(() => {
+            problemsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          })
+        }}
         readOnly={readOnly}
         onSelectElement={onSelectElement}
         panel={{ open: panelOpen, onToggle: () => setPanelOpen(open => !open), controls: panelId, buttonId: panelButtonId }}
@@ -297,26 +304,37 @@ export function McdView({
           hideInk={!showInk}
           ink={onInkStroke ? { active: pencil, onStroke: annotation.onStroke, preview: annotation.preview } : undefined}
         />
-        <div
-          role="separator"
-          aria-orientation="vertical"
-          aria-label={t("Redimensionner le panneau latéral")}
-          aria-valuemin={PANEL_MIN}
-          aria-valuemax={PANEL_MAX}
-          aria-valuenow={panelWidth}
-          tabIndex={0}
-          onPointerDown={onSeparatorPointerDown}
-          onKeyDown={onSeparatorKeyDown}
-          className="editor-panel-resize w-1.5 shrink-0 cursor-col-resize bg-line hover:bg-mark"
-        />
+        {panelOpen && (
+          <div
+            role="separator"
+            aria-orientation="vertical"
+            aria-label={t("Redimensionner le panneau latéral")}
+            aria-valuemin={PANEL_MIN}
+            aria-valuemax={PANEL_MAX}
+            aria-valuenow={panelWidth}
+            tabIndex={0}
+            onPointerDown={onSeparatorPointerDown}
+            onKeyDown={onSeparatorKeyDown}
+            className="editor-panel-resize w-1.5 shrink-0 cursor-col-resize bg-line hover:bg-mark"
+          />
+        )}
         <div
           id={panelId}
           style={{ width: panelWidth, maxWidth: '60vw' }}
-          className={'editor-inspector ' + (panelOpen ? '' : 'mobile-panel-closed')}
+          className={'editor-inspector ' + (panelOpen ? '' : 'hidden')}
         >
-          <div className="flex items-center justify-between border-b border-line px-3 py-2 md:hidden"><span className="text-sm font-semibold">{t("Inspecteur")}</span><Button size="sm" variant="ghost" aria-label={t("Fermer l’inspecteur")} onClick={() => { setPanelOpen(false); document.getElementById(panelButtonId)?.focus() }}><Icon name="close" /></Button></div>
+          <div className="flex items-center justify-between border-b border-line px-3 py-1.5">
+            <span className="text-xs font-semibold text-ink-soft">{t("Inspecteur")}</span>
+            <Button size="sm" variant="ghost" title={t("Réduire le volet droit")} aria-label={t("Fermer l’inspecteur")} onClick={() => { setPanelOpen(false); document.getElementById(panelButtonId)?.focus() }}>
+              <Icon name="close" />
+            </Button>
+          </div>
           <Inspector mcd={state.mcd} selection={selection} dispatch={dispatch} readOnly={readOnly} />
-          {!EXAM_MODE && <ProblemsPanel problems={problems} mcd={state.mcd} onSelectElement={onSelectElement} />}
+          {!EXAM_MODE && (
+            <div ref={problemsRef}>
+              <ProblemsPanel problems={problems} mcd={state.mcd} onSelectElement={onSelectElement} />
+            </div>
+          )}
           {comments && (
             <CommentsPanel
               thread={thread}

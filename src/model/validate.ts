@@ -14,6 +14,7 @@ import { findProperty, resolveAttributes } from './queries'
 export interface ValidationProblem {
   severity: 'error' | 'warning'
   message: string
+  hint?: string
   elementId?: string
 }
 
@@ -52,10 +53,10 @@ const SQL_RESERVED_WORDS = new Set(
  */
 export function validate(mcd: Mcd): ValidationProblem[] {
   const problems: ValidationProblem[] = []
-  const error = (message: string, elementId?: string) =>
-    problems.push({ severity: 'error', message, elementId })
-  const warning = (message: string, elementId?: string) =>
-    problems.push({ severity: 'warning', message, elementId })
+  const error = (message: string, elementId?: string, hint?: string) =>
+    problems.push({ severity: 'error', message, elementId, hint })
+  const warning = (message: string, elementId?: string, hint?: string) =>
+    problems.push({ severity: 'warning', message, elementId, hint })
 
   /* ----------------------------- Erreurs ----------------------------- */
 
@@ -70,7 +71,11 @@ export function validate(mcd: Mcd): ValidationProblem[] {
   }
   for (const id of allIds) {
     if (seenIds.has(id)) {
-      error(t("Identifiant technique utilisé plusieurs fois : « {0} ».", [id]))
+      error(
+        t("Identifiant technique utilisé plusieurs fois : « {0} ».", [id]),
+        undefined,
+        t("Corriger : supprimez ou recréez l’élément en doublon."),
+      )
     }
     seenIds.add(id)
   }
@@ -80,12 +85,20 @@ export function validate(mcd: Mcd): ValidationProblem[] {
   for (const property of mcd.properties) {
     const name = property.name.trim()
     if (name === '') {
-      error(t("Une propriété du dictionnaire n'a pas de nom."))
+      error(
+        t("Une propriété du dictionnaire n'a pas de nom."),
+        undefined,
+        t("Corriger : donnez un nom à cette propriété dans le dictionnaire."),
+      )
       continue
     }
     const key = name.toLowerCase()
     if (seenPropertyNames.has(key)) {
-      error(t("Deux propriétés du dictionnaire portent le même nom « {0} ».", [name]))
+      error(
+        t("Deux propriétés du dictionnaire portent le même nom « {0} ».", [name]),
+        undefined,
+        t("Corriger : en Merise, chaque propriété du dictionnaire doit avoir un nom unique (ex. nom_client, nom_produit), ou réutilisez la même propriété si c’est la même donnée."),
+      )
     }
     seenPropertyNames.add(key)
   }
@@ -108,7 +121,11 @@ export function validate(mcd: Mcd): ValidationProblem[] {
   for (const owner of owners) {
     for (const ref of owner.refs) {
       if (!findProperty(mcd, ref.propertyId)) {
-        error(t("Dans {0}, un attribut référence une propriété inexistante.", [owner.label]), owner.id)
+        error(
+          t("Dans {0}, un attribut référence une propriété inexistante.", [owner.label]),
+          owner.id,
+          t("Corriger : retirez cet attribut ou recréez la propriété dans le dictionnaire."),
+        )
         continue
       }
       const list = placements.get(ref.propertyId)
@@ -125,6 +142,7 @@ export function validate(mcd: Mcd): ValidationProblem[] {
       error(
         t("La propriété « {0} » est placée plusieurs fois : une propriété appartient à au plus une entité ou association.", [displayName(property?.name ?? propertyId)]),
         ownerIds[1],
+        t("Corriger : retirez cette propriété d’un des deux blocs, ou créez deux propriétés distinctes."),
       )
     }
   }
@@ -134,19 +152,35 @@ export function validate(mcd: Mcd): ValidationProblem[] {
   for (const entity of mcd.entities) {
     const name = entity.name.trim()
     if (name === '') {
-      error(t("Une entité n'a pas de nom."), entity.id)
+      error(
+        t("Une entité n'a pas de nom."),
+        entity.id,
+        t("Corriger : saisissez un nom pour cette entité dans l’inspecteur."),
+      )
     } else {
       const key = name.toLowerCase()
       if (seenEntityNames.has(key)) {
-        error(t("Deux entités portent le même nom « {0} ».", [name]), entity.id)
+        error(
+          t("Deux entités portent le même nom « {0} ».", [name]),
+          entity.id,
+          t("Corriger : renommez l’une des deux entités pour qu’elles aient des noms distincts."),
+        )
       }
       seenEntityNames.add(key)
     }
 
     if (entity.attributes.length === 0) {
-      error(t("L'entité {0} n'a aucun attribut.", [displayName(entity.name)]), entity.id)
+      error(
+        t("L'entité {0} n'a aucun attribut.", [displayName(entity.name)]),
+        entity.id,
+        t("Corriger : ajoutez au moins une propriété (avec un identifiant) à cette entité."),
+      )
     } else if (!entity.attributes.some((ref) => ref.isIdentifier)) {
-      error(t("L'entité {0} n'a pas d'identifiant.", [displayName(entity.name)]), entity.id)
+      error(
+        t("L'entité {0} n'a pas d'identifiant.", [displayName(entity.name)]),
+        entity.id,
+        t("Corriger : cochez « Identifiant » sur la propriété qui sert de clé primaire (ex. id_...)."),
+      )
     }
   }
 
@@ -158,17 +192,29 @@ export function validate(mcd: Mcd): ValidationProblem[] {
     const label = displayName(association.name)
 
     if (name === '') {
-      error(t("Une association n'a pas de nom."), association.id)
+      error(
+        t("Une association n'a pas de nom."),
+        association.id,
+        t("Corriger : saisissez un verbe ou un nom pour cette association."),
+      )
     } else {
       const key = name.toLowerCase()
       if (seenAssociationNames.has(key)) {
-        error(t("Deux associations portent le même nom « {0} ».", [name]), association.id)
+        error(
+          t("Deux associations portent le même nom « {0} ».", [name]),
+          association.id,
+          t("Corriger : renommez l’une des deux associations."),
+        )
       }
       seenAssociationNames.add(key)
     }
 
     if (association.legs.length < 2) {
-      error(t("L'association {0} doit relier au moins deux entités.", [label]), association.id)
+      error(
+        t("L'association {0} doit relier au moins deux entités.", [label]),
+        association.id,
+        t("Corriger : reliez cette association à au moins deux entités (ou deux pattes sur la même entité)."),
+      )
     }
 
     for (const ref of association.attributes) {
@@ -177,6 +223,7 @@ export function validate(mcd: Mcd): ValidationProblem[] {
         error(
           t("L'attribut « {0} » de l'association {1} ne peut pas être identifiant.", [displayName(property?.name ?? ref.propertyId), label]),
           association.id,
+          t("Corriger : décochez « Identifiant » sur cet attribut (seules les entités portent un identifiant)."),
         )
       }
     }
@@ -185,7 +232,11 @@ export function validate(mcd: Mcd): ValidationProblem[] {
     const legsByEntity = new Map<string, Leg[]>()
     for (const leg of association.legs) {
       if (!entityIds.has(leg.entityId)) {
-        error(t("Une patte de l'association {0} pointe vers une entité inexistante.", [label]), leg.id)
+        error(
+          t("Une patte de l'association {0} pointe vers une entité inexistante.", [label]),
+          leg.id,
+          t("Corriger : supprimez cette patte et recréez le lien vers une entité valide."),
+        )
         continue
       }
       const group = legsByEntity.get(leg.entityId)
@@ -209,6 +260,7 @@ export function validate(mcd: Mcd): ValidationProblem[] {
         error(
           t("Les pattes de l'association {0} vers l'entité {1} doivent chacune porter un rôle, et des rôles distincts.", [label, displayName(entityName)]),
           association.id,
+          t("Corriger : cliquez sur chaque patte et renseignez un rôle différent (ex. parrain / filleul)."),
         )
       }
     }
@@ -225,6 +277,7 @@ export function validate(mcd: Mcd): ValidationProblem[] {
       warning(
         t("L'entité {0} est isolée : elle n'est reliée à aucune association.", [displayName(entity.name)]),
         entity.id,
+        t("Conseil : reliez cette entité à une association, ou supprimez-la si elle est inutile."),
       )
     }
   }
@@ -245,6 +298,7 @@ export function validate(mcd: Mcd): ValidationProblem[] {
       warning(
         t("Le nom de {0} « {1} » est un mot réservé SQL ({2}) : il devra être renommé ou échappé.", [item.label, item.name.trim(), word.toUpperCase()]),
         item.elementId,
+        t("Conseil : renommez-le (ex. date_commande au lieu de date) pour éviter tout conflit SQL."),
       )
     }
   }
@@ -259,6 +313,7 @@ export function validate(mcd: Mcd): ValidationProblem[] {
       warning(
         t("L'association {0} est un « un à un » (deux pattes à maximum 1) : la clé étrangère ira du côté de cardinalité (1,1), ou du premier côté si les minima sont égaux.", [label]),
         association.id,
+        t("Info : aucune erreur, vérifiez simplement que le sens de la clé étrangère correspond à votre besoin."),
       )
     }
 
@@ -267,6 +322,7 @@ export function validate(mcd: Mcd): ValidationProblem[] {
       warning(
         t("L'association {0} relie {1} entités : elle deviendra une table de liaison à clé primaire composée.", [label, legs.length]),
         association.id,
+        t("Info : comportement normal en Merise, une table de liaison sera générée automatiquement."),
       )
     }
 
@@ -294,6 +350,7 @@ export function validate(mcd: Mcd): ValidationProblem[] {
           warning(
             t("Après migration de clé, la colonne « {0} » (clé de {1}) entrera en collision avec une propriété de {2} : elle sera renommée automatiquement.", [pk.name, displayName(target.name), displayName(holder.name)]),
             association.id,
+            t("Conseil : ajoutez un rôle sur la patte ou renommez la propriété pour garder un nom de colonne explicite."),
           )
         }
       }

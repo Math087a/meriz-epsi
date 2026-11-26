@@ -45,7 +45,7 @@ export function FileActions({
 }: FileActionsProps) {
   useLanguage()
   const setStatus = useToast()
-  const { getNodes } = useReactFlow()
+  const { getNodes, getEdges } = useReactFlow()
 
   const handleSave = async () => {
     if (!exportModel) return
@@ -82,7 +82,7 @@ export function FileActions({
       return
     }
     try {
-      const dataUrl = await exportToPng(nodes, viewportElement)
+      const dataUrl = await exportToPng(nodes, viewportElement, getEdges())
       const blob = await (await fetch(dataUrl)).blob()
       const imageName = fileNameFor(documentName).replace(/\.meriz\.json$/, '.png')
       const result = await saveFileAs(imageName, blob, t("Image PNG"), { 'image/png': ['.png'] })
