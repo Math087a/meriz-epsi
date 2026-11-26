@@ -3,6 +3,7 @@ import * as Y from 'yjs'
 import { Awareness } from 'y-protocols/awareness'
 import type { Association, AttributeType, Cardinality, Entity, Inheritance, InheritanceConstraint, Leg, Mcd, PostIt, Property, PropertyRef } from './mcd'
 import type { McdLayout, Position } from './layout'
+import type { ExamWork } from './examWork'
 import type { McdAction, McdEditorState } from './mcdReducer'
 import { mcdReducer } from './mcdReducer'
 
@@ -506,6 +507,8 @@ function actionSignature(action: McdAction): string | null {
       return `${action.type}:${action.id}`
     case 'UPDATE_POSTIT':
       return `${action.type}:${action.id}`
+    case 'UPDATE_EXAM_WORK':
+      return `${action.type}:${Object.keys(action.patch).sort().join(',')}`
     case 'MOVE_NODE':
       return action.gesture === undefined ? `${action.type}:${action.id}` : `GESTURE:${action.gesture}`
     case 'MOVE_NODES':
@@ -536,6 +539,28 @@ export function createModelDoc(initial: McdEditorState, options: ModelDocOptions
   const layoutMap = doc.getMap<Position>('layout')
   const physicalMap = doc.getMap<string | boolean>('physical')
   const placements = doc.getMap<string | null>('placements')
+  const examMap = doc.getMap<string>('exam')
+  function readExam(): ExamWork | undefined {
+    if (examMap.size === 0) return undefined
+    try {
+      const dictionary = JSON.parse(examMap.get('dictionary') ?? '[]')
+      const dictTables = JSON.parse(examMap.get('dictTables') ?? '[]')
+      const dictAssociations = JSON.parse(examMap.get('dictAssociations') ?? '[]')
+      const mpdEdges = JSON.parse(examMap.get('mpdEdges') ?? '[]')
+      return {
+        dictionary: Array.isArray(dictionary) ? dictionary : [],
+        ...(Array.isArray(dictTables) && dictTables.length > 0 ? { dictTables } : {}),
+        ...(Array.isArray(dictAssociations) && dictAssociations.length > 0 ? { dictAssociations } : {}),
+        mld: examMap.get('mld') ?? '',
+        mpd: examMap.get('mpd') ?? '',
+        ...(Array.isArray(mpdEdges) && mpdEdges.length > 0 ? { mpdEdges } : {}),
+        sql: examMap.get('sql') ?? '',
+        code: examMap.get('code') ?? '',
+      }
+    } catch {
+      return undefined
+    }
+  }
   function readPhysical() {
     const dialect = physicalMap.get('dialect')
     if (!dialect) return undefined
@@ -580,10 +605,25 @@ export function createModelDoc(initial: McdEditorState, options: ModelDocOptions
       for (const key of physicalMap.keys()) if (!values.has(key)) physicalMap.delete(key)
       for (const [key, value] of values) if (physicalMap.get(key) !== value) physicalMap.set(key, value)
     }
+    if (state.exam) {
+      const examEntries: [string, string][] = [
+        ['dictionary', JSON.stringify(state.exam.dictionary)],
+        ['dictTables', JSON.stringify(state.exam.dictTables ?? [])],
+        ['dictAssociations', JSON.stringify(state.exam.dictAssociations ?? [])],
+        ['mld', state.exam.mld],
+        ['mpd', state.exam.mpd],
+        ['mpdEdges', JSON.stringify(state.exam.mpdEdges ?? [])],
+        ['sql', state.exam.sql],
+        ['code', state.exam.code],
+      ]
+      for (const [key, value] of examEntries) {
+        if (examMap.get(key) !== value) examMap.set(key, value)
+      }
+    }
   }
 
   const undoManager = new Y.UndoManager(
-    [roots.properties, roots.entities, roots.associations, roots.inheritances, roots.postits, layoutMap, physicalMap, placements],
+    [roots.properties, roots.entities, roots.associations, roots.inheritances, roots.postits, layoutMap, physicalMap, placements, examMap],
     {
       trackedOrigins: new Set([LOCAL_ORIGIN]),
       captureTimeout: MERGE_WINDOW_MS,
@@ -595,10 +635,12 @@ export function createModelDoc(initial: McdEditorState, options: ModelDocOptions
   let cachedMcd: Mcd = normalizedMcd()
   let cachedLayout: McdLayout = readLayout(layoutMap)
   let cachedPhysical = readPhysical()
-  let cachedState: McdEditorState = { mcd: cachedMcd, layout: cachedLayout, ...(cachedPhysical ? { mpd: cachedPhysical } : {}) }
+  let cachedExam = readExam()
+  let cachedState: McdEditorState = { mcd: cachedMcd, layout: cachedLayout, ...(cachedPhysical ? { mpd: cachedPhysical } : {}), ...(cachedExam ? { exam: cachedExam } : {}) }
   let mcdDirty = false
   let layoutDirty = false
   let physicalDirty = false
+  let examDirty = false
   let changed = false
   let lastSignature: string | null = null
 
@@ -616,6 +658,7 @@ export function createModelDoc(initial: McdEditorState, options: ModelDocOptions
   })
   physicalMap.observe(() => { physicalDirty = true; changed = true })
   placements.observe(() => { mcdDirty = true; changed = true })
+  examMap.observe(() => { examDirty = true; changed = true })
   // Une transaction, un avertissement : les observateurs se contentent
   // de marquer ce qui a bougé.
   doc.on('afterTransaction', () => {
@@ -629,7 +672,7 @@ export function createModelDoc(initial: McdEditorState, options: ModelDocOptions
   })
 
   const snapshot = (): McdEditorState => {
-    if (!mcdDirty && !layoutDirty && !physicalDirty) {
+    if (!mcdDirty && !layoutDirty && !physicalDirty && !examDirty) {
       return cachedState
     }
     if (mcdDirty) {
@@ -641,7 +684,10 @@ export function createModelDoc(initial: McdEditorState, options: ModelDocOptions
       layoutDirty = false
     }
     if (physicalDirty) cachedPhysical = readPhysical()
-    cachedState = { mcd: cachedMcd, layout: cachedLayout, ...(cachedPhysical ? { mpd: cachedPhysical } : {}) }; physicalDirty = false
+    if (examDirty) cachedExam = readExam()
+    cachedState = { mcd: cachedMcd, layout: cachedLayout, ...(cachedPhysical ? { mpd: cachedPhysical } : {}), ...(cachedExam ? { exam: cachedExam } : {}) }
+    physicalDirty = false
+    examDirty = false
     return cachedState
   }
 

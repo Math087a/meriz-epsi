@@ -39,6 +39,8 @@ import { SqlView } from './SqlView'
 import { LearnView } from './LearnView'
 import { AboutView } from './AboutView'
 import { ExamDictionaryView } from './ExamDictionaryView'
+import { ExamMldView } from './ExamMldView'
+import { ExamMpdView } from './ExamMpdView'
 import { ExamModuleEditor } from './ExamModuleEditor'
 import { Segmented } from './ui/Segmented'
 import { ConfirmDialog } from './ConfirmDialog'
@@ -459,12 +461,44 @@ export function Editor({
 
             {EXAM_MODE ? (
               <>
-                {(activeView === 'mld' || activeView === 'mpd' || activeView === 'sql' || activeView === 'code') && (
+                {activeView === 'mld' && (
+                  <ExamMldView mcd={state.mcd} exam={state.exam} dispatch={dispatch} readOnly={locked} />
+                )}
+                <ExamMpdView
+                  mcd={state.mcd}
+                  settings={mpdSettings}
+                  exam={state.exam}
+                  dispatch={dispatch}
+                  readOnly={locked}
+                  onDialectChange={locked ? IGNORE_ACTION : setDialect}
+                  onOverrideChange={locked ? IGNORE_ACTION : setTypeOverride}
+                  isActive={activeView === 'mpd'}
+                />
+                {(activeView === 'sql' || activeView === 'code') && (
                   <ExamModuleEditor module={activeView} exam={state.exam} dispatch={dispatch} readOnly={locked} />
                 )}
               </>
             ) : state.exam && reviewMode === 'student' && (activeView === 'mld' || activeView === 'mpd' || activeView === 'sql' || activeView === 'code') ? (
-              <ExamModuleEditor module={activeView} exam={state.exam} dispatch={dispatch} readOnly />
+              <>
+                {activeView === 'mld' && (
+                  <ExamMldView mcd={state.mcd} exam={state.exam} dispatch={dispatch} readOnly />
+                )}
+                {activeView === 'mpd' && (
+                  <ExamMpdView
+                    mcd={state.mcd}
+                    settings={mpdSettings}
+                    exam={state.exam}
+                    dispatch={dispatch}
+                    readOnly
+                    onDialectChange={IGNORE_ACTION}
+                    onOverrideChange={IGNORE_ACTION}
+                    isActive
+                  />
+                )}
+                {(activeView === 'sql' || activeView === 'code') && (
+                  <ExamModuleEditor module={activeView} exam={state.exam} dispatch={dispatch} readOnly />
+                )}
+              </>
             ) : (
               <>
                 {activeView === 'mld' && <MldView tables={mldTables} hasErrors={hasErrors} />}

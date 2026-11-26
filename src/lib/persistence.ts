@@ -11,7 +11,7 @@ import type {
   Property,
 } from '../model/mcd'
 import { ATTRIBUTE_TYPES } from '../model/mcd'
-import type { ExamDictionaryEntry, ExamWork } from '../model/examWork'
+import type { ExamDictionaryEntry, ExamMpdEdge, ExamWork } from '../model/examWork'
 import type { McdLayout, Position } from '../model/layout'
 import type { McdEditorState } from '../model/mcdReducer'
 import type { MpdSettings } from '../model/mpd'
@@ -444,14 +444,42 @@ function parseExamWork(raw: unknown): ExamWork | undefined {
           type: typeof item.type === 'string' ? item.type : '',
           size: typeof item.size === 'string' ? item.size : '',
           comment: typeof item.comment === 'string' ? item.comment : '',
+          ...(item.ownerKind === 'table' || item.ownerKind === 'association' ? { ownerKind: item.ownerKind } : {}),
+          ...(typeof item.ownerName === 'string' ? { ownerName: item.ownerName } : {}),
+        })
+      }
+    }
+  }
+  const dictTables = Array.isArray(raw.dictTables) ? raw.dictTables.filter((t): t is string => typeof t === 'string') : []
+  const dictAssociations = Array.isArray(raw.dictAssociations) ? raw.dictAssociations.filter((a): a is string => typeof a === 'string') : []
+  const mpdEdges: ExamMpdEdge[] = []
+  if (Array.isArray(raw.mpdEdges)) {
+    for (const edge of raw.mpdEdges) {
+      if (
+        isRecord(edge) &&
+        typeof edge.id === 'string' &&
+        typeof edge.source === 'string' &&
+        typeof edge.sourceHandle === 'string' &&
+        typeof edge.target === 'string' &&
+        typeof edge.targetHandle === 'string'
+      ) {
+        mpdEdges.push({
+          id: edge.id,
+          source: edge.source,
+          sourceHandle: edge.sourceHandle,
+          target: edge.target,
+          targetHandle: edge.targetHandle,
         })
       }
     }
   }
   return {
     dictionary,
+    ...(dictTables.length > 0 ? { dictTables } : {}),
+    ...(dictAssociations.length > 0 ? { dictAssociations } : {}),
     mld: typeof raw.mld === 'string' ? raw.mld : '',
     mpd: typeof raw.mpd === 'string' ? raw.mpd : '',
+    ...(mpdEdges.length > 0 ? { mpdEdges } : {}),
     sql: typeof raw.sql === 'string' ? raw.sql : '',
     code: typeof raw.code === 'string' ? raw.code : '',
   }

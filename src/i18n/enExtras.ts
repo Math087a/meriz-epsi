@@ -450,6 +450,7 @@ export const englishExtras: Readonly<Record<string, string>> = {
   "ex. VARCHAR": "e.g. VARCHAR",
   "ex. 100": "e.g. 100",
   "ex. Obligatoire, unique...": "e.g. Required, unique...",
+  "ex. Obligatoire...": "e.g. Required...",
   "Supprimer la ligne": "Delete row",
   "Contenu copié dans le presse-papiers.": "Content copied to clipboard.",
   "Module exporté ({0}).": "Module exported ({0}).",
@@ -463,5 +464,17 @@ export const englishExtras: Readonly<Record<string, string>> = {
   "Rédigez votre MLD manuellement ici...\nExemple :\nCLIENT(id_client, nom, email)\nCOMMANDE(id_commande, date_cmd, #id_client)": "Write your MLD manually here...\nExample:\nCUSTOMER(id_customer, name, email)\nORDER(id_order, order_date, #id_customer)",
   "Rédigez votre MPD manuellement ici (tables, types SQL, clés primaires et étrangères)...": "Write your MPD manually here (tables, SQL types, primary and foreign keys)...",
   "Rédigez votre script SQL manuellement ici (CREATE TABLE, PRIMARY KEY, FOREIGN KEY...)...": "Write your SQL script manually here (CREATE TABLE, PRIMARY KEY, FOREIGN KEY...)...",
-  "Rédigez votre code ORM / entités / migrations manuellement ici...": "Write your ORM / entities / migrations code manually here..."
+  "Rédigez votre code ORM / entités / migrations manuellement ici...": "Write your ORM / entities / migrations code manually here...",
+  "Nouvelle table": "New table",
+  "Nouvelle association": "New association",
+  "Aucune table dans le dictionnaire. Cliquez sur « Nouvelle table » pour en créer une.": "No tables in the dictionary. Click 'New table' to create one.",
+  "Aucune association dans le dictionnaire. Cliquez sur « Nouvelle association » pour en créer une.": "No associations in the dictionary. Click 'New association' to create one.",
+  "Aucune propriété non affectée. Cliquez sur « Ajouter une propriété » pour en saisir une.": "No unplaced properties. Click 'Add property' to enter one.",
+  "Supprimer ce groupe": "Delete this group",
+  "Exporter ce module (.txt)": "Export this module (.txt)",
+  "Entités du MCD affichées à titre indicatif. Rédigez manuellement le MLDR ci-dessous.": "MCD entities shown for reference. Manually write the relational notation below.",
+  "Aucun attribut": "No attributes",
+  "Aucune colonne": "No columns",
+  "Tirez des flèches entre les propriétés pour définir les clés étrangères (Suppr pour retirer une flèche).": "Drag arrows between properties to define foreign keys (Delete to remove an arrow).",
+  "Aucune table dans le MCD. Créez d’abord des entités dans le MCD.": "No tables in the MCD. Create entities in the MCD first."
 }
