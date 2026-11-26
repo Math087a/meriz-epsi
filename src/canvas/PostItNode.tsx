@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
+import { NodeResizer } from '@xyflow/react'
 import type { NodeProps } from '@xyflow/react'
 import { McdDispatchContext } from './dispatchContext'
 import type { PostItFlowNode } from './mcdToFlow'
@@ -51,7 +52,7 @@ export function PostItNode({ data, selected }: NodeProps<PostItFlowNode>) {
 
   return (
     <div
-      className={`relative min-w-64 max-w-80 rounded-lg border p-3 font-sans shadow-md transition-shadow ${
+      className={`relative flex h-full w-full min-h-36 min-w-56 flex-col rounded-lg border p-3 font-sans shadow-md transition-shadow ${
         postit.color === 'blue'
           ? 'border-sky-300 bg-sky-50 text-sky-950 dark:border-sky-800 dark:bg-sky-950/80 dark:text-sky-100'
           : postit.color === 'green'
@@ -63,6 +64,13 @@ export function PostItNode({ data, selected }: NodeProps<PostItFlowNode>) {
           : ''
       }`}
     >
+      <NodeResizer
+        minWidth={224}
+        minHeight={144}
+        isVisible={selected}
+        lineClassName="!border-mark"
+        handleClassName="!h-2.5 !w-2.5 !rounded-sm !border-mark !bg-surface"
+      />
       <div className="mb-2 flex items-center justify-between border-b border-black/10 pb-1.5 dark:border-white/10">
         <div className="flex items-center gap-1.5">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="opacity-70">
@@ -125,14 +133,14 @@ export function PostItNode({ data, selected }: NodeProps<PostItFlowNode>) {
           value={content}
           placeholder="Écrivez vos notes, consignes ou mémos ici..."
           rows={4}
-          className="w-full resize-y rounded border-0 bg-transparent p-1 font-mono text-xs leading-relaxed focus:outline-none focus:ring-1 focus:ring-black/20 dark:focus:ring-white/20"
+          className="min-h-20 w-full flex-1 resize-none rounded border-0 bg-transparent p-1 font-mono text-xs leading-relaxed focus:outline-none focus:ring-1 focus:ring-black/20 dark:focus:ring-white/20"
           onChange={(e) => setContent(e.target.value)}
           onBlur={handleBlurContent}
           onKeyDown={(e) => e.stopPropagation()}
           onPointerDown={(e) => e.stopPropagation()}
         />
       ) : (
-        <div className="max-h-60 overflow-y-auto pr-1 text-micro leading-5 font-mono">
+        <div className="min-h-0 flex-1 overflow-y-auto pr-1 text-micro leading-5 font-mono">
           {mldTables.length === 0 ? (
             <p className="italic opacity-60">Aucune table MLD générée.</p>
           ) : (

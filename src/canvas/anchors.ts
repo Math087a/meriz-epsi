@@ -88,3 +88,24 @@ export function pickAnchors(
     targetHandle: exitSide(target, -dx, -dy),
   }
 }
+
+/**
+ * Quand une étiquette de cardinalité est positionnée (ou déplacée),
+ * chaque bout de la patte s'accroche au côté le plus proche de cette
+ * étiquette plutôt qu'à l'autre bloc directement.
+ */
+export function pickAnchorsTowards(
+  source: AnchorBox,
+  target: AnchorBox,
+  waypoint?: { x: number; y: number },
+): { sourceHandle: AnchorSide; targetHandle: AnchorSide } {
+  if (!waypoint) return pickAnchors(source, target)
+  const sdx = waypoint.x - (source.x + source.width / 2)
+  const sdy = waypoint.y - (source.y + source.height / 2)
+  const tdx = waypoint.x - (target.x + target.width / 2)
+  const tdy = waypoint.y - (target.y + target.height / 2)
+  return {
+    sourceHandle: exitSide(source, sdx, sdy),
+    targetHandle: exitSide(target, tdx, tdy),
+  }
+}

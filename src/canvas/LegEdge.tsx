@@ -2,7 +2,7 @@ import { t } from "../i18n/runtime"
 import { useLanguage } from "../lib/useLanguage"
 import { useContext, useState } from 'react'
 import type { Dispatch, PointerEvent } from 'react'
-import { BaseEdge, EdgeLabelRenderer, getSmoothStepPath, useReactFlow } from '@xyflow/react'
+import { BaseEdge, EdgeLabelRenderer, getSmoothStepPath, getStraightPath, useReactFlow } from '@xyflow/react'
 import type { EdgeProps } from '@xyflow/react'
 import type { LegFlowEdge } from './mcdToFlow'
 import { RemoteSelectionContext } from './remoteSelectionContext'
@@ -31,12 +31,17 @@ export function LegEdge({ id, sourceX, sourceY, targetX, targetY, sourcePosition
   // seule étape d'annulation au bout.
   const gesture = useGestureStream(dispatch ?? IGNORE_ACTION)
 
-  // Les nouveaux tracés suivent les ancrages. Les étiquettes déjà déplacées gardent leur courbe.
-  const [automaticPath, labelX, labelY] = getSmoothStepPath({ sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, borderRadius: 12, offset: 24 })
+  // Les nouveaux tracés suivent les ancrages. Clic sur la connexion : bascule ligne droite / orthogonal.
+  const [stepPath, stepLabelX, stepLabelY] = getSmoothStepPath({ sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, borderRadius: 12, offset: 24 })
+  const [straightPath, straightLabelX, straightLabelY] = getStraightPath({ sourceX, sourceY, targetX, targetY })
+  const isStraight = data?.straight === true
+  const automaticPath = isStraight ? straightPath : stepPath
+  const labelX = isStraight ? straightLabelX : stepLabelX
+  const labelY = isStraight ? straightLabelY : stepLabelY
   const label = dragPosition ?? data?.labelPosition ?? { x: labelX, y: labelY }
   const controlX = 2 * label.x - (sourceX + targetX) / 2
   const controlY = 2 * label.y - (sourceY + targetY) / 2
-  const path = dragPosition || data?.labelPosition ? 'M ' + sourceX + ',' + sourceY + ' Q ' + controlX + ',' + controlY + ' ' + targetX + ',' + targetY : automaticPath
+  const path = !isStraight && (dragPosition || data?.labelPosition) ? 'M ' + sourceX + ',' + sourceY + ' Q ' + controlX + ',' + controlY + ' ' + targetX + ',' + targetY : automaticPath
 
   const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
     if (!dispatch) return
@@ -103,8 +108,8 @@ export function LegEdge({ id, sourceX, sourceY, targetX, targetY, sourcePosition
         path={path}
         style={
           selected
-            ? { stroke: `var(--c-mark, ${markColor})`, strokeWidth: 2.25 }
-            : { stroke: `var(--c-line-strong, ${lineColor})`, strokeWidth: 1.5 }
+            ? { stroke: `var(--c-mark, ${markColor})`, strokeWidth: 2.25, cursor: 'pointer' }
+            : { stroke: `var(--c-line-strong, ${lineColor})`, strokeWidth: 1.5, cursor: 'pointer' }
         }
       />
       {data && data.cardinality && (

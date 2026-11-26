@@ -52,13 +52,18 @@ export async function exportToPng(nodes: Node[], viewportElement: HTMLElement): 
       --c-ink: ${ink};
       --c-ink-soft: ${inkSoft};
       --c-accent-ink: ${accentInk};
+      --color-canvas: ${canvasBg};
       --color-surface: ${surface};
       --color-surface-soft: ${surfaceSoft};
       --color-line-strong: ${lineStrong};
+      --color-line: ${line};
+      --color-mark: ${mark};
       --color-ink: ${ink};
       --color-ink-soft: ${inkSoft};
+      --color-accent-ink: ${accentInk};
     }
-    .react-flow__edges {
+    .react-flow__edges,
+    .react-flow__edgelabel-renderer {
       position: absolute !important;
       inset: 0 !important;
       width: 100% !important;
@@ -74,6 +79,10 @@ export async function exportToPng(nodes: Node[], viewportElement: HTMLElement): 
       stroke: ${lineStrong} !important;
       stroke-width: 1.5px !important;
       fill: none !important;
+    }
+    .react-flow__node.selected {
+      box-shadow: none !important;
+      outline: none !important;
     }
     .react-flow__node polygon {
       fill: ${surface} !important;
@@ -108,6 +117,7 @@ export async function exportToPng(nodes: Node[], viewportElement: HTMLElement): 
       filter: (domNode) =>
         !domNode.classList?.contains('react-flow__background') &&
         !domNode.classList?.contains('react-flow__handle') &&
+        !domNode.classList?.contains('react-flow__resize-control') &&
         !domNode.classList?.contains('react-flow__viewport-portal'),
     })
   } finally {

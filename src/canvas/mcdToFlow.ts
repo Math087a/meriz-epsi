@@ -34,6 +34,8 @@ export type LegFlowEdge = Edge<
     role?: string
     /** Position choisie de l'étiquette (layout), sinon défaut sur la ligne. */
     labelPosition?: { x: number; y: number }
+    /** Tracé en ligne droite (sinon chemin orthogonal au plus court). */
+    straight?: boolean
   },
   'leg'
 >

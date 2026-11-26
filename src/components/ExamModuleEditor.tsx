@@ -152,16 +152,16 @@ export function ExamModuleEditor({ module, exam, dispatch, readOnly = false }: E
               aria-hidden="true"
               className="pointer-events-none absolute inset-0 m-0 overflow-hidden whitespace-pre-wrap break-words p-4 font-mono text-sm leading-6 text-ink"
             >
-              {value ? highlightTokens(value, module) : null}
+              {value ? highlightTokens(value, module) : <span className="text-ink-faint">{t(meta.placeholder)}</span>}
               {'\n'}
             </pre>
             <textarea
               value={value}
               readOnly={readOnly}
-              placeholder={t(meta.placeholder)}
+              aria-label={t(meta.label)}
               spellCheck={false}
               onScroll={handleScroll}
-              className="relative z-10 h-full w-full resize-none bg-transparent p-4 font-mono text-sm leading-6 text-transparent caret-ink placeholder:text-ink-faint focus:outline-none"
+              className="relative z-10 h-full w-full resize-none bg-transparent p-4 font-mono text-sm leading-6 text-transparent caret-ink focus:outline-none"
               onChange={(e) => handleChange(e.target.value)}
             />
           </div>

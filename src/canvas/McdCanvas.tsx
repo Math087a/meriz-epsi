@@ -22,7 +22,7 @@ import type {
   OnConnectStart,
   OnNodeDrag,
 } from '@xyflow/react'
-import { anchorBox, pickAnchors } from './anchors'
+import { anchorBox, pickAnchors, pickAnchorsTowards } from './anchors'
 import { mcdToFlow } from './mcdToFlow'
 import type { LegFlowEdge, McdFlowNode } from './mcdToFlow'
 import { EntityNode } from './EntityNode'
@@ -366,37 +366,35 @@ export function McdCanvas({
    * la sélection. Et quand aucun côté ne change, on rend le tableau reçu,
    * donc React Flow ne réconcilie pas les liens pour rien.
    */
+  const [straightEdgeIds, setStraightEdgeIds] = useState<Set<string>>(() => new Set())
+
   const anchoredEdges = useMemo(() => {
     const boxes = new Map(nodes.map((node) => [node.id, anchorBox(node)]))
     const next = edges.map((edge) => {
-      if (edge.id.startsWith('inh-p-')) {
-        const target = boxes.get(edge.target)
-        if (!target) return { ...edge, sourceHandle: 'top' }
-        const source = boxes.get(edge.source)
-        const targetHandle = source && target ? (target.y < source.y ? 'bottom' : 'top') : 'bottom'
-        return { ...edge, sourceHandle: 'top', targetHandle }
-      }
-      if (edge.id.startsWith('inh-c-')) {
-        const target = boxes.get(edge.target)
-        if (!target) return { ...edge, sourceHandle: 'bottom' }
-        const source = boxes.get(edge.source)
-        const targetHandle = source && target ? (target.y > source.y ? 'top' : 'bottom') : 'top'
-        return { ...edge, sourceHandle: 'bottom', targetHandle }
-      }
+      const straight = straightEdgeIds.has(edge.id)
       const source = boxes.get(edge.source)
       const target = boxes.get(edge.target)
       if (!source || !target) {
-        // Sans boîte, aucun identifiant : React Flow prend le premier rond,
-        // plutôt que de chercher un côté qui n'existerait pas.
-        return edge
+        return Boolean(edge.data?.straight) === straight
+          ? edge
+          : { ...edge, data: { ...edge.data, straight } }
       }
-      const anchors = pickAnchors(source, target)
-      return edge.sourceHandle === anchors.sourceHandle && edge.targetHandle === anchors.targetHandle
-        ? edge
-        : { ...edge, ...anchors }
+      const anchors =
+        edge.id.startsWith('inh-p-') || edge.id.startsWith('inh-c-')
+          ? pickAnchors(source, target)
+          : pickAnchorsTowards(source, target, edge.data?.labelPosition)
+      const sameAnchors =
+        edge.sourceHandle === anchors.sourceHandle && edge.targetHandle === anchors.targetHandle
+      const sameStraight = Boolean(edge.data?.straight) === straight
+      if (sameAnchors && sameStraight) return edge
+      return {
+        ...edge,
+        ...anchors,
+        data: sameStraight ? edge.data : { ...edge.data, straight },
+      }
     })
     return next.every((edge, index) => edge === edges[index]) ? edges : next
-  }, [edges, nodes])
+  }, [edges, nodes, straightEdgeIds])
 
   const onNodesChange = useCallback(
     (changes: NodeChange<McdFlowNode>[]) => {
@@ -647,6 +645,14 @@ export function McdCanvas({
         edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        onEdgeClick={(_event, edge) => {
+          setStraightEdgeIds((prev) => {
+            const next = new Set(prev)
+            if (next.has(edge.id)) next.delete(edge.id)
+            else next.add(edge.id)
+            return next
+          })
+        }}
         onNodeDragStart={onNodeDragStart}
         onNodeDrag={onNodeDrag}
         onNodeDragStop={onNodeDragStop}

@@ -64,6 +64,12 @@ function ExamTableNode({ data, selected }: NodeProps<ExamTableFlowNode>) {
                 position={Position.Left}
                 className="!h-2.5 !w-2.5 !border-line-strong !bg-surface hover:!bg-accent"
               />
+              <Handle
+                type="source"
+                id={`source-left:${column.id}`}
+                position={Position.Left}
+                className="!h-2.5 !w-2.5 !border-line-strong !bg-surface opacity-0 hover:opacity-100 hover:!bg-accent"
+              />
               <span className={column.isPrimaryKey ? 'font-medium underline decoration-accent-ink underline-offset-2' : ''}>
                 {column.name}
               </span>
@@ -73,6 +79,12 @@ function ExamTableNode({ data, selected }: NodeProps<ExamTableFlowNode>) {
                   {t('clé')}
                 </span>
               )}
+              <Handle
+                type="target"
+                id={`target-right:${column.id}`}
+                position={Position.Right}
+                className="!h-2.5 !w-2.5 !border-line-strong !bg-surface opacity-0 hover:opacity-100 hover:!bg-accent"
+              />
               <Handle
                 type="source"
                 id={`source:${column.id}`}
@@ -160,21 +172,28 @@ export function ExamMpdView({
 
   const rawEdges = useMemo(() => exam?.mpdEdges ?? [], [exam?.mpdEdges])
   const [selectedEdgeIds, setSelectedEdgeIds] = useState<Set<string>>(() => new Set())
-  const flowEdges: Edge[] = useMemo(
-    () =>
-      rawEdges.map((e) => ({
+  const [straightEdgeIds, setStraightEdgeIds] = useState<Set<string>>(() => new Set())
+  const flowEdges: Edge[] = useMemo(() => {
+    const posById = new Map(nodes.map((n) => [n.id, n.position]))
+    return rawEdges.map((e) => {
+      const srcPos = posById.get(e.source)
+      const tgtPos = posById.get(e.target)
+      const srcCol = e.sourceHandle.replace(/^(source-left|source):/, '')
+      const tgtCol = e.targetHandle.replace(/^(target-right|target):/, '')
+      const goLeft = srcPos && tgtPos ? tgtPos.x + 110 < srcPos.x : false
+      return {
         id: e.id,
         source: e.source,
-        sourceHandle: e.sourceHandle,
+        sourceHandle: goLeft ? `source-left:${srcCol}` : `source:${srcCol}`,
         target: e.target,
-        targetHandle: e.targetHandle,
+        targetHandle: goLeft ? `target-right:${tgtCol}` : `target:${tgtCol}`,
         selected: selectedEdgeIds.has(e.id),
-        type: 'smoothstep',
+        type: straightEdgeIds.has(e.id) ? 'straight' : 'smoothstep',
         markerEnd: { type: MarkerType.ArrowClosed },
-        style: { strokeWidth: selectedEdgeIds.has(e.id) ? 2.5 : 1.8 },
-      })),
-    [rawEdges, selectedEdgeIds],
-  )
+        style: { strokeWidth: selectedEdgeIds.has(e.id) ? 2.5 : 1.8, cursor: 'pointer' },
+      }
+    })
+  }, [rawEdges, nodes, selectedEdgeIds, straightEdgeIds])
 
   const isValidConnection = useCallback(
     (connection: Edge | Connection) => {
@@ -304,6 +323,14 @@ export function ExamMpdView({
                   edges={flowEdges}
                   nodeTypes={nodeTypes}
                   onNodesChange={onNodesChange}
+                  onEdgeClick={(_event, edge) => {
+                    setStraightEdgeIds((prev) => {
+                      const next = new Set(prev)
+                      if (next.has(edge.id)) next.delete(edge.id)
+                      else next.add(edge.id)
+                      return next
+                    })
+                  }}
                   onEdgesChange={handleEdgesChange}
                   onConnect={handleConnect}
                   isValidConnection={isValidConnection}

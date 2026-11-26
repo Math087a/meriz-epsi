@@ -139,7 +139,15 @@ function MpdDiagram({ tables, hasErrors }: { tables: MpdTable[]; hasErrors: bool
     setNodes((current) => applyNodeChanges(changes, current))
   }, [])
 
-  const edges = useMemo(() => buildFkEdges(tables, nodes), [tables, nodes])
+  const [straightEdgeIds, setStraightEdgeIds] = useState<Set<string>>(() => new Set())
+  const edges = useMemo(
+    () =>
+      buildFkEdges(tables, nodes).map((edge) => ({
+        ...edge,
+        type: straightEdgeIds.has(edge.id) ? 'straight' : 'smoothstep',
+      })),
+    [tables, nodes, straightEdgeIds],
+  )
   const theme = useTheme()
 
   return (
@@ -150,6 +158,14 @@ function MpdDiagram({ tables, hasErrors }: { tables: MpdTable[]; hasErrors: bool
           edges={edges}
           nodeTypes={nodeTypes}
           onNodesChange={onNodesChange}
+          onEdgeClick={(_event, edge) => {
+            setStraightEdgeIds((prev) => {
+              const next = new Set(prev)
+              if (next.has(edge.id)) next.delete(edge.id)
+              else next.add(edge.id)
+              return next
+            })
+          }}
           nodesConnectable={false}
           ariaLabelConfig={ariaLabels}
           colorMode={theme.resolved}
