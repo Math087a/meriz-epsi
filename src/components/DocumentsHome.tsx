@@ -117,7 +117,7 @@ export function DocumentsHome({
         <Lockup size={30} label={t("Merise EPSI Edition")} />
         <div className="ml-auto flex flex-wrap items-center gap-3">
           <ThemeSwitch />
-          <AccountStatus onShowSignIn={onShowSignIn} onShowSignUp={onShowSignUp} />
+          {!EXAM_MODE && <AccountStatus onShowSignIn={onShowSignIn} onShowSignUp={onShowSignUp} />}
           <PreferencesControl />
         </div>
       </header>
@@ -128,12 +128,18 @@ export function DocumentsHome({
           className="rounded-panel bg-accent-soft px-6 py-7 sm:px-8"
         >
           <h1 id="bienvenue-titre" className="text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
-            {t("Bienvenue dans Merise EPSI Edition")}</h1>
+            {t(EXAM_MODE ? "Bienvenue en Mode Contrôle / Examen" : "Bienvenue dans Merise EPSI Edition")}</h1>
           <p className="mt-2 max-w-2xl text-base leading-7 text-ink">
-            {t("La modélisation Merise dans le navigateur : dessinez votre MCD, l'outil vérifie sa cohérence puis en tire le modèle logique, le schéma physique et le SQL.")}{' '}
-            {cloud
-              ? t("Vos documents sont enregistrés dans votre compte et vous suivent partout.")
-              : t("Vos documents sont enregistrés dans ce navigateur.")}
+            {EXAM_MODE
+              ? t("Environnement d'évaluation Merise sans génération automatique ni vérification : réalisez votre dictionnaire, votre MCD, votre MLD, votre MPD et votre script SQL comme sur feuille, puis enregistrez votre fichier pour le remettre à votre professeur.")
+              : (
+                <>
+                  {t("La modélisation Merise dans le navigateur : dessinez votre MCD, l'outil vérifie sa cohérence puis en tire le modèle logique, le schéma physique et le SQL.")}{' '}
+                  {cloud
+                    ? t("Vos documents sont enregistrés dans votre compte et vous suivent partout.")
+                    : t("Vos documents sont enregistrés dans ce navigateur.")}
+                </>
+              )}
           </p>
         </section>
 
@@ -157,16 +163,31 @@ export function DocumentsHome({
 
         <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            <DocumentList
-              repository={repository}
-              cloud={cloud}
-              heading={cloud ? t("Documents de votre compte") : t("Documents de cet appareil")}
-              onOpenDocument={onOpenDocument}
-              onNewDocument={onNewDocument}
-              onOpenExample={onOpenExample}
-              onImportFile={onImportFile}
-              announcement={announcement}
-            />
+            {EXAM_MODE ? (
+              <Card className="flex flex-col items-start gap-4 p-6">
+                <h2 className="text-xl font-semibold text-ink">{t("Démarrer votre évaluation")}</h2>
+                <p className="text-sm leading-6 text-ink-soft">
+                  {t("En Mode Contrôle, l'ouverture de fichiers existants et la liste des autres documents de l'appareil sont désactivées. Vous partez d'une copie vierge, sans aide ni génération automatique.")}
+                </p>
+                <p className="text-sm leading-6 text-ink-soft">
+                  {t("À la fin de l'épreuve, enregistrez votre copie en fichier (.meriz.json) ou exportez chaque module individuellement pour les transmettre à votre intervenant.")}
+                </p>
+                <Button size="md" variant="primary" onClick={() => void onNewDocument()}>
+                  {t("Nouveau contrôle")}
+                </Button>
+              </Card>
+            ) : (
+              <DocumentList
+                repository={repository}
+                cloud={cloud}
+                heading={cloud ? t("Documents de votre compte") : t("Documents de cet appareil")}
+                onOpenDocument={onOpenDocument}
+                onNewDocument={onNewDocument}
+                onOpenExample={onOpenExample}
+                onImportFile={onImportFile}
+                announcement={announcement}
+              />
+            )}
           </div>
 
           <aside aria-label={t("Prise en main")} className="flex flex-col gap-4">

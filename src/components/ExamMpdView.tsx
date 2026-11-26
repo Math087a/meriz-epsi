@@ -158,7 +158,8 @@ export function ExamMpdView({
     setNodes((current) => applyNodeChanges(changes, current))
   }, [])
 
-  const rawEdges = exam?.mpdEdges ?? []
+  const rawEdges = useMemo(() => exam?.mpdEdges ?? [], [exam?.mpdEdges])
+  const [selectedEdgeIds, setSelectedEdgeIds] = useState<Set<string>>(() => new Set())
   const flowEdges: Edge[] = useMemo(
     () =>
       rawEdges.map((e) => ({
@@ -167,45 +168,78 @@ export function ExamMpdView({
         sourceHandle: e.sourceHandle,
         target: e.target,
         targetHandle: e.targetHandle,
+        selected: selectedEdgeIds.has(e.id),
         type: 'smoothstep',
         markerEnd: { type: MarkerType.ArrowClosed },
-        style: { strokeWidth: 1.8 },
+        style: { strokeWidth: selectedEdgeIds.has(e.id) ? 2.5 : 1.8 },
       })),
+    [rawEdges, selectedEdgeIds],
+  )
+
+  const isValidConnection = useCallback(
+    (connection: Edge | Connection) => {
+      if (!connection.source || !connection.target || !connection.sourceHandle || !connection.targetHandle) return false
+      if (connection.source === connection.target && connection.sourceHandle.replace('source:', '') === connection.targetHandle.replace('target:', '')) return false
+      return !rawEdges.some(
+        (e) =>
+          e.source === connection.source &&
+          e.target === connection.target &&
+          e.sourceHandle === connection.sourceHandle &&
+          e.targetHandle === connection.targetHandle,
+      )
+    },
     [rawEdges],
   )
 
   const handleConnect = useCallback(
     (connection: Connection) => {
-      if (readOnly || !connection.source || !connection.target || !connection.sourceHandle || !connection.targetHandle) return
+      if (readOnly || !isValidConnection(connection)) return
       const nextEdge: ExamMpdEdge = {
         id: newId(),
-        source: connection.source,
-        sourceHandle: connection.sourceHandle,
-        target: connection.target,
-        targetHandle: connection.targetHandle,
+        source: connection.source!,
+        sourceHandle: connection.sourceHandle!,
+        target: connection.target!,
+        targetHandle: connection.targetHandle!,
       }
       dispatch({ type: 'UPDATE_EXAM_WORK', patch: { mpdEdges: [...rawEdges, nextEdge] } })
     },
-    [readOnly, rawEdges, dispatch],
+    [readOnly, isValidConnection, rawEdges, dispatch],
   )
 
   const handleEdgesChange = useCallback(
     (changes: EdgeChange[]) => {
+      const nextSelected = new Set(selectedEdgeIds)
+      let selectionChanged = false
+      for (const c of changes) {
+        if (c.type === 'select') {
+          selectionChanged = true
+          if (c.selected) nextSelected.add(c.id)
+          else nextSelected.delete(c.id)
+        }
+      }
+      if (selectionChanged) setSelectedEdgeIds(nextSelected)
       if (readOnly) return
       const removedIds = new Set(changes.filter((c) => c.type === 'remove').map((c) => c.id))
       if (removedIds.size > 0) {
         dispatch({ type: 'UPDATE_EXAM_WORK', patch: { mpdEdges: rawEdges.filter((e) => !removedIds.has(e.id)) } })
       }
     },
-    [readOnly, rawEdges, dispatch],
+    [readOnly, rawEdges, selectedEdgeIds, dispatch],
   )
 
   const handleExport = async () => {
+    const tableById = new Map(tables.map((tbl) => [tbl.id, tbl]))
+    const colName = (tableId: string, handle: string) => {
+      const colId = handle.replace(/^(source|target):/, '')
+      const tbl = tableById.get(tableId)
+      const col = tbl?.columns.find((c) => c.id === colId)
+      return `${tbl?.name ?? tableId}.${col?.name ?? colId}`
+    }
     const lines = tables.map((tbl) => {
       const cols = tbl.columns.map((c) => `${c.name} ${c.sqlType}${c.isPrimaryKey ? ' PK' : ''}`).join(', ')
       return `${tbl.name} (${cols})`
     })
-    const links = rawEdges.map((e) => `${e.source}.${e.sourceHandle.replace('source:', '')} -> ${e.target}.${e.targetHandle.replace('target:', '')}`)
+    const links = rawEdges.map((e) => `${colName(e.source, e.sourceHandle)} -> ${colName(e.target, e.targetHandle)}`)
     const content = [...lines, ...(links.length ? ['', '# Liaisons manuelles :', ...links] : [])].join('\n')
     const res = await saveFileAs('mpd.txt', new Blob([content], { type: 'text/plain;charset=utf-8' }), t('MPD (Modèle Physique de Données)'), {
       'text/plain': ['.txt'],
@@ -249,9 +283,11 @@ export function ExamMpdView({
         <Button size="sm" onClick={() => void handleExport()} disabled={tables.length === 0}>
           {t('Exporter ce module (.txt)')}
         </Button>
-        <p className="text-xs text-ink-soft">
-          {t('Tirez des flèches entre les propriétés pour définir les clés étrangères (Suppr pour retirer une flèche).')}
-        </p>
+        {!readOnly && (
+          <p className="text-xs text-ink-soft">
+            {t('Tirez des flèches entre les propriétés pour définir les clés étrangères (Suppr pour retirer une flèche).')}
+          </p>
+        )}
       </div>
 
       <div className="flex min-h-0 flex-1">
@@ -270,7 +306,9 @@ export function ExamMpdView({
                   onNodesChange={onNodesChange}
                   onEdgesChange={handleEdgesChange}
                   onConnect={handleConnect}
+                  isValidConnection={isValidConnection}
                   nodesConnectable={!readOnly}
+                  nodesDraggable={!readOnly}
                   elementsSelectable
                   ariaLabelConfig={ariaLabels}
                   colorMode={theme.resolved}

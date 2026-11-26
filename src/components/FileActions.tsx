@@ -1,3 +1,4 @@
+import { EXAM_MODE } from '../lib/examMode'
 import { useToast } from './ui/toastContext'
 import { t } from "../i18n/runtime"
 import { useLanguage } from "../lib/useLanguage"
@@ -123,7 +124,7 @@ export function FileActions({
         <summary className={buttonClass + ' cursor-pointer list-none'}><Icon name="folder" /><span>{t("Fichier")}</span></summary>
         <div style={menuAt} className="editor-file-menu fixed z-50 flex max-w-[calc(100vw-24px)] flex-col gap-1 rounded-card border border-line-strong bg-surface p-2 shadow-soft">
           {onNewDocument && <button type="button" className={buttonClass + ' !justify-start'} onClick={() => { closeMenu(); onNewDocument() }}><Icon name="plus" />{t("Nouveau")}</button>}
-          {onImportFile && <ImportFileButton className={buttonClass + ' !justify-start'} onFile={file => { closeMenu(); void handleImport(file) }}><Icon name="folder" />{t("Ouvrir")}</ImportFileButton>}
+          {!EXAM_MODE && onImportFile && <ImportFileButton className={buttonClass + ' !justify-start'} onFile={file => { closeMenu(); void handleImport(file) }}><Icon name="folder" />{t("Ouvrir")}</ImportFileButton>}
           {exportModel && <button type="button" className={buttonClass + ' !justify-start'} onClick={() => { closeMenu(); void handleSave() }}><Icon name="save" />{t("Enregistrer une copie en fichier")}</button>}
           {exportImage && <button type="button" className={buttonClass + ' !justify-start'} disabled={!mcdVisible} onClick={() => { closeMenu(); void handleExport() }}><Icon name="image" />{t("Exporter le MCD en image PNG")}</button>}
         </div>

@@ -5,13 +5,17 @@
  * dans index.html l'applique avant le premier rendu, sans flash.
  */
 
+import { EXAM_MODE } from './examMode'
+
 export type ThemePreference = 'system' | 'light' | 'dark'
 export type ResolvedTheme = 'light' | 'dark'
 
 export const THEME_STORAGE_KEY = 'meriz-theme'
 
 /** Couleur de la barre du navigateur mobile, selon le thème (fond papier). */
-const THEME_COLORS: Record<ResolvedTheme, string> = { light: '#f4f6f4', dark: '#161b18' }
+const THEME_COLORS: Record<ResolvedTheme, string> = EXAM_MODE
+  ? { light: '#faf5f5', dark: '#1c1214' }
+  : { light: '#f4f6f4', dark: '#161b18' }
 
 export function parseThemePreference(value: unknown): ThemePreference {
   return value === 'light' || value === 'dark' ? value : 'system'

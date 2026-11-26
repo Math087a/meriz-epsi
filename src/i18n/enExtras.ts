@@ -476,5 +476,14 @@ export const englishExtras: Readonly<Record<string, string>> = {
   "Aucun attribut": "No attributes",
   "Aucune colonne": "No columns",
   "Tirez des flèches entre les propriétés pour définir les clés étrangères (Suppr pour retirer une flèche).": "Drag arrows between properties to define foreign keys (Delete to remove an arrow).",
-  "Aucune table dans le MCD. Créez d’abord des entités dans le MCD.": "No tables in the MCD. Create entities in the MCD first."
+  "Aucune table dans le MCD. Créez d’abord des entités dans le MCD.": "No tables in the MCD. Create entities in the MCD first.",
+  "Bienvenue en Mode Contrôle / Examen": "Welcome to Exam Mode",
+  "Environnement d'évaluation Merise sans génération automatique ni vérification : réalisez votre dictionnaire, votre MCD, votre MLD, votre MPD et votre script SQL comme sur feuille, puis enregistrez votre fichier pour le remettre à votre professeur.": "Merise assessment environment without automatic generation or validation: create your dictionary, MCD, MLD, MPD and SQL script as on paper, then save your file to submit to your teacher.",
+  "Démarrer votre évaluation": "Start your assessment",
+  "En Mode Contrôle, l'ouverture de fichiers existants et la liste des autres documents de l'appareil sont désactivées. Vous partez d'une copie vierge, sans aide ni génération automatique.": "In Exam Mode, opening existing files and viewing other documents on this device are disabled. You start from a blank copy without automatic help or generation.",
+  "À la fin de l'épreuve, enregistrez votre copie en fichier (.meriz.json) ou exportez chaque module individuellement pour les transmettre à votre intervenant.": "At the end of the exam, save your work as a file (.meriz.json) or export each module individually to submit to your teacher.",
+  "Nouveau contrôle": "New exam",
+  "Personnalisez votre note libre.": "Customize your free-form note.",
+  "Personnalisez la carte mémo ou l'affichage MLD interactif.": "Customize the memo card or interactive MLD display.",
+  "Cette édition Mode Contrôle est dédiée aux évaluations et examens en classe à l'EPSI. Elle conserve le dictionnaire des données indépendant, la création et l'édition complète du MCD (entités, attributs, associations, cardinalités, héritage X/T/XT), la saisie manuelle des modules MLD/MPD/SQL/Code, la sauvegarde de copie et l'export PNG, tout en désactivant la génération automatique et les vérifications.": "This Exam Mode edition is dedicated to in-class assessments at EPSI. It keeps an independent data dictionary, full MCD creation and editing (entities, attributes, associations, cardinalities, X/T/XT inheritance), manual MLD/MPD/SQL/Code entry, copy saving and PNG export, while disabling automatic generation and validation."
 }

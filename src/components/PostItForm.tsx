@@ -1,3 +1,4 @@
+import { EXAM_MODE } from '../lib/examMode'
 import { useId } from 'react'
 import type { Dispatch } from 'react'
 import type { PostIt } from '../model/mcd'
@@ -22,7 +23,7 @@ export function PostItForm({ postit, dispatch }: PostItFormProps) {
       <div>
         <h2 className="text-sm font-semibold text-ink">{t("Post-it")}</h2>
         <p className="mt-0.5 text-micro text-ink-soft">
-          Personnalisez la carte mémo ou l'affichage MLD interactif.
+          {EXAM_MODE ? t("Personnalisez votre note libre.") : t("Personnalisez la carte mémo ou l'affichage MLD interactif.")}
         </p>
       </div>
 
@@ -39,20 +40,22 @@ export function PostItForm({ postit, dispatch }: PostItFormProps) {
         />
       </div>
 
-      <div>
-        <label htmlFor={modeId} className="block font-medium text-ink-soft">
-          Mode d'affichage
-        </label>
-        <select
-          id={modeId}
-          value={postit.mode}
-          onChange={(e) => dispatch({ type: 'UPDATE_POSTIT', id: postit.id, patch: { mode: e.target.value as 'text' | 'mld' } })}
-          className="mt-1 w-full rounded-lg border border-line-strong bg-surface px-2.5 py-1 text-xs text-ink"
-        >
-          <option value="text">Note libre / Consignes</option>
-          <option value="mld">MLD relationnel textuel dynamique</option>
-        </select>
-      </div>
+      {!EXAM_MODE && (
+        <div>
+          <label htmlFor={modeId} className="block font-medium text-ink-soft">
+            Mode d'affichage
+          </label>
+          <select
+            id={modeId}
+            value={postit.mode}
+            onChange={(e) => dispatch({ type: 'UPDATE_POSTIT', id: postit.id, patch: { mode: e.target.value as 'text' | 'mld' } })}
+            className="mt-1 w-full rounded-lg border border-line-strong bg-surface px-2.5 py-1 text-xs text-ink"
+          >
+            <option value="text">Note libre / Consignes</option>
+            <option value="mld">MLD relationnel textuel dynamique</option>
+          </select>
+        </div>
+      )}
 
       <div>
         <label htmlFor={colorId} className="block font-medium text-ink-soft">

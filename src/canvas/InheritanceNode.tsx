@@ -69,7 +69,7 @@ export function InheritanceNode({ data, selected, isConnectable }: NodeProps<Inh
       {/* Libellé sous le triangle */}
       <div className="mt-1 flex flex-col items-center text-center">
         <span className="text-micro font-medium text-ink-soft">
-          {parentName ? `${parentName}` : 'Héritage'}
+          {inheritance.name && inheritance.name.trim() !== '' ? inheritance.name : (parentName || 'Héritage')}
         </span>
         {childrenNames && childrenNames.length > 0 && (
           <span className="text-nano text-ink-soft/75 max-w-28 truncate" title={childrenNames.join(', ')}>

@@ -1,3 +1,4 @@
+import { EXAM_MODE } from '../lib/examMode'
 import { Select } from './ui/Select'
 import { t } from '../i18n/runtime'
 import { useLanguage } from '../lib/useLanguage'
@@ -211,10 +212,12 @@ export function InheritanceForm({ mcd, inheritance, dispatch }: InheritanceFormP
         </p>
       </fieldset>
 
-      {/* Règle de passage MLD automatique */}
-      <div className="rounded-lg bg-accent-soft/30 p-2.5 text-nano text-ink-soft leading-relaxed border border-accent-soft mt-1">
-        <strong>{t("Règle de passage MLD :")}</strong> {t("La clé primaire de")} {parentEntity ? <strong>{parentEntity.name}</strong> : t("l'entité mère")} {t("est automatiquement propagée comme clé primaire et clé étrangère (#) dans chaque sous-type.")}
-      </div>
+      {/* Règle de passage MLD automatique (masquée en Mode Contrôle) */}
+      {!EXAM_MODE && (
+        <div className="rounded-lg bg-accent-soft/30 p-2.5 text-nano text-ink-soft leading-relaxed border border-accent-soft mt-1">
+          <strong>{t("Règle de passage MLD :")}</strong> {t("La clé primaire de")} {parentEntity ? <strong>{parentEntity.name}</strong> : t("l'entité mère")} {t("est automatiquement propagée comme clé primaire et clé étrangère (#) dans chaque sous-type.")}
+        </div>
+      )}
 
       {/* Bouton de suppression de l'héritage */}
       <div className="pt-2 border-t border-line">

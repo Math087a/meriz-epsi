@@ -95,7 +95,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 /** Contrôle de forme des réglages MPD : dialecte connu, surcharges texte. */
 export function parseMpdSettings(raw: unknown): MpdSettings | null {
-  if (!isRecord(raw) || (raw.dialect !== 'mysql' && raw.dialect !== 'postgresql')) {
+  if (!isRecord(raw) || (raw.dialect !== 'mysql' && raw.dialect !== 'postgresql' && raw.dialect !== 'sqlserver')) {
     return null
   }
   const overrides: Record<string, string> = {}

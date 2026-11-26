@@ -19,7 +19,6 @@ import { EmailVerificationSection } from './EmailVerificationSection'
 import { TeacherModeSection } from './TeacherModeSection'
 import { Button } from './ui/Button'
 import { UsageCategoryControl } from './UsageCategoryControl'
-import { InterfaceModeControl } from './InterfaceModeControl'
 
 interface ProfilePageProps {
   user: ApiUser
@@ -118,7 +117,6 @@ export function ProfilePage({ user, client, onShowClasses, onAccountDeleted }: P
 
   return (
     <PageShell title={t("Mon profil")}>
-      <div className="mb-6 rounded-card border border-line bg-surface p-5 sm:p-6"><InterfaceModeControl /></div>
       <form onSubmit={(event) => void handleSubmit(event)} className="flex flex-col gap-6">
         <FormAlert message={formError} attempt={attempt} />
 

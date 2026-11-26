@@ -575,18 +575,16 @@ export function McdCanvas({
     (deleted: LegFlowEdge[]) => {
       for (const edge of deleted) {
         if (edge.id.startsWith('inh-p-')) {
-          const parts = edge.id.split('-')
-          const inhId = parts[2]
+          const inhId = edge.id.slice(6)
           dispatch({ type: 'UPDATE_INHERITANCE', id: inhId, patch: { parentId: '' } })
         } else if (edge.id.startsWith('inh-c-')) {
-          const parts = edge.id.split('-')
-          const inhId = parts[2]
-          const childId = parts[3]
-          const inh = state.mcd.inheritances?.find((i) => i.id === inhId)
+          const rest = edge.id.slice(6)
+          const inh = state.mcd.inheritances?.find((i) => rest.startsWith(`${i.id}-`))
           if (inh) {
+            const childId = rest.slice(inh.id.length + 1)
             dispatch({
               type: 'UPDATE_INHERITANCE',
-              id: inhId,
+              id: inh.id,
               patch: { childIds: inh.childIds.filter((cid) => cid !== childId) },
             })
           }

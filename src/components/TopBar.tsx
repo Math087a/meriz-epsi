@@ -1,3 +1,4 @@
+import { EXAM_MODE } from "../lib/examMode"
 import { t } from "../i18n/runtime"
 import { useLanguage } from "../lib/useLanguage"
 import type { McdEditorState } from '../model/mcdReducer'
@@ -170,7 +171,7 @@ export function TopBar({
       </div>
       <div className="editor-personal-row">
         {participants && participants.length > 0 && <div className="editor-participants"><ParticipantList participants={participants} others={others} /></div>}
-        <div className="editor-personal-actions"><ThemeSwitch /><AccountStatus compact /><PreferencesControl /></div>
+        <div className="editor-personal-actions"><ThemeSwitch />{!EXAM_MODE && <AccountStatus compact />}<PreferencesControl /></div>
       </div>
     </header>
   )

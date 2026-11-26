@@ -87,11 +87,13 @@ export function ExamDictionaryView({ exam, dispatch, readOnly = false }: ExamDic
   }
 
   const handleRenameGroup = (kind: 'table' | 'association', oldName: string, newName: string) => {
-    if (readOnly || !newName.trim() || newName === oldName) return
+    const trimmed = newName.trim()
+    if (readOnly || !trimmed || trimmed === oldName) return
     const list = kind === 'table' ? dictTables : dictAssociations
-    const nextList = list.map((n) => (n === oldName ? newName.trim() : n))
+    if (list.includes(trimmed)) return
+    const nextList = list.map((n) => (n === oldName ? trimmed : n))
     const nextEntries = entries.map((e) =>
-      e.ownerKind === kind && e.ownerName === oldName ? { ...e, ownerName: newName.trim() } : e,
+      e.ownerKind === kind && e.ownerName === oldName ? { ...e, ownerName: trimmed } : e,
     )
     updateExam({
       ...(kind === 'table' ? { dictTables: nextList } : { dictAssociations: nextList }),

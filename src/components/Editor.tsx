@@ -104,7 +104,7 @@ const IGNORE_ACTION = () => {}
  */
 export function Editor({
   interfaceSettings,
-  interfaceMode = 'complete',
+  interfaceMode: _interfaceMode = 'complete',
   openedDocument,
   saver,
   cloud,
@@ -151,8 +151,8 @@ export function Editor({
   const [pendingAnnotations, setPendingAnnotations] = useState(false)
   const [confirmLeaveAnnotations, setConfirmLeaveAnnotations] = useState(false)
   const allowedViews = useMemo<readonly ViewId[]>(
-    () => EXAM_MODE ? ['dictionnaire', 'mcd', 'mld', 'mpd', 'sql', 'code', 'apropos'] : (interfaceSettings ? assignmentViews(interfaceSettings) : visibleViews(interfaceMode)),
-    [interfaceMode, interfaceSettings],
+    () => EXAM_MODE ? ['dictionnaire', 'mcd', 'mld', 'mpd', 'sql', 'code', 'apropos'] : (interfaceSettings ? assignmentViews(interfaceSettings) : visibleViews('complete')),
+    [interfaceSettings],
   )
   const [reviewMode, setReviewMode] = useState<'student' | 'correction'>('student')
   const [requestedView, setRequestedView] = useState<ViewId>('mcd')
@@ -354,7 +354,7 @@ export function Editor({
   )
 
   return (
-    <SqlTypesContext value={{ settings: mpdSettings, dispatch, readOnly: locked, beginner: interfaceMode === 'beginner' }}>
+    <SqlTypesContext value={{ settings: mpdSettings, dispatch, readOnly: locked, beginner: false }}>
     <div className="flex h-dvh flex-col bg-shell font-sans text-ink">
       <SkipLink />
       <ConfirmDialog open={confirmLeaveAnnotations} title={t("Des commentaires ou traits ne sont pas enregistrés")}

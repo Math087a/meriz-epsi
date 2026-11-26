@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import type { NodeProps } from '@xyflow/react'
 import { McdDispatchContext } from './dispatchContext'
 import type { PostItFlowNode } from './mcdToFlow'
@@ -12,6 +12,14 @@ export function PostItNode({ data, selected }: NodeProps<PostItFlowNode>) {
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const isMldMode = !EXAM_MODE && postit.mode === 'mld'
   const [title, setTitle] = useState(postit.title || (isMldMode ? 'MLD Dynamique' : 'Mémo'))
+
+  useEffect(() => {
+    setContent(postit.content)
+  }, [postit.content])
+
+  useEffect(() => {
+    setTitle(postit.title || (isMldMode ? 'MLD Dynamique' : 'Mémo'))
+  }, [postit.title, isMldMode])
 
   const handleBlurContent = () => {
     dispatch?.({ type: 'UPDATE_POSTIT', id: postit.id, patch: { content } })

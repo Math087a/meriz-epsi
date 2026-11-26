@@ -1,3 +1,4 @@
+import { EXAM_MODE } from './lib/examMode'
 import { t } from "./i18n/runtime"
 import { useLanguage } from "./lib/useLanguage"
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
@@ -45,7 +46,6 @@ import { useDocumentOpening } from './components/useDocumentOpening'
 import { useLocalImportOffer } from './components/useLocalImportOffer'
 import { useLiveObservation } from './components/useLiveObservation'
 import { useInterfaceMode } from './components/useInterfaceMode'
-import { InterfaceModeControl } from './components/InterfaceModeControl'
 import { useAssignmentInterface } from './components/useAssignmentInterface'
 import { Button } from './components/ui/Button'
 
@@ -278,7 +278,7 @@ export function App() {
   // Espace connecté : accueil selon le rôle, classes, travail, profil.
   // Chaque page est remontée par compte et à chaque navigation : ses
   // données ne survivent jamais à un changement de compte.
-  if (!current && session.status === 'signed-in' && account.kind === 'cloud') {
+  if (!EXAM_MODE && !current && session.status === 'signed-in' && account.kind === 'cloud') {
     const pageKey = `${account.key}:${navigation}`
     const homeProps = {
       user: session.user,
@@ -400,7 +400,6 @@ export function App() {
       </>
     )
   }
-  if (interfaceMode === null) return <InterfaceModeControl key={spaceKey} initial onBack={() => void leaveEditor()} />
   if (exerciseInterface.loading) return <main className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-shell p-6 text-ink"><p role="status">{exerciseInterface.error ?? t('Vérification des réglages de l’exercice…')}</p><Button onClick={exerciseInterface.retry}>{t('Réessayer')}</Button><Button variant="ghost" onClick={() => void leaveEditor()}>{t('Retour')}</Button></main>
   const interfaceSettings = current.target.kind === 'review' && current.target.interfacePreview !== undefined ? current.target.interfacePreview : exerciseInterface.settings
   const chrome = editorChrome(current.target)
@@ -451,7 +450,7 @@ export function App() {
         // à zéro quand on change de document ou de compte.
         key={`${spaceKey}:${current.document.meta.id}`}
         interfaceSettings={interfaceSettings}
-        interfaceMode={current.target.kind === 'review' && current.target.interfacePreview !== undefined ? current.target.interfacePreviewMode ?? interfaceMode : interfaceMode}
+        interfaceMode={current.target.kind === 'review' && current.target.interfacePreview !== undefined ? (current.target.interfacePreviewMode ?? interfaceMode ?? 'complete') : (interfaceMode ?? 'complete')}
         openedDocument={current.document}
         saver={current.saver}
         cloud={current.cloud}
