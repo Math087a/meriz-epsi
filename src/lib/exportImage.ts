@@ -1,3 +1,4 @@
+import { EXAM_MODE } from './examMode'
 import { getNodesBounds, getViewportForBounds } from '@xyflow/react'
 import type { Node } from '@xyflow/react'
 import { toPng } from 'html-to-image'
@@ -26,15 +27,15 @@ export async function exportToPng(nodes: Node[], viewportElement: HTMLElement): 
 
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark'
   const computed = getComputedStyle(document.documentElement)
-  const canvasBg = computed.getPropertyValue('--c-canvas').trim() || (isDark ? '#131715' : '#fafbfa')
-  const surface = computed.getPropertyValue('--c-surface').trim() || (isDark ? '#1d2520' : '#ffffff')
-  const surfaceSoft = computed.getPropertyValue('--c-surface-soft').trim() || (isDark ? '#242e28' : '#ebf0ec')
-  const lineStrong = computed.getPropertyValue('--c-line-strong').trim() || (isDark ? '#6d8c7b' : '#6d8475')
-  const line = computed.getPropertyValue('--c-line').trim() || (isDark ? '#26332b' : '#d8e2da')
-  const mark = computed.getPropertyValue('--c-mark').trim() || (isDark ? '#52b788' : '#1b5328')
-  const ink = computed.getPropertyValue('--c-ink').trim() || (isDark ? '#eaf2ec' : '#1a241e')
-  const inkSoft = computed.getPropertyValue('--c-ink-soft').trim() || (isDark ? '#a8bcaf' : '#4e6155')
-  const accentInk = computed.getPropertyValue('--c-accent-ink').trim() || (isDark ? '#74c69d' : '#1b5328')
+  const canvasBg = computed.getPropertyValue('--c-canvas').trim() || (EXAM_MODE ? (isDark ? '#160e10' : '#fcf9f9') : (isDark ? '#131715' : '#fafbfa'))
+  const surface = computed.getPropertyValue('--c-surface').trim() || (EXAM_MODE ? (isDark ? '#26181b' : '#ffffff') : (isDark ? '#1d2520' : '#ffffff'))
+  const surfaceSoft = computed.getPropertyValue('--c-surface-soft').trim() || (EXAM_MODE ? (isDark ? '#301f22' : '#f5eaea') : (isDark ? '#242e28' : '#ebf0ec'))
+  const lineStrong = computed.getPropertyValue('--c-line-strong').trim() || (EXAM_MODE ? (isDark ? '#9e7379' : '#8f6266') : (isDark ? '#6d8c7b' : '#6d8475'))
+  const line = computed.getPropertyValue('--c-line').trim() || (EXAM_MODE ? (isDark ? '#3d262a' : '#ebd8da') : (isDark ? '#26332b' : '#d8e2da'))
+  const mark = computed.getPropertyValue('--c-mark').trim() || (EXAM_MODE ? (isDark ? '#e05363' : '#a61b2b') : (isDark ? '#52b788' : '#1b5328'))
+  const ink = computed.getPropertyValue('--c-ink').trim() || (EXAM_MODE ? (isDark ? '#f5ecee' : '#241416') : (isDark ? '#eaf2ec' : '#1a241e'))
+  const inkSoft = computed.getPropertyValue('--c-ink-soft').trim() || (EXAM_MODE ? (isDark ? '#c2a5a9' : '#66474a') : (isDark ? '#a8bcaf' : '#4e6155'))
+  const accentInk = computed.getPropertyValue('--c-accent-ink').trim() || (EXAM_MODE ? (isDark ? '#f28b96' : '#991625') : (isDark ? '#74c69d' : '#1b5328'))
 
   // Injecter un élément style temporaire directement dans viewportElement pour que
   // le clonage html-to-image emporte avec lui les variables CSS et les règles SVG d'arêtes et de nœuds.

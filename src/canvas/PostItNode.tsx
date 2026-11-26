@@ -3,13 +3,15 @@ import type { NodeProps } from '@xyflow/react'
 import { McdDispatchContext } from './dispatchContext'
 import type { PostItFlowNode } from './mcdToFlow'
 import { mcdToMld } from '../model/mld'
+import { EXAM_MODE } from '../lib/examMode'
 
 export function PostItNode({ data, selected }: NodeProps<PostItFlowNode>) {
   const dispatch = useContext(McdDispatchContext)
   const { postit, mcd } = data
   const [content, setContent] = useState(postit.content)
   const [isEditingTitle, setIsEditingTitle] = useState(false)
-  const [title, setTitle] = useState(postit.title || (postit.mode === 'mld' ? 'MLD Dynamique' : 'Mémo'))
+  const isMldMode = !EXAM_MODE && postit.mode === 'mld'
+  const [title, setTitle] = useState(postit.title || (isMldMode ? 'MLD Dynamique' : 'Mémo'))
 
   const handleBlurContent = () => {
     dispatch?.({ type: 'UPDATE_POSTIT', id: postit.id, patch: { content } })
@@ -21,6 +23,7 @@ export function PostItNode({ data, selected }: NodeProps<PostItFlowNode>) {
   }
 
   const toggleMode = () => {
+    if (EXAM_MODE) return
     const nextMode = postit.mode === 'mld' ? 'text' : 'mld'
     dispatch?.({
       type: 'UPDATE_POSTIT',
@@ -36,7 +39,7 @@ export function PostItNode({ data, selected }: NodeProps<PostItFlowNode>) {
     dispatch?.({ type: 'DELETE_POSTIT', id: postit.id })
   }
 
-  const mldTables = postit.mode === 'mld' ? mcdToMld(mcd) : []
+  const mldTables = isMldMode ? mcdToMld(mcd) : []
 
   return (
     <div
@@ -84,15 +87,17 @@ export function PostItNode({ data, selected }: NodeProps<PostItFlowNode>) {
         </div>
 
         <div className="flex items-center gap-1">
-          <button
-            type="button"
-            onClick={toggleMode}
-            className="rounded px-1.5 py-0.5 text-nano font-medium opacity-75 transition-opacity hover:bg-black/10 hover:opacity-100 dark:hover:bg-white/10"
-            title={postit.mode === 'mld' ? 'Passer en mode mémo libre' : 'Passer en mode MLD dynamique'}
-            onPointerDown={(e) => e.stopPropagation()}
-          >
-            {postit.mode === 'mld' ? 'Vue MLD' : 'Texte'}
-          </button>
+          {!EXAM_MODE && (
+            <button
+              type="button"
+              onClick={toggleMode}
+              className="rounded px-1.5 py-0.5 text-nano font-medium opacity-75 transition-opacity hover:bg-black/10 hover:opacity-100 dark:hover:bg-white/10"
+              title={isMldMode ? 'Passer en mode mémo libre' : 'Passer en mode MLD dynamique'}
+              onPointerDown={(e) => e.stopPropagation()}
+            >
+              {isMldMode ? 'Vue MLD' : 'Texte'}
+            </button>
+          )}
           <button
             type="button"
             onClick={handleDelete}
@@ -107,7 +112,7 @@ export function PostItNode({ data, selected }: NodeProps<PostItFlowNode>) {
         </div>
       </div>
 
-      {postit.mode === 'text' ? (
+      {!isMldMode ? (
         <textarea
           value={content}
           placeholder="Écrivez vos notes, consignes ou mémos ici..."

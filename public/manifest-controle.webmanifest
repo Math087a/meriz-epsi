@@ -1,0 +1,25 @@
+{
+  "name": "Merise - EPSI Edition (Mode Contrôle)",
+  "short_name": "Merise Contrôle",
+  "description": "Modélisation conceptuelle Merise en mode évaluation (Dictionnaire, MCD, Héritage).",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#1c1214",
+  "theme_color": "#1c1214",
+  "icons": [
+    {
+      "src": "./favicon-controle.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./apple-touch-icon-controle.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import { EXAM_MODE } from "../../lib/examMode"
 import { useLanguage } from "../../lib/useLanguage"
 /**
  * Logo de Meriz, repris de design/logo : une tuile indigo, la queue en V
@@ -61,7 +62,7 @@ export function Lockup({ size = 32, label, className }: LogoProps) {
           Merise
         </span>
         <span className="font-semibold uppercase tracking-wider text-accent font-['Outfit']" style={{ fontSize: `${Math.round(size * 0.3)}px`, letterSpacing: '0.08em', lineHeight: 1.1 }}>
-          EPSI Edition
+          {EXAM_MODE ? 'EPSI · Mode Contrôle' : 'EPSI Edition'}
         </span>
       </div>
     </div>

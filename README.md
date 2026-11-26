@@ -10,6 +10,17 @@ Merise EPSI Edition remplace avantageusement les outils historiques tels que JMe
 
 ---
 
+## Les deux versions disponibles
+
+Ce dépôt déploie automatiquement **deux versions complémentaires** sur GitHub Pages, chacune adaptée à un contexte pédagogique précis :
+
+| Version | Adresse d'accès | Thème visuel | À quoi elle sert |
+| :--- | :--- | :--- | :--- |
+| **Version Standard** | https://math087a.github.io/meriz-epsi/ | **Vert Sapin** | **Cours, TP et projets** : outil complet avec dictionnaire des données, MCD, héritage (X, T, XT), passage automatique en MLD, MPD, génération SQL (T-SQL, MySQL, PostgreSQL) et post-its MLD dynamique. |
+| **Version Mode Contrôle** | https://math087a.github.io/meriz-epsi/controle/ | **Rouge Contrôle** | **Évaluations et examens en classe** : identique pour dessiner le MCD et gérer le dictionnaire, l'héritage, l'import JMerise (`.mcd`) et l'export PNG, mais **toute génération automatique (MLD, MPD, SQL, code et post-its MLD dynamique) est désactivée**. Le thème rouge vif permet au surveillant de vérifier d'un coup d'œil qu'aucun outil de génération n'est utilisé. |
+
+---
+
 ## Comment l'installer sur votre PC (Barre des tâches & Bureau)
 
 ### Option 1 : Installation directe en 1 clic via le navigateur (Recommandée)

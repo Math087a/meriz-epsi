@@ -46,7 +46,7 @@
 
 :root {
   color-scheme: light;
-  /* Fonds */
+  /* Fonds — Palette Vert Sapin (mode clair) */
   --c-shell: #f4f6f4; /* papier frais très légèrement teinté de vert doux */
   --c-surface: #ffffff; /* cartes, panneaux */
   --c-surface-soft: #ebf0ec; /* cartes secondaires, en-têtes de cartes */
@@ -88,7 +88,7 @@
   color-scheme: dark;
   /*
    * Palette Vert Sapin EPSI (issue du thème Obsidian Vert-Sapin).
-   * Fond de travail sombre en forêt profonde (#161b18 / #111513),
+   * Fond de travail sombre en forêt profonde (#161b18 / #1d2520),
    * bordures végétales douces (#26332b) et accents émeraude vifs (#52b788 / #2d6a4f).
    */
   --c-shell: #161b18; /* fond principal application */
@@ -120,6 +120,76 @@
   --c-danger-strong: #b82b20;
   --c-warning: #ecc367;
   --c-warning-soft: #362d16;
+  --c-shadow: 0 0 0;
+}
+
+/* Mode Contrôle / Examen : Palette Rouge Contrôle (mode clair) */
+[data-exam='true'] {
+  color-scheme: light;
+  --c-shell: #faf5f5;
+  --c-surface: #ffffff;
+  --c-surface-soft: #f5eaea;
+  --c-canvas: #fcf9f9;
+  --c-ink: #241416;
+  --c-ink-soft: #66474a;
+  --c-line: #ebd8da;
+  --c-line-strong: #8f6266;
+  --c-accent: #a61b2b;
+  --c-accent-hover: #821320;
+  --c-on-accent: #ffffff;
+  --c-accent-soft: #fce8ea;
+  --c-accent-ink: #991625;
+  --c-mark: #a61b2b;
+  --c-focus: #b91c1c;
+  --c-logo: #a61b2b;
+  --c-cherry: #9e1b4b;
+  --c-cherry-soft: #fce6ee;
+  --c-apricot: #913a14;
+  --c-apricot-soft: #fdeadb;
+  --c-sage: #1b5328;
+  --c-sage-soft: #e2f1e7;
+  --c-sky: #1b4b7a;
+  --c-sky-soft: #e3edf8;
+  --c-danger: #a81e14;
+  --c-danger-soft: #fdeae7;
+  --c-danger-strong: #a81e14;
+  --c-warning: #784503;
+  --c-warning-soft: #fdf1d6;
+  --c-shadow: 36 20 22;
+}
+
+/* Mode Contrôle / Examen : Palette Rouge Contrôle (mode sombre) */
+[data-exam='true'][data-theme='dark'] {
+  color-scheme: dark;
+  --c-shell: #1c1214;
+  --c-surface: #26181b;
+  --c-surface-soft: #301f22;
+  --c-canvas: #160e10;
+  --c-ink: #f5ecee;
+  --c-ink-soft: #c2a5a9;
+  --c-line: #3d262a;
+  --c-line-strong: #9e7379;
+  --c-accent: #b91c2e;
+  --c-accent-hover: #991524;
+  --c-on-accent: #ffffff;
+  --c-accent-soft: #3d181e;
+  --c-accent-ink: #f28b96;
+  --c-mark: #e05363;
+  --c-focus: #e05363;
+  --c-logo: #b91c2e;
+  --c-cherry: #e88da4;
+  --c-cherry-soft: #3b1e26;
+  --c-apricot: #eba77a;
+  --c-apricot-soft: #3b271e;
+  --c-sage: #6cc799;
+  --c-sage-soft: #1b3628;
+  --c-sky: #7ab8e8;
+  --c-sky-soft: #1a2a3a;
+  --c-danger: #fa9c96;
+  --c-danger-soft: #3d1c1f;
+  --c-danger-strong: #b82b20;
+  --c-warning: #efc76b;
+  --c-warning-soft: #382e17;
   --c-shadow: 0 0 0;
 }
 

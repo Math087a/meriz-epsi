@@ -1,3 +1,4 @@
+import { EXAM_MODE } from '../../lib/examMode'
 import { t } from '../../i18n/runtime'
 import { useLanguage } from '../../lib/useLanguage'
 import { themeStore } from '../../lib/theme'
@@ -26,8 +27,8 @@ export function ThemeSwitch({ className = '' }: ThemeSwitchProps) {
       type="button"
       role="switch"
       aria-checked={isDark}
-      aria-label={isDark ? t("Basculer vers le mode clair") : t("Basculer vers le mode sombre Vert Sapin")}
-      title={isDark ? t("Mode sombre actif (cliquer pour mode clair)") : t("Mode clair actif (cliquer pour mode sombre Vert Sapin)")}
+      aria-label={isDark ? t("Basculer vers le mode clair") : t(EXAM_MODE ? "Basculer vers le mode sombre Rouge Contrôle" : "Basculer vers le mode sombre Vert Sapin")}
+      title={isDark ? t("Mode sombre actif (cliquer pour mode clair)") : t(EXAM_MODE ? "Mode clair actif (cliquer pour mode sombre Rouge Contrôle)" : "Mode clair actif (cliquer pour mode sombre Vert Sapin)")}
       onClick={toggle}
       className={`relative inline-flex h-[28px] w-[56px] shrink-0 cursor-pointer items-center rounded-full border border-line-strong bg-surface-soft transition-colors duration-200 hover:border-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus ${className}`}
     >
@@ -40,7 +41,7 @@ export function ThemeSwitch({ className = '' }: ThemeSwitchProps) {
         <Icon
           name="moon"
           size={11}
-          className={`transition-opacity duration-200 ${isDark ? 'text-emerald-400 opacity-100' : 'text-ink-soft opacity-40'}`}
+          className={`transition-opacity duration-200 ${isDark ? (EXAM_MODE ? 'text-rose-400 opacity-100' : 'text-emerald-400 opacity-100') : 'text-ink-soft opacity-40'}`}
         />
       </div>
       <span

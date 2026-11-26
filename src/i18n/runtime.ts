@@ -1,3 +1,4 @@
+import { EXAM_MODE } from '../lib/examMode'
 import { english as baseEnglish } from './en'
 import { englishExtras } from './enExtras'
 export const english = { ...baseEnglish, ...englishExtras }
@@ -24,7 +25,7 @@ const listeners = new Set<() => void>()
 function applyLanguage() {
   if (typeof document === 'undefined') return
   document.documentElement.lang = language
-  document.title = 'Merise - EPSI Edition'
+  document.title = EXAM_MODE ? 'Merise - EPSI Edition (Mode Contrôle)' : 'Merise - EPSI Edition'
 }
 export function getLanguage(): Language { return language }
 export function localeTag(): string { return language === 'en' ? 'en-GB' : 'fr-FR' }

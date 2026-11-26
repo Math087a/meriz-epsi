@@ -1,3 +1,4 @@
+import { EXAM_MODE } from "../lib/examMode"
 import { t } from "../i18n/runtime"
 import { useLanguage } from "../lib/useLanguage"
 import { LogoMark } from './ui/Lockup'
@@ -11,16 +12,16 @@ export function AboutView() {
         <header className="flex items-center gap-3">
           <LogoMark size={44} />
           <div>
-            <h2 className="text-2xl font-semibold tracking-tight">{t("À propos de Merise EPSI Edition")}</h2>
+            <h2 className="text-2xl font-semibold tracking-tight">{t(EXAM_MODE ? "À propos de Merise EPSI Edition (Mode Contrôle)" : "À propos de Merise EPSI Edition")}</h2>
             <p className="mt-0.5 text-sm text-ink-soft">
-              {t("Environnement moderne de modélisation Merise pour l'EPSI.")}</p>
+              {t(EXAM_MODE ? "Environnement d'évaluation Merise pour l'EPSI : modélisation conceptuelle sans génération automatique." : "Environnement moderne de modélisation Merise pour l'EPSI.")}</p>
           </div>
         </header>
 
         <div className="rounded-card border border-line bg-surface p-5 shadow-soft">
           <h3 className="text-base font-semibold tracking-tight">{t("Le logiciel")}</h3>
           <p className="mt-2 text-sm leading-6 text-ink-soft">
-            {t("Merise EPSI Edition est un outil moderne et libre de modélisation de bases de données selon la méthode Merise. Conçu spécialement pour les travaux pratiques et projets des étudiants de l'EPSI, il intègre l'import direct des fichiers JMerise (.mcd), la génération T-SQL pour Microsoft SQL Server, la gestion complète de l'héritage et de la spécialisation (X, T, XT), ainsi qu'un export PNG haute fidélité.")}</p>
+            {t(EXAM_MODE ? "Cette édition Mode Contrôle est dédiée aux évaluations et examens en classe à l'EPSI. Elle conserve le dictionnaire des données, la création et l'édition complète du MCD (entités, attributs, associations, cardinalités, héritage X/T/XT), la sauvegarde/ouverture de projet, l'import JMerise (.mcd) et l'export PNG, tout en désactivant la génération automatique du MLD, du MPD, du SQL et du code." : "Merise EPSI Edition est un outil moderne et libre de modélisation de bases de données selon la méthode Merise. Conçu spécialement pour les travaux pratiques et projets des étudiants de l'EPSI, il intègre l'import direct des fichiers JMerise (.mcd), la génération T-SQL pour Microsoft SQL Server, la gestion complète de l'héritage et de la spécialisation (X, T, XT), ainsi qu'un export PNG haute fidélité.")}</p>
           <p className="mt-2 text-sm leading-6 text-ink-soft">
             {t("Construit avec React 19, TypeScript et React Flow. Tout s'exécute localement sur votre poste : vos schémas et dictionnaires restent 100 % privés.")}</p>
         </div>

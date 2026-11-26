@@ -1,3 +1,4 @@
+import { EXAM_MODE } from "../lib/examMode"
 import { t } from "../i18n/runtime"
 import { useLanguage } from "../lib/useLanguage"
 import type { ApiError } from '../lib/apiClient'
@@ -33,28 +34,39 @@ interface DocumentsHomeProps {
   onClearNotice: () => void
 }
 
-const steps: { title: string; text: string }[] = [
-  {
-    get title() { return t("Dictionnaire") },
-    get text() { return t("La liste maîtresse des propriétés : chaque donnée est définie une seule fois, puis placée dans une entité ou une association.") },
-  },
-  {
-    get title() { return t("MCD") },
-    get text() { return t("Dessinez le modèle conceptuel : entités, associations, cardinalités. La validation signale les problèmes en direct.") },
-  },
-  {
-    get title() { return t("MLD") },
-    get text() { return t("Le modèle logique suit le MCD : tables, clés étrangères et tables de jonction, selon les règles de passage Merise.") },
-  },
-  {
-    get title() { return t("MPD") },
-    get text() { return t("Le schéma physique : types SQL concrets et clés étrangères fléchées entre les tables.") },
-  },
-  {
-    get title() { return t("SQL") },
-    get text() { return t("Le script CREATE TABLE prêt à exécuter dans MySQL ou PostgreSQL, à copier en un clic.") },
-  },
-]
+const steps: { title: string; text: string }[] = EXAM_MODE
+  ? [
+      {
+        get title() { return t("Dictionnaire") },
+        get text() { return t("La liste maîtresse des propriétés : chaque donnée est définie une seule fois, puis placée dans une entité ou une association.") },
+      },
+      {
+        get title() { return t("MCD") },
+        get text() { return t("Dessinez le modèle conceptuel : entités, associations, cardinalités, héritage. La validation signale les problèmes en direct.") },
+      },
+    ]
+  : [
+      {
+        get title() { return t("Dictionnaire") },
+        get text() { return t("La liste maîtresse des propriétés : chaque donnée est définie une seule fois, puis placée dans une entité ou une association.") },
+      },
+      {
+        get title() { return t("MCD") },
+        get text() { return t("Dessinez le modèle conceptuel : entités, associations, cardinalités. La validation signale les problèmes en direct.") },
+      },
+      {
+        get title() { return t("MLD") },
+        get text() { return t("Le modèle logique suit le MCD : tables, clés étrangères et tables de jonction, selon les règles de passage Merise.") },
+      },
+      {
+        get title() { return t("MPD") },
+        get text() { return t("Le schéma physique : types SQL concrets et clés étrangères fléchées entre les tables.") },
+      },
+      {
+        get title() { return t("SQL") },
+        get text() { return t("Le script CREATE TABLE prêt à exécuter dans MySQL ou PostgreSQL, à copier en un clic.") },
+      },
+    ]
 
 function Kbd({ children }: { children: string }) {
   useLanguage()

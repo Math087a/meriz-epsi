@@ -1,3 +1,4 @@
+import { EXAM_MODE } from '../lib/examMode'
 import { assignmentViews } from '../lib/assignmentInterface'
 import type { AssignmentInterface } from '../lib/assignmentInterface'
 import { visibleViews } from '../lib/interfaceMode'
@@ -144,7 +145,10 @@ export function Editor({
   )
   const [pendingAnnotations, setPendingAnnotations] = useState(false)
   const [confirmLeaveAnnotations, setConfirmLeaveAnnotations] = useState(false)
-  const allowedViews = useMemo(() => interfaceSettings ? assignmentViews(interfaceSettings) : visibleViews(interfaceMode), [interfaceMode, interfaceSettings])
+  const allowedViews = useMemo<readonly ViewId[]>(
+    () => EXAM_MODE ? ['dictionnaire', 'mcd', 'apropos'] : (interfaceSettings ? assignmentViews(interfaceSettings) : visibleViews(interfaceMode)),
+    [interfaceMode, interfaceSettings],
+  )
   const [requestedView, setRequestedView] = useState<ViewId>('mcd')
   const activeView = allowedViews.includes(requestedView) ? requestedView : allowedViews[0] ?? 'mcd'
   const setActiveView = useCallback((view: ViewId) => {
@@ -198,8 +202,8 @@ export function Editor({
 
   // MLD, MPD et SQL dérivent toujours du MCD courant : dérivation pure,
   // recalculée à chaque changement, jamais un état à mémoriser.
-  const mldTables = useMemo(() => mcdToMld(state.mcd), [state.mcd])
-  const mpdTables = useMemo(() => buildMpd(mldTables, mpdSettings), [mldTables, mpdSettings])
+  const mldTables = useMemo(() => EXAM_MODE ? [] : mcdToMld(state.mcd), [state.mcd])
+  const mpdTables = useMemo(() => EXAM_MODE ? [] : buildMpd(mldTables, mpdSettings), [mldTables, mpdSettings])
 
   // Observation en direct : le modèle consulté change tout seul quand
   // son auteur travaille. On l'adopte sans remonter l'éditeur, pour
@@ -320,7 +324,7 @@ export function Editor({
 
   // Générer : le MCD est vérifié par la barre d'outils, on ouvre le résultat.
   const handleGenerate = useCallback(() => {
-    setActiveView('mld')
+    if (!EXAM_MODE) setActiveView('mld')
   }, [setActiveView])
 
   const setDialect = useCallback((dialect: SqlDialect) => {
@@ -394,7 +398,7 @@ export function Editor({
               onSelectionChange={setSelection}
               problems={problems}
               onSelectElement={selectElement}
-              canGenerate={allowedViews.includes('mld')}
+              canGenerate={!EXAM_MODE && allowedViews.includes('mld')}
               onGenerate={handleGenerate}
               isActive={activeView === 'mcd'}
               others={collab.others}
@@ -427,25 +431,27 @@ export function Editor({
               readOnly={locked}
             />
 
-            {activeView === 'mld' && <MldView tables={mldTables} hasErrors={hasErrors} />}
+            {!EXAM_MODE && activeView === 'mld' && <MldView tables={mldTables} hasErrors={hasErrors} />}
 
             {/* Comme le MCD, le MPD reste monté quand il est masqué : les
                 positions de son diagramme survivent au changement de vue. */}
-            <MpdView
-              tables={mpdTables}
-              hasErrors={hasErrors}
-              settings={mpdSettings}
-              readOnly={locked}
-              onDialectChange={locked ? IGNORE_ACTION : setDialect}
-              onOverrideChange={locked ? IGNORE_ACTION : setTypeOverride}
-              isActive={activeView === 'mpd'}
-            />
+            {!EXAM_MODE && (
+              <MpdView
+                tables={mpdTables}
+                hasErrors={hasErrors}
+                settings={mpdSettings}
+                readOnly={locked}
+                onDialectChange={locked ? IGNORE_ACTION : setDialect}
+                onOverrideChange={locked ? IGNORE_ACTION : setTypeOverride}
+                isActive={activeView === 'mpd'}
+              />
+            )}
 
-            {activeView === 'sql' && (
+            {!EXAM_MODE && activeView === 'sql' && (
               <SqlView tables={mpdTables} dialect={mpdSettings.dialect} hasErrors={hasErrors} />
             )}
 
-            {activeView === 'code' && (
+            {!EXAM_MODE && activeView === 'code' && (
               <CodeView
                 mcd={state.mcd}
                 tables={mldTables}
@@ -454,7 +460,7 @@ export function Editor({
               />
             )}
 
-            {activeView === 'apprendre' && <LearnView onSelectView={setActiveView} />}
+            {!EXAM_MODE && activeView === 'apprendre' && <LearnView onSelectView={setActiveView} />}
             {activeView === 'apropos' && <AboutView />}
           </main>
         </div>

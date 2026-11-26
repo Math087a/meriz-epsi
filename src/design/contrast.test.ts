@@ -24,6 +24,8 @@ function blockAfter(selector: string): string {
 
 const light = tokensOf(blockAfter(':root {'))
 const dark = tokensOf(blockAfter("[data-theme='dark'] {"))
+const examLight = tokensOf(blockAfter("[data-exam='true'] {"))
+const examDark = tokensOf(blockAfter("[data-exam='true'][data-theme='dark'] {"))
 
 
 /**
@@ -107,8 +109,10 @@ const PAIRS: [string, string, number][] = [
 ]
 
 describe.each([
-  ['clair', light],
-  ['sombre', dark],
+  ['clair Vert Sapin', light],
+  ['sombre Vert Sapin', dark],
+  ['clair Rouge Contrôle', examLight],
+  ['sombre Rouge Contrôle', examDark],
 ])('contrastes WCAG AA, thème %s', (_name, tokens) => {
   it.each(PAIRS)('%s sur %s', (foreground, background, minimum) => {
     const fg = tokens[foreground]
