@@ -41,7 +41,12 @@ export function LegEdge({ id, sourceX, sourceY, targetX, targetY, sourcePosition
   const label = dragPosition ?? data?.labelPosition ?? { x: labelX, y: labelY }
   const controlX = 2 * label.x - (sourceX + targetX) / 2
   const controlY = 2 * label.y - (sourceY + targetY) / 2
-  const path = !isStraight && (dragPosition || data?.labelPosition) ? 'M ' + sourceX + ',' + sourceY + ' Q ' + controlX + ',' + controlY + ' ' + targetX + ',' + targetY : automaticPath
+  const hasCustomLabel = Boolean(dragPosition || data?.labelPosition)
+  const path = hasCustomLabel
+    ? isStraight
+      ? `M ${sourceX},${sourceY} L ${label.x},${label.y} L ${targetX},${targetY}`
+      : `M ${sourceX},${sourceY} Q ${controlX},${controlY} ${targetX},${targetY}`
+    : automaticPath
 
   const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
     if (!dispatch) return

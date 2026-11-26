@@ -1,3 +1,4 @@
+import { EXAM_MODE } from '../lib/examMode'
 import { useToast } from './ui/toastContext'
 import { t } from "../i18n/runtime"
 import { useLanguage } from "../lib/useLanguage"
@@ -97,7 +98,7 @@ export function FileActions({
 
   return (
     <div role="group" aria-label={t("Fichier")} className="editor-file-actions flex min-w-0 flex-wrap items-center gap-1.5">
-      {onNewDocument && (
+      {!EXAM_MODE && onNewDocument && (
         <button type="button" className={buttonClass} title={t("Nouveau")} aria-label={t("Nouveau")} onClick={onNewDocument}>
           <Icon name="plus" />
           <span>{t("Nouveau")}</span>
