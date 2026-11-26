@@ -38,11 +38,23 @@ const steps: { title: string; text: string }[] = EXAM_MODE
   ? [
       {
         get title() { return t("Dictionnaire") },
-        get text() { return t("La liste maîtresse des propriétés : chaque donnée est définie une seule fois, puis placée dans une entité ou une association.") },
+        get text() { return t("Saisissez manuellement la liste des données sans ajout automatique dans le MCD.") },
       },
       {
         get title() { return t("MCD") },
-        get text() { return t("Dessinez le modèle conceptuel : entités, associations, cardinalités, héritage. La validation signale les problèmes en direct.") },
+        get text() { return t("Dessinez le modèle conceptuel : entités, associations, cardinalités, héritage (sans vérification automatique).") },
+      },
+      {
+        get title() { return t("MLD") },
+        get text() { return t("Rédigez manuellement votre modèle logique relationnel comme sur feuille.") },
+      },
+      {
+        get title() { return t("MPD") },
+        get text() { return t("Rédigez manuellement votre modèle physique (tables, types SQL, clés).") },
+      },
+      {
+        get title() { return t("SQL") },
+        get text() { return t("Rédigez manuellement votre script CREATE TABLE prêt pour la remise au professeur.") },
       },
     ]
   : [

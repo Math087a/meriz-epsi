@@ -11,6 +11,7 @@ import type {
   Property,
 } from '../model/mcd'
 import { ATTRIBUTE_TYPES } from '../model/mcd'
+import type { ExamDictionaryEntry, ExamWork } from '../model/examWork'
 import type { McdLayout, Position } from '../model/layout'
 import type { McdEditorState } from '../model/mcdReducer'
 import type { MpdSettings } from '../model/mpd'
@@ -38,6 +39,7 @@ export interface MerizFile {
   mcd: Mcd
   layout: McdLayout
   mpd?: MpdSettings
+  exam?: ExamWork
 }
 
 /**
@@ -61,6 +63,7 @@ export function serializeModel(
     mcd: state.mcd,
     layout: state.layout,
     mpd: mpdSettings,
+    ...(state.exam ? { exam: state.exam } : {}),
   }
   return JSON.stringify(file, null, 2)
 }
@@ -409,6 +412,8 @@ export function parseModelFile(text: string): ParseResult {
     }
   }
 
+  const exam = parseExamWork(raw.exam)
+
   return {
     ok: true,
     state: {
@@ -420,8 +425,34 @@ export function parseModelFile(text: string): ParseResult {
         ...(postits.length > 0 ? { postits } : {}),
       },
       layout: raw.layout,
+      ...(exam ? { exam } : {}),
     },
     mpdSettings: parseMpdSettings(raw.mpd),
     name: parseName(raw.name),
+  }
+}
+
+function parseExamWork(raw: unknown): ExamWork | undefined {
+  if (!isRecord(raw)) return undefined
+  const dictionary: ExamDictionaryEntry[] = []
+  if (Array.isArray(raw.dictionary)) {
+    for (const item of raw.dictionary) {
+      if (isRecord(item) && typeof item.id === 'string') {
+        dictionary.push({
+          id: item.id,
+          name: typeof item.name === 'string' ? item.name : '',
+          type: typeof item.type === 'string' ? item.type : '',
+          size: typeof item.size === 'string' ? item.size : '',
+          comment: typeof item.comment === 'string' ? item.comment : '',
+        })
+      }
+    }
+  }
+  return {
+    dictionary,
+    mld: typeof raw.mld === 'string' ? raw.mld : '',
+    mpd: typeof raw.mpd === 'string' ? raw.mpd : '',
+    sql: typeof raw.sql === 'string' ? raw.sql : '',
+    code: typeof raw.code === 'string' ? raw.code : '',
   }
 }

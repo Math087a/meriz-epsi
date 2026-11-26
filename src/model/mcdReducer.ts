@@ -15,6 +15,8 @@ import type {
   Inheritance,
   InheritanceConstraint,
 } from './mcd'
+import type { ExamWork } from './examWork'
+import { EMPTY_EXAM_WORK } from './examWork'
 import type { McdLayout, Position } from './layout'
 import { findPlacement, findProperty } from './queries'
 import { newId } from '../lib/id'
@@ -29,6 +31,8 @@ export interface McdEditorState {
   layout: McdLayout
   /** Réglages physiques, hors du MCD mais partagés dans le même document. */
   mpd?: MpdSettings
+  /** Travail manuel saisi en Mode Contrôle (indépendant du MCD). */
+  exam?: ExamWork
 }
 
 /** Modification partielle d'une propriété du dictionnaire. */
@@ -76,6 +80,7 @@ export type McdAction =
   | { type: 'ADD_INHERITANCE'; id?: string; name?: string; position: Position; parentId?: string; childIds?: string[]; constraint?: InheritanceConstraint }
   | { type: 'UPDATE_INHERITANCE'; id: string; patch: Partial<Inheritance> }
   | { type: 'DELETE_INHERITANCE'; id: string }
+  | { type: 'UPDATE_EXAM_WORK'; patch: Partial<ExamWork> }
 
 /** Premier nom « base N » non encore utilisé. */
 function nextName(base: string, usedNames: string[]): string {
@@ -557,11 +562,30 @@ function reduceModel(state: McdEditorState, action: McdAction): McdEditorState {
         layout,
       }
     }
+
+    case 'UPDATE_EXAM_WORK': {
+      const current = state.exam ?? EMPTY_EXAM_WORK
+      return {
+        ...state,
+        exam: {
+          ...current,
+          ...action.patch,
+        },
+      }
+    }
   }
 }
 
-/** Les actions du MCD conservent les réglages physiques, y compris lors d'une création. */
+/** Les actions du MCD conservent les réglages physiques et le travail d'examen. */
 export function mcdReducer(state: McdEditorState, action: McdAction): McdEditorState {
   const next = reduceModel(state, action)
-  return state.mpd && !next.mpd ? { ...next, mpd: state.mpd } : next
+  if (next === state) return state
+  const needMpd = Boolean(state.mpd && !next.mpd)
+  const needExam = Boolean(state.exam && !next.exam)
+  if (!needMpd && !needExam) return next
+  return {
+    ...next,
+    ...(needMpd ? { mpd: state.mpd } : {}),
+    ...(needExam ? { exam: state.exam } : {}),
+  }
 }

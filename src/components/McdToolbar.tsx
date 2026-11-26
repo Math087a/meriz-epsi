@@ -1,3 +1,4 @@
+import { EXAM_MODE } from '../lib/examMode'
 import { useToast } from './ui/toastContext'
 import { counted } from "../lib/plural"
 import { t } from "../i18n/runtime"
@@ -174,19 +175,23 @@ export function McdToolbar({ state, dispatch, problems, onGenerate, canGenerate 
         </>
       )}
 
-      <div role="group" aria-label={t("Vérification et génération")} className="flex gap-2">
-        <Button size="sm" onClick={handleVerify} aria-label={t("Vérifier")} title={t("Vérifier")}>
-          <svg {...iconProps}>
-            <circle cx="12" cy="12" r="3" />
-            <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1" />
-          </svg>
-          <span className="hidden sm:inline">{t("Vérifier")}</span></Button>
-        {canGenerate && <Button size="sm" variant="primary" onClick={handleGenerate}>
-          <svg {...iconProps}>
-            <path d="m4.5 12.5 5 5 10-11" />
-          </svg>
-          {t("Générer")}</Button>}
-      </div>
+      {(!EXAM_MODE || canGenerate) && (
+        <div role="group" aria-label={t("Vérification et génération")} className="flex gap-2">
+          {!EXAM_MODE && (
+            <Button size="sm" onClick={handleVerify} aria-label={t("Vérifier")} title={t("Vérifier")}>
+              <svg {...iconProps}>
+                <circle cx="12" cy="12" r="3" />
+                <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1" />
+              </svg>
+              <span className="hidden sm:inline">{t("Vérifier")}</span></Button>
+          )}
+          {canGenerate && <Button size="sm" variant="primary" onClick={handleGenerate}>
+            <svg {...iconProps}>
+              <path d="m4.5 12.5 5 5 10-11" />
+            </svg>
+            {t("Générer")}</Button>}
+        </div>
+      )}
 
       <div role="group" aria-label={t("Vues")} className="flex shrink-0 gap-1">
         <Button size="sm" variant="ghost" aria-label={t("Ajuster à la fenêtre")} title={t("Ajuster à la fenêtre")} onClick={() => void fitView({ padding: .2, duration: 0 })}><Icon name="fit" /></Button>

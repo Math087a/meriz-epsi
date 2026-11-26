@@ -1,3 +1,4 @@
+import { EXAM_MODE } from '../lib/examMode'
 import { Icon } from './ui/Icon'
 import { t } from "../i18n/runtime"
 import { useLanguage } from "../lib/useLanguage"
@@ -315,7 +316,7 @@ export function McdView({
         >
           <div className="flex items-center justify-between border-b border-line px-3 py-2 md:hidden"><span className="text-sm font-semibold">{t("Inspecteur")}</span><Button size="sm" variant="ghost" aria-label={t("Fermer l’inspecteur")} onClick={() => { setPanelOpen(false); document.getElementById(panelButtonId)?.focus() }}><Icon name="close" /></Button></div>
           <Inspector mcd={state.mcd} selection={selection} dispatch={dispatch} readOnly={readOnly} />
-          <ProblemsPanel problems={problems} mcd={state.mcd} onSelectElement={onSelectElement} />
+          {!EXAM_MODE && <ProblemsPanel problems={problems} mcd={state.mcd} onSelectElement={onSelectElement} />}
           {comments && (
             <CommentsPanel
               thread={thread}

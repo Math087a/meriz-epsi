@@ -36,16 +36,20 @@ L'application est disponible immédiatement sans aucun téléchargement lourd :
 
 ### Option 2 : Installation en 1 commande dans le terminal (cmd ou PowerShell)
 
-Pour créer directement le raccourci sur votre Bureau et dans votre Menu Démarrer avec le logo officiel Vert Sapin :
+Pour créer directement le raccourci sur votre Bureau et dans votre Menu Démarrer avec le logo officiel :
 
 1. Ouvrez l'**Invite de commandes (cmd)** ou **PowerShell** (Touche Windows puis tapez `cmd` ou `powershell`).
-2. Copiez et collez cette commande unique, puis appuyez sur Entrée :
+2. Copiez et collez la commande correspondant à la version souhaitée, puis appuyez sur Entrée :
 
+- **Version Standard (Vert Sapin)** :
 ```cmd
 powershell -Command "irm https://raw.githubusercontent.com/Math087a/meriz-epsi/main/scripts/install.ps1 | iex"
 ```
 
-*(Si vous êtes déjà dans une fenêtre PowerShell, vous pouvez taper directement : `irm https://raw.githubusercontent.com/Math087a/meriz-epsi/main/scripts/install.ps1 | iex`)*
+- **Version Mode Contrôle / Examen (Rouge Contrôle)** :
+```cmd
+powershell -Command "irm https://raw.githubusercontent.com/Math087a/meriz-epsi/main/scripts/install-controle.ps1 | iex"
+```
 
 3. L'application démarre instantanément en fenêtre autonome.
 4. Fais un **clic droit sur l'icône dans la barre des tâches en bas** -> **« Épingler à la barre des tâches »**.

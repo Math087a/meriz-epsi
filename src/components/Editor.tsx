@@ -38,6 +38,9 @@ import { MpdView } from './MpdView'
 import { SqlView } from './SqlView'
 import { LearnView } from './LearnView'
 import { AboutView } from './AboutView'
+import { ExamDictionaryView } from './ExamDictionaryView'
+import { ExamModuleEditor } from './ExamModuleEditor'
+import { Segmented } from './ui/Segmented'
 import { ConfirmDialog } from './ConfirmDialog'
 import { SkipLink } from './ui/SkipLink'
 
@@ -146,9 +149,10 @@ export function Editor({
   const [pendingAnnotations, setPendingAnnotations] = useState(false)
   const [confirmLeaveAnnotations, setConfirmLeaveAnnotations] = useState(false)
   const allowedViews = useMemo<readonly ViewId[]>(
-    () => EXAM_MODE ? ['dictionnaire', 'mcd', 'apropos'] : (interfaceSettings ? assignmentViews(interfaceSettings) : visibleViews(interfaceMode)),
+    () => EXAM_MODE ? ['dictionnaire', 'mcd', 'mld', 'mpd', 'sql', 'code', 'apropos'] : (interfaceSettings ? assignmentViews(interfaceSettings) : visibleViews(interfaceMode)),
     [interfaceMode, interfaceSettings],
   )
+  const [reviewMode, setReviewMode] = useState<'student' | 'correction'>('student')
   const [requestedView, setRequestedView] = useState<ViewId>('mcd')
   const activeView = allowedViews.includes(requestedView) ? requestedView : allowedViews[0] ?? 'mcd'
   const setActiveView = useCallback((view: ViewId) => {
@@ -387,8 +391,30 @@ export function Editor({
 
           <main ref={viewRef} id="contenu" className="flex min-h-0 min-w-0 flex-1 flex-col">
             {interfaceSettings && <p className="border-b border-line bg-surface px-4 py-2 text-xs text-ink-soft">{t('Les outils disponibles pour cet exercice sont choisis par votre professeur.')}</p>}
+            {!EXAM_MODE && state.exam && (activeView === 'dictionnaire' || activeView === 'mld' || activeView === 'mpd' || activeView === 'sql' || activeView === 'code') && (
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line bg-accent-soft/60 px-4 py-2">
+                <p className="text-xs font-medium text-accent-ink">
+                  {t('Copie Mode Contrôle détectée : comparez la saisie manuelle de l’étudiant avec la correction automatique.')}
+                </p>
+                <Segmented<'student' | 'correction'>
+                  legend={t('Mode de consultation')}
+                  hideLegend
+                  size="sm"
+                  value={reviewMode}
+                  onChange={setReviewMode}
+                  options={[
+                    { value: 'student', label: t('Rendu de l’élève') },
+                    { value: 'correction', label: t('Correction automatique') },
+                  ]}
+                />
+              </div>
+            )}
             {activeView === 'dictionnaire' && (
-              <DictionaryView mcd={state.mcd} dispatch={dispatch} readOnly={locked} />
+              EXAM_MODE || (state.exam && reviewMode === 'student') ? (
+                <ExamDictionaryView exam={state.exam} dispatch={dispatch} readOnly={EXAM_MODE ? locked : true} />
+              ) : (
+                <DictionaryView mcd={state.mcd} dispatch={dispatch} readOnly={locked} />
+              )
             )}
 
             <McdView
@@ -431,36 +457,46 @@ export function Editor({
               readOnly={locked}
             />
 
-            {!EXAM_MODE && activeView === 'mld' && <MldView tables={mldTables} hasErrors={hasErrors} />}
+            {EXAM_MODE ? (
+              <>
+                {(activeView === 'mld' || activeView === 'mpd' || activeView === 'sql' || activeView === 'code') && (
+                  <ExamModuleEditor module={activeView} exam={state.exam} dispatch={dispatch} readOnly={locked} />
+                )}
+              </>
+            ) : state.exam && reviewMode === 'student' && (activeView === 'mld' || activeView === 'mpd' || activeView === 'sql' || activeView === 'code') ? (
+              <ExamModuleEditor module={activeView} exam={state.exam} dispatch={dispatch} readOnly />
+            ) : (
+              <>
+                {activeView === 'mld' && <MldView tables={mldTables} hasErrors={hasErrors} />}
 
-            {/* Comme le MCD, le MPD reste monté quand il est masqué : les
-                positions de son diagramme survivent au changement de vue. */}
-            {!EXAM_MODE && (
-              <MpdView
-                tables={mpdTables}
-                hasErrors={hasErrors}
-                settings={mpdSettings}
-                readOnly={locked}
-                onDialectChange={locked ? IGNORE_ACTION : setDialect}
-                onOverrideChange={locked ? IGNORE_ACTION : setTypeOverride}
-                isActive={activeView === 'mpd'}
-              />
+                {/* Comme le MCD, le MPD reste monté quand il est masqué : les
+                    positions de son diagramme survivent au changement de vue. */}
+                <MpdView
+                  tables={mpdTables}
+                  hasErrors={hasErrors}
+                  settings={mpdSettings}
+                  readOnly={locked}
+                  onDialectChange={locked ? IGNORE_ACTION : setDialect}
+                  onOverrideChange={locked ? IGNORE_ACTION : setTypeOverride}
+                  isActive={activeView === 'mpd'}
+                />
+
+                {activeView === 'sql' && (
+                  <SqlView tables={mpdTables} dialect={mpdSettings.dialect} hasErrors={hasErrors} />
+                )}
+
+                {activeView === 'code' && (
+                  <CodeView
+                    mcd={state.mcd}
+                    tables={mldTables}
+                    settings={mpdSettings}
+                    hasErrors={hasErrors}
+                  />
+                )}
+
+                {activeView === 'apprendre' && <LearnView onSelectView={setActiveView} />}
+              </>
             )}
-
-            {!EXAM_MODE && activeView === 'sql' && (
-              <SqlView tables={mpdTables} dialect={mpdSettings.dialect} hasErrors={hasErrors} />
-            )}
-
-            {!EXAM_MODE && activeView === 'code' && (
-              <CodeView
-                mcd={state.mcd}
-                tables={mldTables}
-                settings={mpdSettings}
-                hasErrors={hasErrors}
-              />
-            )}
-
-            {!EXAM_MODE && activeView === 'apprendre' && <LearnView onSelectView={setActiveView} />}
             {activeView === 'apropos' && <AboutView />}
           </main>
         </div>
