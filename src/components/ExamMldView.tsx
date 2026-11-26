@@ -89,7 +89,7 @@ export function ExamMldView({ mcd, exam, dispatch, readOnly = false }: ExamMldVi
                           </span>
                           {ref.isIdentifier && (
                             <span className="rounded-sm border border-line bg-accent-soft px-1 text-nano font-medium text-accent-ink">
-                              {t('PK')}
+                              {t('clé')}
                             </span>
                           )}
                         </li>

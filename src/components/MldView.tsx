@@ -79,7 +79,7 @@ export function MldView({ tables, hasErrors }: MldViewProps) {
                     {column.nullable && <span className="text-ink-soft">{t("NULL")}</span>}
                     {column.isPrimaryKey && (
                       <span className="rounded-sm border border-line bg-accent-soft px-1 text-nano font-medium text-accent-ink">
-                        {t("PK")}</span>
+                        {t("clé")}</span>
                     )}
                     {column.references && (
                       <span className="text-ink-soft">→ {column.references.tableName}</span>

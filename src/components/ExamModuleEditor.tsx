@@ -1,4 +1,5 @@
-import type { Dispatch } from 'react'
+import { useRef } from 'react'
+import type { Dispatch, ReactNode } from 'react'
 import type { McdAction } from '../model/mcdReducer'
 import type { ExamWork } from '../model/examWork'
 import { EMPTY_EXAM_WORK } from '../model/examWork'
@@ -10,6 +11,45 @@ import { Button } from './ui/Button'
 import { useToast } from './ui/toastContext'
 
 export type ExamTextModule = 'mld' | 'mpd' | 'sql' | 'code'
+
+const SQL_TOKENS =
+  /(--[^\n]*|'(?:''|[^'])*'|\b(?:DROP TABLE IF EXISTS|CREATE TABLE|ALTER TABLE|ADD CONSTRAINT|FOREIGN KEY|PRIMARY KEY|REFERENCES|NOT NULL|AUTO_INCREMENT|SERIAL|IDENTITY|UNIQUE|DEFAULT|CHECK|INDEX|SELECT|FROM|WHERE|INSERT INTO|VALUES|UPDATE|SET|DELETE|JOIN|ON|AS|INT|INTEGER|BIGINT|SMALLINT|TINYINT|BIT|VARCHAR|CHAR|TEXT|DATE|DATETIME|DATETIME2|TIMESTAMP|BOOLEAN|DECIMAL|NUMERIC|FLOAT|DOUBLE|MONEY|UNIQUEIDENTIFIER|BLOB|IF NOT EXISTS|ENGINE|CHARSET|COLLATE|CASCADE|RESTRICT)\b|\b\d+\b)/gi
+
+const CODE_TOKENS =
+  /(\/\/[^\n]*|#[^\n]*|'(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"|\b(?:namespace|use|class|extends|implements|trait|interface|public|protected|private|static|readonly|function|fn|return|new|const|let|var|import|export|from|type|enum|async|await|if|else|for|foreach|while|match|switch|case|default|null|true|false|self|this|void|int|float|string|bool|array|iterable|mixed|Schema|Blueprint|Table|Column|Entity|Repository|ORM|Migration|HasMany|BelongsTo|ManyToMany|OneToMany|ManyToOne|JoinColumn|Id|GeneratedValue)\b|\b\d+\b)/g
+
+function highlightTokens(text: string, module: ExamTextModule): ReactNode {
+  if (module !== 'sql' && module !== 'code') return text
+  const pattern = module === 'sql' ? SQL_TOKENS : CODE_TOKENS
+  const parts: ReactNode[] = []
+  let lastIndex = 0
+  let match: RegExpExecArray | null
+  pattern.lastIndex = 0
+  while ((match = pattern.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index))
+    }
+    const token = match[0]
+    const isComment = token.startsWith('--') || token.startsWith('//') || token.startsWith('#')
+    const isString = token.startsWith("'") || token.startsWith('"')
+    const isNumber = /^\d+$/.test(token)
+    const cls = isComment
+      ? 'italic text-ink-faint'
+      : isString || isNumber
+        ? 'text-ink-soft'
+        : 'font-semibold text-accent-ink'
+    parts.push(
+      <span key={match.index} className={cls}>
+        {token}
+      </span>,
+    )
+    lastIndex = pattern.lastIndex
+  }
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex))
+  }
+  return parts
+}
 
 interface ExamModuleEditorProps {
   module: ExamTextModule
@@ -56,8 +96,17 @@ const MODULE_META: Record<ExamTextModule, { label: string; filename: string; ext
 export function ExamModuleEditor({ module, exam, dispatch, readOnly = false }: ExamModuleEditorProps) {
   useLanguage()
   const toast = useToast()
+  const preRef = useRef<HTMLPreElement>(null)
   const meta = MODULE_META[module]
   const value = exam?.[module] ?? EMPTY_EXAM_WORK[module]
+  const highlighted = module === 'sql' || module === 'code'
+
+  const handleScroll = (e: React.UIEvent<HTMLTextAreaElement>) => {
+    if (preRef.current) {
+      preRef.current.scrollTop = e.currentTarget.scrollTop
+      preRef.current.scrollLeft = e.currentTarget.scrollLeft
+    }
+  }
 
   const handleChange = (next: string) => {
     if (readOnly) return
@@ -96,14 +145,36 @@ export function ExamModuleEditor({ module, exam, dispatch, readOnly = false }: E
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col p-4">
-        <textarea
-          value={value}
-          readOnly={readOnly}
-          placeholder={t(meta.placeholder)}
-          spellCheck={false}
-          className="min-h-0 flex-1 resize-none rounded-card border border-line-strong bg-surface p-4 font-mono text-sm leading-6 text-ink shadow-soft focus:border-accent focus:outline-none"
-          onChange={(e) => handleChange(e.target.value)}
-        />
+        {highlighted ? (
+          <div className="relative min-h-0 flex-1 overflow-hidden rounded-card border border-line-strong bg-surface shadow-soft focus-within:border-accent">
+            <pre
+              ref={preRef}
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 m-0 overflow-hidden whitespace-pre-wrap break-words p-4 font-mono text-sm leading-6 text-ink"
+            >
+              {value ? highlightTokens(value, module) : null}
+              {'\n'}
+            </pre>
+            <textarea
+              value={value}
+              readOnly={readOnly}
+              placeholder={t(meta.placeholder)}
+              spellCheck={false}
+              onScroll={handleScroll}
+              className="relative z-10 h-full w-full resize-none bg-transparent p-4 font-mono text-sm leading-6 text-transparent caret-ink placeholder:text-ink-faint focus:outline-none"
+              onChange={(e) => handleChange(e.target.value)}
+            />
+          </div>
+        ) : (
+          <textarea
+            value={value}
+            readOnly={readOnly}
+            placeholder={t(meta.placeholder)}
+            spellCheck={false}
+            className="min-h-0 flex-1 resize-none rounded-card border border-line-strong bg-surface p-4 font-mono text-sm leading-6 text-ink shadow-soft focus:border-accent focus:outline-none"
+            onChange={(e) => handleChange(e.target.value)}
+          />
+        )}
       </div>
     </section>
   )

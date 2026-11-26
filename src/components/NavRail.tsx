@@ -130,7 +130,7 @@ export function NavRail({ activeView, onSelectView, allowedViews }: NavRailProps
         ))}
       </ul>
       <ul className="mt-auto flex flex-col gap-1 border-t border-line p-2">
-        {FOOTER_VIEWS.map((view) => (
+        {FOOTER_VIEWS.filter((view) => !allowedViews || allowedViews.includes(view.id)).map((view) => (
           <RailItem
             key={view.id}
             view={view}

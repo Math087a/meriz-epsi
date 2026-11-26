@@ -70,7 +70,7 @@ function ExamTableNode({ data, selected }: NodeProps<ExamTableFlowNode>) {
               <span className="ml-auto text-ink-soft">{column.sqlType}</span>
               {column.isPrimaryKey && (
                 <span className="rounded-full bg-accent-soft px-1.5 text-nano font-medium text-accent-ink">
-                  {t('PK')}
+                  {t('clé')}
                 </span>
               )}
               <Handle
@@ -362,7 +362,7 @@ export function ExamMpdView({
                           {column.name}
                           {column.isPrimaryKey && (
                             <span className="ml-1.5 rounded-sm border border-line bg-accent-soft px-1 text-nano font-medium text-accent-ink">
-                              {t('PK')}
+                              {t('clé')}
                             </span>
                           )}
                         </td>

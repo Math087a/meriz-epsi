@@ -100,11 +100,11 @@ export function DictionaryView({ mcd, dispatch, readOnly = false }: { mcd: Mcd; 
   return <section aria-label={t('Dictionnaire des données')} className="flex min-h-0 min-w-0 flex-1 flex-col">
     <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2 border-b border-line bg-surface px-4 py-2">
       <Segmented<DictionaryTab> legend={t('Contenu du dictionnaire')} hideLegend size="sm" value={tab} onChange={setTab}
-        options={[{ value: 'tables', label: t('Tables') + ' (' + mcd.entities.length + ')' }, { value: 'associations', label: t('Associations') + ' (' + mcd.associations.filter(a => a.attributes.length).length + ')' }, { value: 'unplaced', label: t('Non affectées') + ' (' + groups[groups.length - 1]!.properties.length + ')' }]} />
+        options={[{ value: 'tables', label: t('Entités') + ' (' + mcd.entities.length + ')' }, { value: 'associations', label: t('Associations') + ' (' + mcd.associations.filter(a => a.attributes.length).length + ')' }, { value: 'unplaced', label: t('Non affectées') + ' (' + groups[groups.length - 1]!.properties.length + ')' }]} />
       {!readOnly && (
         <div className="flex flex-wrap items-center gap-1.5">
           <Button size="sm" variant="ghost" onClick={() => { setTab('tables'); dispatch({ type: 'ADD_ENTITY', position: { x: 120 + (mcd.entities.length % 5) * 40, y: 120 + (mcd.entities.length % 4) * 40 } }) }}>
-            <Icon name="plus" size={15} />{t('Nouvelle table')}
+            <Icon name="plus" size={15} />{t('Nouvelle entité')}
           </Button>
           <Button size="sm" variant="ghost" onClick={() => { setTab('associations'); dispatch({ type: 'ADD_ASSOCIATION', position: { x: 200 + (mcd.associations.length % 5) * 40, y: 200 + (mcd.associations.length % 4) * 40 } }) }}>
             <Icon name="plus" size={15} />{t('Nouvelle association')}

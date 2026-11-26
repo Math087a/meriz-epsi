@@ -306,9 +306,13 @@ export function McdCanvas({
    * sont neufs à chaque fois, et un nœud qui perdrait sa taille au
    * milieu d'un glisser ne serait plus déplaçable pour React Flow.
    */
+  const selectionRef = useRef(selection)
+  selectionRef.current = selection
+
   useEffect(() => {
     void locale // Les noms accessibles suivent la langue, sans changer les identifiants.
     const derived = mcdToFlow(state.mcd, state.layout)
+    const currentSelection = selectionRef.current
     setNodes((current) => {
       const byId = new Map(current.map((node) => [node.id, node]))
       return derived.nodes.map((node) => {
@@ -323,11 +327,34 @@ export function McdCanvas({
             selected: existing.selected,
           }
         }
-        return { ...node, ...measured, selected: selection.nodeIds.has(node.id) }
+        return { ...node, ...measured, selected: currentSelection.nodeIds.has(node.id) }
       })
     })
-    setEdges(derived.edges.map((edge) => ({ ...edge, selected: selection.edgeIds.has(edge.id) })))
-  }, [state.mcd, state.layout, selection, locale])
+    setEdges(derived.edges.map((edge) => ({ ...edge, selected: currentSelection.edgeIds.has(edge.id) })))
+  }, [state.mcd, state.layout, locale])
+
+  useEffect(() => {
+    setNodes((current) => {
+      let changed = false
+      const next = current.map((node) => {
+        const shouldSelect = selection.nodeIds.has(node.id)
+        if (Boolean(node.selected) === shouldSelect) return node
+        changed = true
+        return { ...node, selected: shouldSelect }
+      })
+      return changed ? next : current
+    })
+    setEdges((current) => {
+      let changed = false
+      const next = current.map((edge) => {
+        const shouldSelect = selection.edgeIds.has(edge.id)
+        if (Boolean(edge.selected) === shouldSelect) return edge
+        changed = true
+        return { ...edge, selected: shouldSelect }
+      })
+      return changed ? next : current
+    })
+  }, [selection])
 
   /*
    * Le côté d'accroche de chaque patte, recalculé à chaque image depuis les
@@ -374,6 +401,8 @@ export function McdCanvas({
   const onNodesChange = useCallback(
     (changes: NodeChange<McdFlowNode>[]) => {
       setNodes((current) => applyNodeChanges(changes, current))
+      const selectedAdds: string[] = []
+      const selectedRemoves: string[] = []
       for (const change of changes) {
         if (change.type === 'position' && change.position && change.dragging !== true) {
           /*
@@ -391,16 +420,17 @@ export function McdCanvas({
             gesture: gesture.token() ?? undefined,
           })
         } else if (change.type === 'select') {
-          onSelectionChange((previous) => {
-            const nodeIds = new Set(previous.nodeIds)
-            if (change.selected) {
-              nodeIds.add(change.id)
-            } else {
-              nodeIds.delete(change.id)
-            }
-            return { ...previous, nodeIds }
-          })
+          if (change.selected) selectedAdds.push(change.id)
+          else selectedRemoves.push(change.id)
         }
+      }
+      if (selectedAdds.length > 0 || selectedRemoves.length > 0) {
+        onSelectionChange((previous) => {
+          const nodeIds = new Set(previous.nodeIds)
+          for (const id of selectedRemoves) nodeIds.delete(id)
+          for (const id of selectedAdds) nodeIds.add(id)
+          return { ...previous, nodeIds }
+        })
       }
     },
     [dispatch, gesture, onSelectionChange],
@@ -444,18 +474,21 @@ export function McdCanvas({
   const onEdgesChange = useCallback(
     (changes: EdgeChange<LegFlowEdge>[]) => {
       setEdges((current) => applyEdgeChanges(changes, current))
+      const selectedAdds: string[] = []
+      const selectedRemoves: string[] = []
       for (const change of changes) {
         if (change.type === 'select') {
-          onSelectionChange((previous) => {
-            const edgeIds = new Set(previous.edgeIds)
-            if (change.selected) {
-              edgeIds.add(change.id)
-            } else {
-              edgeIds.delete(change.id)
-            }
-            return { ...previous, edgeIds }
-          })
+          if (change.selected) selectedAdds.push(change.id)
+          else selectedRemoves.push(change.id)
         }
+      }
+      if (selectedAdds.length > 0 || selectedRemoves.length > 0) {
+        onSelectionChange((previous) => {
+          const edgeIds = new Set(previous.edgeIds)
+          for (const id of selectedRemoves) edgeIds.delete(id)
+          for (const id of selectedAdds) edgeIds.add(id)
+          return { ...previous, edgeIds }
+        })
       }
     },
     [onSelectionChange],

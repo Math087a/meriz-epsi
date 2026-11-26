@@ -1,5 +1,8 @@
 /** Phrases contextualisées et accords. */
 export const englishExtras: Readonly<Record<string, string>> = {
+  "Entités": "Entities",
+  "Nouvelle entité": "New entity",
+  "Aucune entité dans le dictionnaire. Cliquez sur « Nouvelle entité » pour en créer une.": "No entities in the dictionary. Click 'New entity' to create one.",
   "Impossible de lire ce fichier JMerise (.mcd) : {0}": "Unable to read this JMerise file (.mcd): {0}",
   "SQL Server (T-SQL)": "SQL Server (T-SQL)",
   "Ajouter un héritage": "Add inheritance",

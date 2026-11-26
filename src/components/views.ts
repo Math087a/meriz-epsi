@@ -32,5 +32,6 @@ export const VIEWS: readonly ViewInfo[] = [
 
 /** Pied du rail : contenus distincts des vues de travail. */
 export const FOOTER_VIEWS: readonly ViewInfo[] = [
+  { id: 'apprendre', get label() { return t("Apprendre") } },
   { id: 'apropos', get label() { return t("À propos") } },
 ]

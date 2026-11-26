@@ -59,7 +59,7 @@ export function TableNode({ data, selected }: NodeProps<TableFlowNode>) {
             <span className="ml-auto text-ink-soft">{column.sqlType}</span>
             {column.isPrimaryKey && (
               <span className="self-center rounded-full bg-accent-soft px-1.5 text-nano font-medium text-accent-ink">
-                {t("PK")}</span>
+                {t("clé")}</span>
             )}
           </li>
         ))}

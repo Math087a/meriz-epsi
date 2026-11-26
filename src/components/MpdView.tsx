@@ -224,7 +224,7 @@ function TypeMappingPanel({
                     {column.name}
                     {column.isPrimaryKey && (
                       <span className="ml-1.5 rounded-sm border border-line bg-accent-soft px-1 text-nano font-medium text-accent-ink">
-                        {t("PK")}</span>
+                        {t("clé")}</span>
                     )}
                   </td>
                   <td className="border-b border-line px-3 py-1.5 font-mono text-code text-ink-soft">

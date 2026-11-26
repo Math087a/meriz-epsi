@@ -459,7 +459,7 @@ function reduceModel(state: McdEditorState, action: McdAction): McdEditorState {
       const postit: PostIt = {
         id,
         title: action.mode === 'mld' ? 'MLD Dynamique' : 'Mémo',
-        content: action.mode === 'mld' ? '' : 'Notes...',
+        content: '',
         mode: action.mode ?? 'text',
         color: 'yellow',
       }

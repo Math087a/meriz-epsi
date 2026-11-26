@@ -47,8 +47,8 @@ export function ExamDictionaryView({ exam, dispatch, readOnly = false }: ExamDic
   const handleAddTable = () => {
     if (readOnly) return
     let idx = dictTables.length + 1
-    while (dictTables.includes(`Table ${idx}`)) idx += 1
-    updateExam({ dictTables: [...dictTables, `Table ${idx}`] })
+    while (dictTables.includes(`Entite ${idx}`)) idx += 1
+    updateExam({ dictTables: [...dictTables, `Entite ${idx}`] })
     setTab('tables')
   }
 
@@ -179,7 +179,7 @@ export function ExamDictionaryView({ exam, dispatch, readOnly = false }: ExamDic
           value={tab}
           onChange={setTab}
           options={[
-            { value: 'tables', label: `${t('Tables')} (${dictTables.length})` },
+            { value: 'tables', label: `${t('Entités')} (${dictTables.length})` },
             { value: 'associations', label: `${t('Associations')} (${dictAssociations.length})` },
             { value: 'unplaced', label: `${t('Non affectées')} (${unplacedEntries.length})` },
           ]}
@@ -188,7 +188,7 @@ export function ExamDictionaryView({ exam, dispatch, readOnly = false }: ExamDic
           <div className="flex flex-wrap items-center gap-1.5">
             <Button size="sm" variant="ghost" onClick={handleAddTable}>
               <Icon name="plus" size={15} />
-              {t('Nouvelle table')}
+              {t('Nouvelle entité')}
             </Button>
             <Button size="sm" variant="ghost" onClick={handleAddAssociation}>
               <Icon name="plus" size={15} />
@@ -226,7 +226,7 @@ export function ExamDictionaryView({ exam, dispatch, readOnly = false }: ExamDic
         {filteredGroups.length === 0 ? (
           <div className="rounded-card border border-line bg-surface p-6 text-center text-sm text-ink-soft">
             {tab === 'tables'
-              ? t('Aucune table dans le dictionnaire. Cliquez sur « Nouvelle table » pour en créer une.')
+              ? t('Aucune entité dans le dictionnaire. Cliquez sur « Nouvelle entité » pour en créer une.')
               : tab === 'associations'
                 ? t('Aucune association dans le dictionnaire. Cliquez sur « Nouvelle association » pour en créer une.')
                 : t('Aucune propriété non affectée. Cliquez sur « Ajouter une propriété » pour en saisir une.')}
