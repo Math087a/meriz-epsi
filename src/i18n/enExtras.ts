@@ -1,5 +1,8 @@
 /** Phrases contextualisées et accords. */
 export const englishExtras: Readonly<Record<string, string>> = {
+  "Rédigez votre MLD manuellement ici...": "Write your MLD manually here...",
+  "Rédigez votre MPD manuellement ici...": "Write your MPD manually here...",
+  "Rédigez votre script SQL manuellement ici...": "Write your SQL script manually here...",
   "Quitter le contrôle ?": "Leave the exam?",
   "Êtes-vous sûr de vouloir quitter ? Votre contrôle en cours sera perdu si vous ne l’avez pas téléchargé.": "Are you sure you want to leave? Your current exam work will be lost if you have not downloaded it.",
   "Oui, quitter et détruire": "Yes, leave and discard",

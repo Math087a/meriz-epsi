@@ -107,7 +107,7 @@ export function ExamMldView({ mcd, exam, dispatch, readOnly = false }: ExamMldVi
           <textarea
             value={value}
             readOnly={readOnly}
-            placeholder={t('Rédigez votre MLD manuellement ici...\nExemple :\nCLIENT(id_client, nom, email)\nCOMMANDE(id_commande, date_cmd, #id_client)')}
+            placeholder={t('Rédigez votre MLD manuellement ici...')}
             spellCheck={false}
             className="min-h-40 flex-1 resize-y rounded-lg border border-line-strong bg-shell/40 p-3 font-mono text-sm leading-6 text-ink focus:border-accent focus:outline-none"
             onChange={(e) => handleChange(e.target.value)}
