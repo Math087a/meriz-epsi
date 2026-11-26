@@ -353,6 +353,22 @@ export function Editor({
     [state.mcd],
   )
 
+  const [confirmLeaveExam, setConfirmLeaveExam] = useState(false)
+  const hasExamContent =
+    state.mcd.entities.length > 0 ||
+    state.mcd.associations.length > 0 ||
+    state.mcd.properties.length > 0 ||
+    (state.mcd.inheritances?.length ?? 0) > 0 ||
+    (state.mcd.postits?.length ?? 0) > 0 ||
+    (state.exam?.dictionary.length ?? 0) > 0 ||
+    (state.exam?.dictTables?.length ?? 0) > 0 ||
+    (state.exam?.dictAssociations?.length ?? 0) > 0 ||
+    (state.exam?.mld.trim() ?? '') !== '' ||
+    (state.exam?.mpd.trim() ?? '') !== '' ||
+    (state.exam?.mpdEdges?.length ?? 0) > 0 ||
+    (state.exam?.sql.trim() ?? '') !== '' ||
+    (state.exam?.code.trim() ?? '') !== ''
+
   return (
     <SqlTypesContext value={{ settings: mpdSettings, dispatch, readOnly: locked, beginner: false }}>
     <div className="flex h-dvh flex-col bg-shell font-sans text-ink">
@@ -360,6 +376,9 @@ export function Editor({
       <ConfirmDialog open={confirmLeaveAnnotations} title={t("Des commentaires ou traits ne sont pas enregistrés")}
         message={t("Envoyez votre commentaire ou réessayez l’enregistrement des traits avant de quitter. Les éléments encore en attente risquent d’être perdus.")}
         confirmLabel={t("Quitter malgré tout")} onConfirm={onBackToDocuments} onCancel={() => setConfirmLeaveAnnotations(false)} />
+      <ConfirmDialog open={confirmLeaveExam} title={t("Quitter le contrôle ?")}
+        message={t("Êtes-vous sûr de vouloir quitter ? Votre contrôle en cours sera perdu si vous ne l’avez pas téléchargé.")}
+        confirmLabel={t("Oui, quitter et détruire")} onConfirm={onBackToDocuments} onCancel={() => setConfirmLeaveExam(false)} />
 
       <ReactFlowProvider>
         <TopBar
@@ -369,7 +388,11 @@ export function Editor({
           mpdSettings={mpdSettings}
           documentName={openedDocument.meta.name}
           onRename={onRename}
-          onBackToDocuments={() => { if (pendingAnnotations) setConfirmLeaveAnnotations(true); else onBackToDocuments() }}
+          onBackToDocuments={() => {
+            if (pendingAnnotations) setConfirmLeaveAnnotations(true)
+            else if (EXAM_MODE && hasExamContent) setConfirmLeaveExam(true)
+            else onBackToDocuments()
+          }}
           contentLabel={contentLabel}
           backLabel={backLabel}
           onNewDocument={onNewDocument}

@@ -1,5 +1,8 @@
 /** Phrases contextualisées et accords. */
 export const englishExtras: Readonly<Record<string, string>> = {
+  "Quitter le contrôle ?": "Leave the exam?",
+  "Êtes-vous sûr de vouloir quitter ? Votre contrôle en cours sera perdu si vous ne l’avez pas téléchargé.": "Are you sure you want to leave? Your current exam work will be lost if you have not downloaded it.",
+  "Oui, quitter et détruire": "Yes, leave and discard",
   "Entités": "Entities",
   "Nouvelle entité": "New entity",
   "Aucune entité dans le dictionnaire. Cliquez sur « Nouvelle entité » pour en créer une.": "No entities in the dictionary. Click 'New entity' to create one.",
