@@ -1,12 +1,6 @@
 # Merise - EPSI Edition
 
-Environnement moderne de modélisation Merise (MCD, MLD, MPD, SQL Server T-SQL) conçu pour les étudiants et intervenants de l'EPSI (B1, B2, B3).
-
-Merise EPSI Edition remplace avantageusement les outils historiques tels que JMerise ou AnalyseSI par une expérience fluide, un thème Vert Sapin soigné et des fonctionnalités directement adaptées aux cursus informatiques.
-
-> [!IMPORTANT]
-> **Zéro installation, zéro prérequis (aucun Java, aucun Node.js requis sur votre poste)**.
-> Pour les étudiants et intervenants, Merise EPSI Edition s'exécute directement dans votre navigateur web habituel ou en application autonome sur votre Bureau, sans nécessiter de droits administrateur.
+Environnement moderne de modélisation Merise (MCD, MLD, MPD, SQL Server T-SQL) destiné aux étudiants, enseignants et développeurs souhaitant concevoir leurs bases de données directement dans le navigateur ou en application autonome.
 
 ---
 
@@ -54,8 +48,6 @@ powershell -Command "irm https://raw.githubusercontent.com/Math087a/meriz-epsi/m
 3. L'application démarre instantanément en fenêtre autonome.
 4. Fais un **clic droit sur l'icône dans la barre des tâches en bas** -> **« Épingler à la barre des tâches »**.
 
-> Cette méthode exécutée directement dans le terminal ne télécharge aucun fichier exécutable non signé, et ne déclenche donc aucun blocage de Windows SmartScreen ou du Contrôle intelligent des applications.
-
 ---
 
 ## Fonctionnalités
@@ -66,7 +58,6 @@ powershell -Command "irm https://raw.githubusercontent.com/Math087a/meriz-epsi/m
 - **Héritage et spécialisation formelle** : support complet des contraintes Merise d'héritage (Aucune, Disjonction `X`, Totalité `T`, Partition `XT`) et dérivation automatique vers le modèle relationnel.
 - **Rétro-ingénierie et import JMerise (.mcd)** : ouverture et conversion directe des fichiers de TP existants au format binaire JMerise sans nécessiter d'environnement Java.
 - **Dictionnaire des données centralisé** : vue d'ensemble et recherche sur toutes les propriétés du modèle pour éliminer les doublons et harmoniser les types.
-- **Collaboration en temps réel** : travail à plusieurs en direct sur un même schéma pour faciliter les projets et ateliers de groupe.
 - **Export haute fidélité pour les rendus** : exportation du schéma en PNG haute résolution et génération du script SQL pour une intégration directe dans les rapports de TP.
 
 ---
